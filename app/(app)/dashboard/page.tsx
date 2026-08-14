@@ -302,49 +302,6 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      <Card className="overflow-hidden">
-        <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
-          <div>
-            <p className="text-sm font-medium">Peticiones recientes</p>
-            <p className="text-xs text-zinc-500">Últimas capturadas</p>
-          </div>
-          <Link
-            href="/peticiones"
-            className="text-xs font-medium text-guinda hover:underline"
-          >
-            Ver todas
-          </Link>
-        </div>
-        <ul className="divide-y divide-zinc-100">
-          {recientes.map((p) => (
-            <li key={p.id}>
-              <Link
-                href="/peticiones"
-                className="flex flex-col gap-1 px-4 py-3 hover:bg-zinc-50 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div className="min-w-0">
-                  <p className="font-mono text-xs text-guinda">{p.folio}</p>
-                  <p className="truncate text-sm text-zinc-800">
-                    {p.ciudadano.nombre}
-                    <span className="text-zinc-400"> · </span>
-                    {CATEGORIA_POR_ID[p.categoriaId]?.nombre}
-                    {p.comunitaria ? (
-                      <span className="ml-2 rounded-full bg-magenta/10 px-2 py-0.5 text-[10px] text-magenta">
-                        COMUNITARIA
-                      </span>
-                    ) : null}
-                  </p>
-                </div>
-                <div className="shrink-0 text-xs text-zinc-500 sm:text-right">
-                  <p>{MUNICIPIO_POR_CVE[p.cveMun]?.nombre ?? p.cveMun}</p>
-                  <p>{p.fechaCaptura.slice(0, 10)}</p>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </Card>
-
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="h-[480px] overflow-hidden lg:col-span-2">
           <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
@@ -448,6 +405,49 @@ export default function DashboardPage() {
       <ZonasEnBlanco
         cvesActivos={new Set(filtradas.map((p) => p.cveMun))}
       />
+
+      <Card className="overflow-hidden">
+        <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
+          <div>
+            <p className="text-sm font-medium">Peticiones recientes</p>
+            <p className="text-xs text-zinc-500">Últimas capturadas</p>
+          </div>
+          <Link
+            href="/peticiones"
+            className="text-xs font-medium text-guinda hover:underline"
+          >
+            Ver todas
+          </Link>
+        </div>
+        <ul className="divide-y divide-zinc-100">
+          {recientes.map((p) => (
+            <li key={p.id}>
+              <Link
+                href="/peticiones"
+                className="flex flex-col gap-1 px-4 py-3 hover:bg-zinc-50 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="min-w-0">
+                  <p className="font-mono text-xs text-guinda">{p.folio}</p>
+                  <p className="truncate text-sm text-zinc-800">
+                    {p.ciudadano.nombre}
+                    <span className="text-zinc-400"> · </span>
+                    {CATEGORIA_POR_ID[p.categoriaId]?.nombre}
+                    {p.comunitaria ? (
+                      <span className="ml-2 rounded-full bg-magenta/10 px-2 py-0.5 text-[10px] text-magenta">
+                        COMUNITARIA
+                      </span>
+                    ) : null}
+                  </p>
+                </div>
+                <div className="shrink-0 text-xs text-zinc-500 sm:text-right">
+                  <p>{MUNICIPIO_POR_CVE[p.cveMun]?.nombre ?? p.cveMun}</p>
+                  <p>{p.fechaCaptura.slice(0, 10)}</p>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Card>
     </div>
   );
 }
