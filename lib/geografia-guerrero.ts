@@ -1,0 +1,113 @@
+export type RegionGuerrero =
+  | "Acapulco"
+  | "Costa Grande"
+  | "Costa Chica"
+  | "Centro"
+  | "Norte"
+  | "Montaña"
+  | "Tierra Caliente";
+
+export const ORDEN_REGIONES: RegionGuerrero[] = [
+  "Acapulco",
+  "Costa Grande",
+  "Costa Chica",
+  "Centro",
+  "Norte",
+  "Montaña",
+  "Tierra Caliente",
+];
+
+export type MunicipioGeo = {
+  cveMun: string;
+  nombre: string;
+  corto: string;
+  region: RegionGuerrero;
+};
+
+export const MUNICIPIOS_GUERRERO: MunicipioGeo[] = [
+  { cveMun: "001", nombre: "Acapulco de Juárez", corto: "Acapulco", region: "Acapulco" },
+  { cveMun: "039", nombre: "Juan R. Escudero", corto: "Juan R. Escudero", region: "Acapulco" },
+  { cveMun: "011", nombre: "Atoyac de Álvarez", corto: "Atoyac", region: "Costa Grande" },
+  { cveMun: "014", nombre: "Benito Juárez", corto: "Benito Juárez", region: "Costa Grande" },
+  { cveMun: "016", nombre: "Coahuayutla de José María Izazaga", corto: "Coahuayutla", region: "Costa Grande" },
+  { cveMun: "021", nombre: "Coyuca de Benítez", corto: "Coyuca de Benítez", region: "Costa Grande" },
+  { cveMun: "048", nombre: "Petatlán", corto: "Petatlán", region: "Costa Grande" },
+  { cveMun: "057", nombre: "Técpan de Galeana", corto: "Técpan", region: "Costa Grande" },
+  { cveMun: "038", nombre: "Zihuatanejo de Azueta", corto: "Zihuatanejo", region: "Costa Grande" },
+  { cveMun: "068", nombre: "La Unión de Isidoro Montes de Oca", corto: "La Unión", region: "Costa Grande" },
+  { cveMun: "012", nombre: "Ayutla de los Libres", corto: "Ayutla", region: "Costa Chica" },
+  { cveMun: "013", nombre: "Azoyú", corto: "Azoyú", region: "Costa Chica" },
+  { cveMun: "018", nombre: "Copala", corto: "Copala", region: "Costa Chica" },
+  { cveMun: "023", nombre: "Cuajinicuilapa", corto: "Cuajinicuilapa", region: "Costa Chica" },
+  { cveMun: "025", nombre: "Cuautepec", corto: "Cuautepec", region: "Costa Chica" },
+  { cveMun: "030", nombre: "Florencio Villarreal", corto: "Florencio Villarreal", region: "Costa Chica" },
+  { cveMun: "036", nombre: "Igualapa", corto: "Igualapa", region: "Costa Chica" },
+  { cveMun: "046", nombre: "Ometepec", corto: "Ometepec", region: "Costa Chica" },
+  { cveMun: "052", nombre: "San Luis Acatlán", corto: "San Luis Acatlán", region: "Costa Chica" },
+  { cveMun: "053", nombre: "San Marcos", corto: "San Marcos", region: "Costa Chica" },
+  { cveMun: "056", nombre: "Tecoanapa", corto: "Tecoanapa", region: "Costa Chica" },
+  { cveMun: "062", nombre: "Tlacoachistlahuaca", corto: "Tlacoachistlahuaca", region: "Costa Chica" },
+  { cveMun: "071", nombre: "Xochistlahuaca", corto: "Xochistlahuaca", region: "Costa Chica" },
+  { cveMun: "077", nombre: "Marquelia", corto: "Marquelia", region: "Costa Chica" },
+  { cveMun: "080", nombre: "Juchitán", corto: "Juchitán", region: "Costa Chica" },
+  { cveMun: "082", nombre: "Las Vigas", corto: "Las Vigas", region: "Costa Chica" },
+  { cveMun: "085", nombre: "San Nicolás", corto: "San Nicolás", region: "Costa Chica" },
+  { cveMun: "002", nombre: "Ahuacuotzingo", corto: "Ahuacuotzingo", region: "Centro" },
+  { cveMun: "008", nombre: "Atenango del Río", corto: "Atenango", region: "Centro" },
+  { cveMun: "019", nombre: "Copalillo", corto: "Copalillo", region: "Centro" },
+  { cveMun: "028", nombre: "Chilapa de Álvarez", corto: "Chilapa", region: "Centro" },
+  { cveMun: "029", nombre: "Chilpancingo de los Bravo", corto: "Chilpancingo", region: "Centro" },
+  { cveMun: "032", nombre: "General Heliodoro Castillo", corto: "Heliodoro Castillo", region: "Centro" },
+  { cveMun: "040", nombre: "Leonardo Bravo", corto: "Leonardo Bravo", region: "Centro" },
+  { cveMun: "042", nombre: "Mártir de Cuilapan", corto: "Mártir de Cuilapan", region: "Centro" },
+  { cveMun: "044", nombre: "Mochitlán", corto: "Mochitlán", region: "Centro" },
+  { cveMun: "051", nombre: "Quechultenango", corto: "Quechultenango", region: "Centro" },
+  { cveMun: "061", nombre: "Tixtla de Guerrero", corto: "Tixtla", region: "Centro" },
+  { cveMun: "074", nombre: "Zitlala", corto: "Zitlala", region: "Centro" },
+  { cveMun: "075", nombre: "Eduardo Neri", corto: "Eduardo Neri", region: "Centro" },
+  { cveMun: "079", nombre: "José Joaquín de Herrera", corto: "J. J. de Herrera", region: "Centro" },
+  { cveMun: "006", nombre: "Apaxtla de Castrejón", corto: "Apaxtla", region: "Norte" },
+  { cveMun: "015", nombre: "Buenavista de Cuéllar", corto: "Buenavista", region: "Norte" },
+  { cveMun: "017", nombre: "Cocula", corto: "Cocula", region: "Norte" },
+  { cveMun: "026", nombre: "Cuetzala del Progreso", corto: "Cuetzala", region: "Norte" },
+  { cveMun: "031", nombre: "General Canuto A. Neri", corto: "Canuto Neri", region: "Norte" },
+  { cveMun: "034", nombre: "Huitzuco de los Figueroa", corto: "Huitzuco", region: "Norte" },
+  { cveMun: "035", nombre: "Iguala de la Independencia", corto: "Iguala", region: "Norte" },
+  { cveMun: "037", nombre: "Ixcateopan de Cuauhtémoc", corto: "Ixcateopan", region: "Norte" },
+  { cveMun: "047", nombre: "Pedro Ascencio Alquisiras", corto: "Pedro Ascencio", region: "Norte" },
+  { cveMun: "049", nombre: "Pilcaya", corto: "Pilcaya", region: "Norte" },
+  { cveMun: "055", nombre: "Taxco de Alarcón", corto: "Taxco", region: "Norte" },
+  { cveMun: "058", nombre: "Teloloapan", corto: "Teloloapan", region: "Norte" },
+  { cveMun: "059", nombre: "Tepecoacuilco de Trujano", corto: "Tepecoacuilco", region: "Norte" },
+  { cveMun: "060", nombre: "Tetipac", corto: "Tetipac", region: "Norte" },
+  { cveMun: "003", nombre: "Ajuchitlán del Progreso", corto: "Ajuchitlán", region: "Tierra Caliente" },
+  { cveMun: "007", nombre: "Arcelia", corto: "Arcelia", region: "Tierra Caliente" },
+  { cveMun: "022", nombre: "Coyuca de Catalán", corto: "Coyuca de Catalán", region: "Tierra Caliente" },
+  { cveMun: "027", nombre: "Cutzamala de Pinzón", corto: "Cutzamala", region: "Tierra Caliente" },
+  { cveMun: "050", nombre: "Pungarabato", corto: "Pungarabato", region: "Tierra Caliente" },
+  { cveMun: "054", nombre: "San Miguel Totolapan", corto: "S. M. Totolapan", region: "Tierra Caliente" },
+  { cveMun: "064", nombre: "Tlalchapa", corto: "Tlalchapa", region: "Tierra Caliente" },
+  { cveMun: "067", nombre: "Tlapehuala", corto: "Tlapehuala", region: "Tierra Caliente" },
+  { cveMun: "073", nombre: "Zirándaro", corto: "Zirándaro", region: "Tierra Caliente" },
+  { cveMun: "004", nombre: "Alcozauca de Guerrero", corto: "Alcozauca", region: "Montaña" },
+  { cveMun: "005", nombre: "Alpoyeca", corto: "Alpoyeca", region: "Montaña" },
+  { cveMun: "009", nombre: "Atlamajalcingo del Monte", corto: "Atlamajalcingo", region: "Montaña" },
+  { cveMun: "010", nombre: "Atlixtac", corto: "Atlixtac", region: "Montaña" },
+  { cveMun: "020", nombre: "Copanatoyac", corto: "Copanatoyac", region: "Montaña" },
+  { cveMun: "024", nombre: "Cualác", corto: "Cualác", region: "Montaña" },
+  { cveMun: "033", nombre: "Huamuxtitlán", corto: "Huamuxtitlán", region: "Montaña" },
+  { cveMun: "041", nombre: "Malinaltepec", corto: "Malinaltepec", region: "Montaña" },
+  { cveMun: "043", nombre: "Metlatónoc", corto: "Metlatónoc", region: "Montaña" },
+  { cveMun: "045", nombre: "Olinalá", corto: "Olinalá", region: "Montaña" },
+  { cveMun: "063", nombre: "Tlacoapa", corto: "Tlacoapa", region: "Montaña" },
+  { cveMun: "065", nombre: "Tlalixtaquilla de Maldonado", corto: "Tlalixtaquilla", region: "Montaña" },
+  { cveMun: "066", nombre: "Tlapa de Comonfort", corto: "Tlapa", region: "Montaña" },
+  { cveMun: "069", nombre: "Xalpatláhuac", corto: "Xalpatláhuac", region: "Montaña" },
+  { cveMun: "070", nombre: "Xochihuehuetlán", corto: "Xochihuehuetlán", region: "Montaña" },
+  { cveMun: "072", nombre: "Zapotitlán Tablas", corto: "Zapotitlán Tablas", region: "Montaña" },
+  { cveMun: "076", nombre: "Acatepec", corto: "Acatepec", region: "Montaña" },
+  { cveMun: "078", nombre: "Cochoapa el Grande", corto: "Cochoapa el Grande", region: "Montaña" },
+  { cveMun: "081", nombre: "Iliatenco", corto: "Iliatenco", region: "Montaña" },
+  { cveMun: "083", nombre: "Ñuu Savi", corto: "Ñuu Savi", region: "Montaña" },
+  { cveMun: "084", nombre: "Santa Cruz del Rincón", corto: "Santa Cruz del Rincón", region: "Montaña" },
+];
