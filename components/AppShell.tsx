@@ -30,6 +30,30 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
   "/auditoria": Shield,
 };
 
+function LogoMarca({ compact = false }: { compact?: boolean }) {
+  if (compact) {
+    return (
+      <Image
+        src="/brand/foto-perfil.png"
+        alt="Beatriz Mojica"
+        width={36}
+        height={36}
+        className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-white/25"
+      />
+    );
+  }
+  return (
+    <div className="relative aspect-square w-full max-w-[104px]">
+      <Image
+        src="/brand/logo-wordmark.png"
+        alt="Beatriz Mojica"
+        fill
+        className="object-contain"
+      />
+    </div>
+  );
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const { rol, ready, logout } = useSession();
   const pathname = usePathname();
@@ -60,45 +84,45 @@ export function AppShell({ children }: { children: ReactNode }) {
   const esCandidata = rol === "candidata";
 
   return (
-    <div className="flex min-h-screen bg-zinc-50">
+    <div className="min-h-screen bg-hueso">
       {mobileOpen ? (
         <button
           type="button"
-          className="fixed inset-0 z-30 bg-black/40 md:hidden"
+          className="fixed inset-0 z-30 bg-tinta/50 md:hidden"
           aria-label="Cerrar menú"
           onClick={() => setMobileOpen(false)}
         />
       ) : null}
+
+      {/* Sidebar: fijo respecto al viewport, no viaja con el scroll de la página. */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex flex-col bg-guinda text-white transition-all md:static ${
-          collapsed ? "w-[72px]" : "w-60"
+        className={`fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden rounded-r-[1.75rem] bg-gradient-to-b from-guinda to-[#4d0c22] text-white shadow-[12px_0_36px_-20px_rgba(28,10,18,0.55)] transition-[width] duration-200 ${
+          collapsed ? "w-[72px]" : "w-64"
         } ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
-        <div className="flex h-16 items-center justify-center border-b border-white/10 px-3">
-          {esCandidata ? (
-            <Image
-              src="/brand/logo-wordmark.png"
-              alt="BE4TRIZ MOJICA"
-              width={collapsed ? 48 : 140}
-              height={collapsed ? 48 : 140}
-              className={
-                collapsed
-                  ? "h-10 w-10 object-contain"
-                  : "h-12 w-auto max-w-full object-contain"
-              }
-            />
-          ) : collapsed ? (
-            <span className="text-sm font-semibold tracking-widest">CS</span>
-          ) : (
-            <div className="w-full">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-white/70">
-                Peticiones ciudadanas
-              </p>
-              <p className="text-sm font-semibold">Fase campaña</p>
-            </div>
-          )}
+        <div
+          className={`flex h-28 shrink-0 items-center justify-center border-b border-white/10 ${collapsed ? "px-2" : "px-5 py-4"}`}
+        >
+          <LogoMarca compact={collapsed} />
         </div>
-        <nav className="flex-1 space-y-1 p-2">
+        {esCandidata && !collapsed ? (
+          <div className="mx-3 mt-3 flex shrink-0 items-center gap-2.5 rounded-2xl bg-white/10 px-3 py-2.5">
+            <Image
+              src="/brand/foto-perfil.png"
+              alt="Beatriz Mojica"
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-full object-cover ring-2 ring-white/25"
+            />
+            <div className="min-w-0">
+              <p className="truncate text-xs font-semibold text-white">
+                Beatriz Mojica
+              </p>
+              <p className="text-[10px] text-white/60">Fase campaña</p>
+            </div>
+          </div>
+        ) : null}
+        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
           {items.map((item) => {
             const Icon = ICONS[item.href] ?? ClipboardList;
             const active =
@@ -108,10 +132,10 @@ export function AppShell({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm ${
+                className={`flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm transition-colors ${
                   active
-                    ? "bg-white/15 ring-1 ring-magenta"
-                    : "text-white/80 hover:bg-white/10"
+                    ? "bg-white text-guinda shadow-[0_8px_20px_-10px_rgba(0,0,0,0.5)]"
+                    : "text-white/75 hover:bg-white/10 hover:text-white"
                 }`}
               >
                 <Icon size={18} />
@@ -120,62 +144,66 @@ export function AppShell({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
-        <button
-          type="button"
-          className="hidden items-center gap-2 border-t border-white/10 px-4 py-3 text-xs text-white/70 hover:bg-white/10 md:flex"
-          onClick={() => setCollapsed((v) => !v)}
-        >
-          <PanelLeftClose size={16} />
-          {collapsed ? null : "Colapsar"}
-        </button>
+
+        {/* Pie fijo del sidebar: colapsar y cerrar sesión siempre visibles, no hacen scroll con el nav. */}
+        <div className="shrink-0 border-t border-white/10">
+          <button
+            type="button"
+            onClick={() => {
+              logout();
+              router.replace("/login");
+            }}
+            className={`flex w-full items-center gap-3 px-3 py-3 text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white ${collapsed ? "justify-center" : ""}`}
+          >
+            <LogOut size={18} />
+            {collapsed ? null : <span>Cerrar sesión</span>}
+          </button>
+          <button
+            type="button"
+            className={`hidden w-full items-center gap-2 border-t border-white/10 px-5 py-3 text-xs text-white/50 hover:text-white md:flex ${collapsed ? "justify-center px-3" : ""}`}
+            onClick={() => setCollapsed((v) => !v)}
+          >
+            <PanelLeftClose size={16} />
+            {collapsed ? null : "Colapsar"}
+          </button>
+        </div>
       </aside>
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-16 items-center justify-between border-b border-zinc-200 bg-white px-4">
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              className="rounded-md p-2 text-guinda md:hidden"
-              onClick={() => setMobileOpen(true)}
-            >
-              <Menu size={20} />
-            </button>
-            {esCandidata ? (
-              <div className="flex items-center gap-3">
-                <Image
-                  src="/brand/foto-perfil.png"
-                  alt="Beatriz Mojica"
-                  width={36}
-                  height={36}
-                  className="h-9 w-9 rounded-full object-cover ring-2 ring-guinda/20"
-                />
-                <div>
-                  <p className="text-sm font-semibold text-zinc-900">
-                    Beatriz Mojica
-                  </p>
-                  <p className="text-xs text-zinc-500">{ROL_LABEL[rol]}</p>
-                </div>
-              </div>
-            ) : (
+
+      {/* Columna de contenido: el margen izquierdo reserva el espacio fijo del sidebar. */}
+      <div
+        className={`flex min-h-screen flex-col transition-[margin] duration-200 ${collapsed ? "md:ml-[72px]" : "md:ml-64"}`}
+      >
+        <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-3 border-b border-zinc-200 bg-white px-4 shadow-[0_1px_0_rgba(28,10,18,0.04)] md:px-6">
+          <button
+            type="button"
+            className="rounded-full p-2 text-guinda md:hidden"
+            onClick={() => setMobileOpen(true)}
+          >
+            <Menu size={20} />
+          </button>
+          {esCandidata ? (
+            <div className="flex items-center gap-3">
+              <Image
+                src="/brand/foto-perfil.png"
+                alt="Beatriz Mojica"
+                width={36}
+                height={36}
+                className="h-9 w-9 rounded-full object-cover ring-2 ring-guinda/20"
+              />
               <div>
                 <p className="text-sm font-semibold text-zinc-900">
-                  {ROL_LABEL[rol]}
+                  Beatriz Mojica
                 </p>
+                <p className="text-xs text-zinc-500">{ROL_LABEL[rol]}</p>
               </div>
-            )}
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => {
-                logout();
-                router.replace("/login");
-              }}
-              className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-guinda"
-            >
-              <LogOut size={14} />
-              Salir
-            </button>
-          </div>
+            </div>
+          ) : (
+            <div>
+              <p className="text-sm font-semibold text-zinc-900">
+                {ROL_LABEL[rol]}
+              </p>
+            </div>
+          )}
         </header>
         <main className="flex-1 p-4 md:p-6">{children}</main>
       </div>

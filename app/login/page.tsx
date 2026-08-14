@@ -45,14 +45,14 @@ export default function LoginPage() {
           <p className="text-sm uppercase tracking-[0.25em] text-white/70">
             Guerrero
           </p>
-          <p className="mt-2 max-w-md text-3xl font-semibold leading-tight">
-            Sistema de gestión de peticiones ciudadanas
+          <p className="mt-2 max-w-md text-3xl font-semibold leading-tight tracking-tight">
+            El pulso de la campaña, municipio por municipio
           </p>
         </div>
       </div>
-      <div className="flex flex-col justify-center bg-zinc-50 px-6 py-12">
+      <div className="flex flex-col justify-center bg-hueso px-6 py-12">
         <div className="mx-auto w-full max-w-md">
-          <div className="mb-8 rounded-lg bg-guinda px-10 py-10 text-center">
+          <div className="mb-8 rounded-[1.75rem] bg-gradient-to-br from-guinda to-[#4d0c22] px-10 py-10 text-center shadow-[0_20px_40px_-20px_rgba(122,18,51,0.5)]">
             <Image
               src="/brand/foto-perfil.png"
               alt="Beatriz Mojica"
@@ -69,6 +69,9 @@ export default function LoginPage() {
               className="mx-auto w-full max-w-[220px] object-contain"
               priority
             />
+            <p className="mt-4 text-[11px] uppercase tracking-[0.3em] text-white/60">
+              Pulso · temperatura ciudadana
+            </p>
           </div>
           <form onSubmit={entrar} className="space-y-4">
             <Field label="Usuario">

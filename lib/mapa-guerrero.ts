@@ -1,0 +1,109 @@
+import { geoBounds, geoContains, geoMercator, geoPath } from "d3-geo";
+import { scaleLinear } from "d3-scale";
+import { feature } from "topojson-client";
+import type { Topology } from "topojson-specification";
+
+export const GEO_URL =
+  "https://gist.githubusercontent.com/diegovalle/5129746/raw/mx_tj.json";
+
+const GUERRERO_STATE_CODE = 12;
+
+export type MunicipioFeature = GeoJSON.Feature<
+  GeoJSON.Geometry,
+  { state_code: number; mun_code: number; mun_name: string; cveMun: string }
+>;
+
+let cache: Promise<MunicipioFeature[]> | null = null;
+
+/** Descarga y filtra la geometría de los 81 municipios de Guerrero (INEGI, vía topojson). */
+export function cargarMunicipiosGuerrero(): Promise<MunicipioFeature[]> {
+  if (cache) return cache;
+  cache = fetch(GEO_URL)
+    .then((r) => {
+      if (!r.ok) throw new Error(`geo ${r.status}`);
+      return r.json() as Promise<Topology>;
+    })
+    .then((topo) => {
+      const all = feature(
+        topo,
+        topo.objects.municipalities,
+      ) as unknown as GeoJSON.FeatureCollection<
+        GeoJSON.Geometry,
+        { state_code: number; mun_code: number; mun_name: string }
+      >;
+      return all.features
+        .filter((f) => +f.properties.state_code === GUERRERO_STATE_CODE)
+        .map((f) => ({
+          ...f,
+          properties: {
+            ...f.properties,
+            cveMun: String(f.properties.mun_code).padStart(3, "0"),
+          },
+        })) as MunicipioFeature[];
+    });
+  return cache;
+}
+
+export const ANCHO_MAPA = 980;
+export const ALTO_MAPA = 560;
+
+export function construirProyeccion(features: MunicipioFeature[]) {
+  const fc: GeoJSON.FeatureCollection = {
+    type: "FeatureCollection",
+    features,
+  };
+  const proyeccion = geoMercator().fitExtent(
+    [
+      [10, 10],
+      [ANCHO_MAPA - 10, ALTO_MAPA - 10],
+    ],
+    fc,
+  );
+  return { proyeccion, path: geoPath(proyeccion) };
+}
+
+/** Escala de temperatura frío → muy caliente, igual al ITC del dashboard. */
+export const escalaTemperatura = scaleLinear<string>()
+  .domain([0, 30, 55, 78, 100])
+  .range(["#4d6fa3", "#d9b13b", "#d97b2e", "#c0392b", "#8f1d12"])
+  .clamp(true);
+
+export const COLOR_SIN_DATOS = "#dcd9d9";
+
+/** RNG determinista (mulberry32) para que los puntos no salten entre renders. */
+export function mulberry32(a: number) {
+  return function () {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Un punto por elemento, por muestreo de rechazo dentro del polígono del municipio. */
+export function muestrearPuntos<T>(
+  items: { cveMun: string; item: T }[],
+  byMun: Map<string, MunicipioFeature>,
+  proyeccion: (coords: [number, number]) => [number, number] | null,
+  semilla = 7,
+  maxItems = 460,
+) {
+  const rnd = mulberry32(semilla);
+  const puntos: { x: number; y: number; item: T }[] = [];
+  for (const { cveMun, item } of items.slice(0, maxItems)) {
+    const f = byMun.get(cveMun);
+    if (!f) continue;
+    const [[x0, y0], [x1, y1]] = geoBounds(f);
+    for (let k = 0; k < 25; k++) {
+      const lon = x0 + rnd() * (x1 - x0);
+      const lat = y0 + rnd() * (y1 - y0);
+      if (geoContains(f, [lon, lat])) {
+        const p = proyeccion([lon, lat]);
+        if (p) puntos.push({ x: p[0], y: p[1], item });
+        break;
+      }
+    }
+  }
+  return puntos;
+}

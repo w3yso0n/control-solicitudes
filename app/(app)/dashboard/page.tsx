@@ -4,26 +4,20 @@ import GuerreroMapLoader from "@/components/map/GuerreroMapLoader";
 import { ZonasEnBlanco } from "@/components/dashboard/ZonasEnBlanco";
 import { Card } from "@/components/ui";
 import {
-  CATEGORIA_POR_ID,
   CATEGORIAS,
-  COLONIAS_ACAPULCO,
   MUNICIPIO_POR_CVE,
   MUNICIPIOS_FOCO,
 } from "@/lib/catalogos";
 import {
-  calcularItcPorColonia,
   calcularItcPorMunicipio,
   filtrarPorPeriodo,
   itcFill,
-  itcLabel,
 } from "@/lib/itc";
-import { useSession } from "@/lib/session";
 import { useStore } from "@/lib/store";
 import type { PeriodoFiltro } from "@/lib/types";
 import Image from "next/image";
-import Link from "next/link";
-import { Clock3, FileText, Inbox, MapPin, Users } from "lucide-react";
-import { useMemo, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 
 const PERIODOS: { id: PeriodoFiltro; label: string }[] = [
   { id: "7", label: "7 días" },
@@ -55,64 +49,45 @@ function degradadoCategoria(rank: number, total: number) {
   return "linear-gradient(90deg, #fdba74 0%, #93c5fd 100%)";
 }
 
-function IconoWhatsApp({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden>
-      <path
-        fill="currentColor"
-        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"
-      />
-    </svg>
-  );
-}
-
 function KpiCard({
   label,
   value,
   hint,
-  icon,
   tone = "default",
 }: {
   label: string;
   value: string;
   hint?: string;
-  icon: ReactNode;
   tone?: "default" | "whatsapp" | "warn" | "ok" | "magenta";
 }) {
-  const wrap = {
-    default: "bg-zinc-100 text-zinc-600",
-    whatsapp: "bg-[#25D366] text-white",
-    warn: "bg-amber-100 text-amber-700",
-    ok: "bg-emerald-100 text-emerald-700",
-    magenta: "bg-magenta/10 text-magenta",
-  }[tone];
   const valueColor = {
     default: "text-zinc-900",
     whatsapp: "text-[#128C7E]",
-    warn: "text-amber-700",
+    warn: "text-[#a05a10]",
     ok: "text-emerald-700",
     magenta: "text-magenta",
   }[tone];
 
   return (
-    <Card className={`p-4 ${tone === "whatsapp" ? "ring-1 ring-[#25D366]/30" : ""}`}>
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-xs text-zinc-500">{label}</p>
-        <span className={`flex h-8 w-8 items-center justify-center rounded-full ${wrap}`}>
-          {icon}
-        </span>
-      </div>
-      <p className={`mt-2 text-2xl font-semibold tabular-nums ${valueColor}`}>
+    <div className="min-w-0 px-3.5 py-3 first:pl-4 last:pr-4 sm:px-4">
+      <p className="truncate text-[10px] font-semibold uppercase tracking-wide text-zinc-500">
+        {label}
+      </p>
+      <p
+        className={`mt-1 truncate text-[1.65rem] font-semibold tabular-nums tracking-tight ${valueColor}`}
+      >
         {value}
       </p>
-      {hint ? <p className="mt-1 text-[11px] text-zinc-500">{hint}</p> : null}
-    </Card>
+      {hint ? (
+        <p className="mt-1 truncate text-[11px] text-zinc-400">{hint}</p>
+      ) : null}
+    </div>
   );
 }
 
 export default function DashboardPage() {
-  const { rol } = useSession();
   const { peticiones, lotes } = useStore();
+  const router = useRouter();
   const [periodo, setPeriodo] = useState<PeriodoFiltro>("30");
 
   const filtradas = useMemo(
@@ -127,15 +102,6 @@ export default function DashboardPage() {
     ]);
     return calcularItcPorMunicipio(filtradas, [...claves]);
   }, [filtradas]);
-
-  const coloniaScores = useMemo(
-    () =>
-      calcularItcPorColonia(
-        filtradas,
-        COLONIAS_ACAPULCO.map((c) => c.id),
-      ),
-    [filtradas],
-  );
 
   const backlog = lotes
     .filter((l) => l.estatus === "cerrado")
@@ -189,104 +155,97 @@ export default function DashboardPage() {
     .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
     .slice(0, 6);
 
-  const recientes = useMemo(
-    () =>
-      [...peticiones]
-        .sort((a, b) => b.fechaCaptura.localeCompare(a.fechaCaptura))
-        .slice(0, 8),
-    [peticiones],
-  );
+  function verPeticionesDe(cveMun: string) {
+    router.push(`/peticiones?municipio=${cveMun}`);
+  }
 
   const kpis = [
     {
       label: "Peticiones en el periodo",
       value: String(filtradas.length),
       hint: "Capturadas y con folio",
-      icon: <FileText size={16} />,
       tone: "default" as const,
     },
     {
       label: "Backlog sin capturar",
       value: String(backlog),
       hint: backlog === 0 ? "Bandeja al día" : "Documentos en cola",
-      icon: <Inbox size={16} />,
       tone: backlog > 0 ? ("warn" as const) : ("ok" as const),
     },
     {
       label: "Tiempo a folio",
       value: tiempoFolio,
       hint: "Promedio entrega física → captura",
-      icon: <Clock3 size={16} />,
       tone: "default" as const,
     },
     {
       label: "WhatsApp entregados",
       value: `${waPct}%`,
       hint: `${waEntregados} de ${waEnviables} acuses`,
-      icon: <IconoWhatsApp className="h-4 w-4" />,
       tone: "whatsapp" as const,
     },
     {
-      label: "COMUNITARIA",
+      label: "Comunitarias",
       value: String(comunitarias),
       hint:
         filtradas.length > 0
           ? `${Math.round((comunitarias / filtradas.length) * 100)}% del periodo`
           : "Sin peticiones",
-      icon: <Users size={16} />,
       tone: "magenta" as const,
     },
     {
       label: "Zonas en blanco",
       value: String(zonasBlanco),
       hint: "Municipios sin peticiones",
-      icon: <MapPin size={16} />,
       tone: "default" as const,
     },
   ];
 
+  const totalPorTipo = useMemo(() => {
+    const conteo = new Map<string, number>();
+    for (const p of filtradas) {
+      conteo.set(p.tipo, (conteo.get(p.tipo) ?? 0) + 1);
+    }
+    return conteo;
+  }, [filtradas]);
+
+  const ETIQUETA_TIPO: Record<string, string> = {
+    peticion: "peticiones",
+    queja: "quejas",
+    propuesta: "propuestas",
+    requerimiento: "requerimientos",
+    reconocimiento: "reconocimientos",
+  };
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          {rol === "candidata" ? (
-            <div className="mb-2 flex items-center gap-3">
-              <Image
-                src="/brand/foto-perfil.png"
-                alt="Beatriz Mojica"
-                width={48}
-                height={48}
-                className="h-12 w-12 rounded-full object-cover ring-2 ring-guinda/20"
-              />
-              <div>
-                <p className="text-xs uppercase tracking-wide text-zinc-500">
-                  Dashboard ejecutivo
-                </p>
-                <h1 className="text-xl font-semibold text-zinc-900">
-                  Beatriz Mojica
-                </h1>
-              </div>
-            </div>
-          ) : (
-            <>
-              <p className="text-xs uppercase tracking-wide text-zinc-500">
-                Dashboard ejecutivo
-              </p>
-              <h1 className="text-xl font-semibold text-zinc-900">
-                Temperatura ciudadana
-              </h1>
-            </>
-          )}
+    <div className="space-y-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex items-center gap-3">
+          <Image
+            src="/brand/foto-perfil.png"
+            alt="Beatriz Mojica"
+            width={40}
+            height={40}
+            className="h-10 w-10 rounded-full object-cover ring-2 ring-guinda/20"
+          />
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-400">
+              Dashboard ejecutivo
+            </p>
+            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
+              Beatriz Mojica
+            </h1>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-1 rounded-lg bg-white p-1 ring-1 ring-zinc-200">
+        <div className="flex flex-wrap gap-1 rounded-full bg-white p-1 shadow-[0_1px_2px_rgba(28,10,18,0.04),0_10px_24px_-18px_rgba(28,10,18,0.4)]">
           {PERIODOS.map((p) => (
             <button
               key={p.id}
               type="button"
               onClick={() => setPeriodo(p.id)}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium ${
+              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                 periodo === p.id
-                  ? "bg-guinda text-white"
+                  ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(122,18,51,0.5)]"
                   : "text-zinc-600 hover:bg-zinc-100"
               }`}
             >
@@ -296,58 +255,110 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <Card className="grid grid-cols-2 divide-y divide-zinc-100 sm:grid-cols-3 sm:divide-y-0 sm:divide-x lg:grid-cols-6">
         {kpis.map((k) => (
           <KpiCard key={k.label} {...k} />
         ))}
-      </div>
+      </Card>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="h-[480px] overflow-hidden lg:col-span-2">
-          <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
+      <div className="grid gap-3 lg:grid-cols-3">
+        <Card className="overflow-hidden lg:col-span-2">
+          <div className="border-b border-zinc-100 px-4 py-2.5">
             <p className="text-sm font-medium">Índice de Temperatura Ciudadana</p>
             <p className="text-[11px] text-zinc-400">
-              Clic en Acapulco para ver colonias
+              Vol ·40 / Urg ·25 / Col ·20 / Div ·15 — clic en un municipio para
+              ver sus peticiones
             </p>
           </div>
-          <div className="h-[428px]">
-            <GuerreroMapLoader scores={scores} coloniaScores={coloniaScores} />
+          <div className="aspect-[980/620] w-full sm:aspect-[980/540]">
+            <GuerreroMapLoader
+              scores={scores}
+              peticiones={filtradas}
+              onMunicipioClick={(cveMun) => verPeticionesDe(cveMun)}
+            />
           </div>
         </Card>
-        <div className="space-y-4">
+
+        <div className="flex flex-col gap-3">
           <Card className="p-4">
-            <p className="mb-3 text-sm font-medium">Escala ITC</p>
-            <ul className="space-y-2 text-xs text-zinc-600">
-              {[
-                [null, "Sin dato / zona en blanco"],
-                [12, "0–25 frío"],
-                [38, "26–50 tibio"],
-                [63, "51–75 caliente"],
-                [88, "76–100 muy caliente"],
-              ].map(([score, label]) => (
-                <li key={String(label)} className="flex items-center gap-2">
-                  <span
-                    className="h-3 w-3 rounded-sm"
-                    style={{ background: itcFill(score as number | null) }}
-                  />
-                  {label as string}
-                </li>
-              ))}
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-guinda">
+              Capa temática
+            </p>
+            <p className="mt-0.5 text-sm font-semibold text-zinc-900">
+              Top categorías del periodo
+            </p>
+            <ul className="mt-3 space-y-2">
+              {distribucion.slice(0, 6).map((cat, i) => {
+                const max = Math.max(1, distribucion[0]?.count ?? 1);
+                const pct = (cat.count / max) * 100;
+                return (
+                  <li key={cat.id}>
+                    <div className="mb-0.5 flex items-baseline justify-between gap-3">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <span className="truncate text-sm font-medium text-zinc-800">
+                          {cat.nombre}
+                        </span>
+                        {cat.comun ? (
+                          <span className="shrink-0 rounded-full bg-gradient-to-r from-guinda to-magenta px-2 py-0.5 text-[10px] font-semibold tracking-wide text-white">
+                            COMUN.
+                          </span>
+                        ) : null}
+                      </div>
+                      <span className="tabular-nums text-sm font-semibold text-zinc-900">
+                        {cat.count}
+                      </span>
+                    </div>
+                    <div className="h-1.5 overflow-hidden rounded-full bg-zinc-100">
+                      <div
+                        className="h-full rounded-full transition-[width] duration-500"
+                        style={{
+                          width: `${pct}%`,
+                          background: degradadoCategoria(i, distribucion.length),
+                        }}
+                      />
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t border-zinc-100 pt-2.5 text-xs text-zinc-500">
+              {[...totalPorTipo.entries()].map(([tipo, count]) => (
+                <span key={tipo}>
+                  <strong className="text-zinc-800">{count}</strong>{" "}
+                  {ETIQUETA_TIPO[tipo] ?? tipo}
+                </span>
+              ))}
+            </div>
           </Card>
-          <Card className="p-4">
-            <p className="mb-3 text-sm font-medium">Top municipios</p>
-            <ul className="space-y-2">
-              {topMunicipios.map((s) => (
-                <li key={s.clave} className="flex items-center justify-between text-sm">
-                  <span className="text-zinc-700">
+
+          <Card className="overflow-hidden p-4">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-guinda">
+              Capa territorial
+            </p>
+            <p className="mt-0.5 text-sm font-semibold text-zinc-900">
+              Municipios más calientes
+            </p>
+            <ul className="mt-3 space-y-0.5">
+              {topMunicipios.map((s, i) => (
+                <li
+                  key={s.clave}
+                  onClick={() => verPeticionesDe(s.clave)}
+                  className="flex cursor-pointer items-center gap-3 rounded-lg px-1.5 py-1 text-sm transition-colors hover:bg-zinc-50"
+                >
+                  <span className="w-5 shrink-0 text-xs font-medium text-zinc-400">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-zinc-700">
                     {MUNICIPIO_POR_CVE[s.clave]?.nombre ?? s.clave}
                   </span>
+                  <span className="shrink-0 text-xs text-zinc-400">
+                    {s.peticiones} pet.
+                  </span>
                   <span
-                    className="rounded-full px-2 py-0.5 text-xs font-medium text-white"
+                    className="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium text-white"
                     style={{ background: itcFill(s.score) }}
                   >
-                    {s.score} · {itcLabel(s.score)}
+                    {s.score}
                   </span>
                 </li>
               ))}
@@ -356,98 +367,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid gap-4">
-        <Card className="p-5">
-          <p className="text-sm font-semibold text-zinc-900">
-            Distribución por categoría
-          </p>
-          <p className="mt-0.5 text-xs text-zinc-500">
-            Qué le duele a la gente en el periodo · las colectivas se marcan
-            aparte
-          </p>
-          <ul className="mt-5 space-y-2.5">
-            {distribucion.map((cat, i) => {
-              const max = Math.max(1, distribucion[0]?.count ?? 1);
-              const pct = (cat.count / max) * 100;
-              return (
-                <li key={cat.id}>
-                  <div className="mb-1 flex items-baseline justify-between gap-3">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <span className="truncate text-sm font-medium text-zinc-800">
-                        {cat.nombre}
-                      </span>
-                      {cat.comun ? (
-                        <span className="shrink-0 rounded-full bg-gradient-to-r from-guinda to-magenta px-2 py-0.5 text-[10px] font-semibold tracking-wide text-white">
-                          COMUN.
-                        </span>
-                      ) : null}
-                    </div>
-                    <span className="tabular-nums text-sm font-semibold text-zinc-900">
-                      {cat.count}
-                    </span>
-                  </div>
-                  <div className="h-2.5 overflow-hidden rounded-full bg-zinc-100">
-                    <div
-                      className="h-full rounded-full transition-[width] duration-500"
-                      style={{
-                        width: `${pct}%`,
-                        background: degradadoCategoria(i, distribucion.length),
-                      }}
-                    />
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </Card>
-      </div>
-
-      <ZonasEnBlanco
-        cvesActivos={new Set(filtradas.map((p) => p.cveMun))}
-      />
-
-      <Card className="overflow-hidden">
-        <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
-          <div>
-            <p className="text-sm font-medium">Peticiones recientes</p>
-            <p className="text-xs text-zinc-500">Últimas capturadas</p>
-          </div>
-          <Link
-            href="/peticiones"
-            className="text-xs font-medium text-guinda hover:underline"
-          >
-            Ver todas
-          </Link>
-        </div>
-        <ul className="divide-y divide-zinc-100">
-          {recientes.map((p) => (
-            <li key={p.id}>
-              <Link
-                href="/peticiones"
-                className="flex flex-col gap-1 px-4 py-3 hover:bg-zinc-50 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div className="min-w-0">
-                  <p className="font-mono text-xs text-guinda">{p.folio}</p>
-                  <p className="truncate text-sm text-zinc-800">
-                    {p.ciudadano.nombre}
-                    <span className="text-zinc-400"> · </span>
-                    {CATEGORIA_POR_ID[p.categoriaId]?.nombre}
-                    {p.comunitaria ? (
-                      <span className="ml-2 rounded-full bg-magenta/10 px-2 py-0.5 text-[10px] text-magenta">
-                        COMUNITARIA
-                      </span>
-                    ) : null}
-                  </p>
-                </div>
-                <div className="shrink-0 text-xs text-zinc-500 sm:text-right">
-                  <p>{MUNICIPIO_POR_CVE[p.cveMun]?.nombre ?? p.cveMun}</p>
-                  <p>{p.fechaCaptura.slice(0, 10)}</p>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </Card>
+      <ZonasEnBlanco cvesActivos={new Set(filtradas.map((p) => p.cveMun))} />
     </div>
   );
 }

@@ -1,12 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { ItcScore } from "@/lib/types";
+import type { ItcScore, Peticion } from "@/lib/types";
 
 const GuerreroMap = dynamic(() => import("./GuerreroMap"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+    <div className="flex h-full items-center justify-center text-xs uppercase tracking-[0.15em] text-zinc-400">
       Cargando mapa…
     </div>
   ),
@@ -14,7 +14,8 @@ const GuerreroMap = dynamic(() => import("./GuerreroMap"), {
 
 export default function GuerreroMapLoader(props: {
   scores: ItcScore[];
-  coloniaScores: ItcScore[];
+  peticiones: Peticion[];
+  onMunicipioClick?: (cveMun: string, nombre: string) => void;
 }) {
   return <GuerreroMap {...props} />;
 }
