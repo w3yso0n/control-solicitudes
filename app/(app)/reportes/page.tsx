@@ -142,7 +142,7 @@ export default function ReportesPage() {
             <p className="text-xs text-zinc-500">integridad, salud o vulnerabilidad</p>
           </div>
           <div>
-            <p className="text-xs text-zinc-500">COMUNITARIA</p>
+            <p className="text-xs text-zinc-500">Denuncias comunitarias</p>
             <p className="mt-1 text-3xl font-semibold">{comunitarias}</p>
             <p className="text-xs text-zinc-500">alcance colectivo</p>
           </div>

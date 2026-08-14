@@ -94,3 +94,19 @@ export function Card({
     </div>
   );
 }
+
+export function Ayuda({ texto }: { texto: string }) {
+  return (
+    <span className="group relative ml-1 inline-flex align-middle">
+      <span
+        className="flex h-4 w-4 cursor-help items-center justify-center rounded-full bg-zinc-200 text-[10px] font-bold text-zinc-600"
+        tabIndex={0}
+      >
+        ?
+      </span>
+      <span className="pointer-events-none absolute left-0 top-full z-50 mt-1.5 w-60 rounded-md bg-zinc-900 px-3 py-2 text-left text-[11px] font-normal leading-4 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+        {texto}
+      </span>
+    </span>
+  );
+}

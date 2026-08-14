@@ -152,9 +152,9 @@ export function itcFill(score: number | null): string {
 }
 
 export function itcLabel(score: number | null): string {
-  if (score == null) return "Sin peticiones en el periodo";
-  if (score <= 25) return "Frío";
-  if (score <= 50) return "Tibio";
-  if (score <= 75) return "Caliente";
-  return "Muy caliente";
+  if (score == null) return "Sin peticiones";
+  if (score <= 25) return "Poca presión";
+  if (score <= 50) return "Presión media";
+  if (score <= 75) return "Presión alta";
+  return "Presión muy alta";
 }

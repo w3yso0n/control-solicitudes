@@ -73,7 +73,7 @@ export function DetallePeticion({
           <div className="flex flex-wrap gap-2">
             {peticion.comunitaria ? (
               <span className="rounded-full bg-magenta/10 px-2 py-0.5 text-[10px] font-medium text-magenta">
-                COMUNITARIA
+                Denuncia comunitaria
               </span>
             ) : null}
             <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] capitalize text-zinc-600">

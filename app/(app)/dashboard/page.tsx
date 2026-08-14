@@ -2,7 +2,7 @@
 
 import GuerreroMapLoader from "@/components/map/GuerreroMapLoader";
 import { ZonasEnBlanco } from "@/components/dashboard/ZonasEnBlanco";
-import { Card } from "@/components/ui";
+import { Ayuda, Card } from "@/components/ui";
 import {
   CATEGORIA_POR_ID,
   CATEGORIAS,
@@ -25,11 +25,27 @@ import Link from "next/link";
 import { Clock3, FileText, Inbox, MapPin, Users } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
 
-const PERIODOS: { id: PeriodoFiltro; label: string }[] = [
-  { id: "7", label: "7 días" },
-  { id: "30", label: "30 días" },
-  { id: "90", label: "90 días" },
-  { id: "acumulado", label: "Acumulado" },
+const PERIODOS: { id: PeriodoFiltro; label: string; ayuda: string }[] = [
+  {
+    id: "7",
+    label: "Última semana",
+    ayuda: "Solo lo recibido en los últimos 7 días.",
+  },
+  {
+    id: "30",
+    label: "Último mes",
+    ayuda: "Los últimos 30 días. Es la vista normal del mapa.",
+  },
+  {
+    id: "90",
+    label: "Últimos 3 meses",
+    ayuda: "Para ver si un tema viene creciendo.",
+  },
+  {
+    id: "acumulado",
+    label: "Toda la campaña",
+    ayuda: "Todo lo capturado desde el inicio, sin recortar fechas.",
+  },
 ];
 
 const ETIQUETA_CATEGORIA: Record<string, string> = {
@@ -70,12 +86,14 @@ function KpiCard({
   label,
   value,
   hint,
+  ayuda,
   icon,
   tone = "default",
 }: {
   label: string;
   value: string;
   hint?: string;
+  ayuda: string;
   icon: ReactNode;
   tone?: "default" | "whatsapp" | "warn" | "ok" | "magenta";
 }) {
@@ -95,17 +113,20 @@ function KpiCard({
   }[tone];
 
   return (
-    <Card className={`p-4 ${tone === "whatsapp" ? "ring-1 ring-[#25D366]/30" : ""}`}>
+    <Card className={`overflow-visible p-4 ${tone === "whatsapp" ? "ring-1 ring-[#25D366]/30" : ""}`}>
       <div className="flex items-start justify-between gap-2">
-        <p className="text-xs text-zinc-500">{label}</p>
-        <span className={`flex h-8 w-8 items-center justify-center rounded-full ${wrap}`}>
+        <p className="text-xs leading-4 text-zinc-500">
+          {label}
+          <Ayuda texto={ayuda} />
+        </p>
+        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${wrap}`}>
           {icon}
         </span>
       </div>
       <p className={`mt-2 text-2xl font-semibold tabular-nums ${valueColor}`}>
         {value}
       </p>
-      {hint ? <p className="mt-1 text-[11px] text-zinc-500">{hint}</p> : null}
+      {hint ? <p className="mt-1 text-[11px] leading-4 text-zinc-500">{hint}</p> : null}
     </Card>
   );
 }
@@ -199,47 +220,62 @@ export default function DashboardPage() {
 
   const kpis = [
     {
-      label: "Peticiones en el periodo",
+      label: "Peticiones recibidas",
       value: String(filtradas.length),
-      hint: "Capturadas y con folio",
+      hint: "Cuántas se registraron en los días que elegiste arriba",
+      ayuda:
+        "Cada petición es un papel que un ciudadano entregó en una gira. Este número cuenta las que ya están capturadas en el sistema en el periodo seleccionado (7 días, 30, 90 o toda la campaña).",
       icon: <FileText size={16} />,
       tone: "default" as const,
     },
     {
-      label: "Backlog sin capturar",
+      label: "Papeles aún sin registrar",
       value: String(backlog),
-      hint: backlog === 0 ? "Bandeja al día" : "Documentos en cola",
+      hint:
+        backlog === 0
+          ? "No hay nada pendiente de capturar"
+          : "Ya se escanearon, falta capturarlos",
+      ayuda:
+        "Son fotos o escaneos que el equipo territorial ya subió, pero el equipo de captura todavía no ha llenado los datos ni generado folio.",
       icon: <Inbox size={16} />,
       tone: backlog > 0 ? ("warn" as const) : ("ok" as const),
     },
     {
-      label: "Tiempo a folio",
+      label: "Tiempo en dar folio",
       value: tiempoFolio,
-      hint: "Promedio entrega física → captura",
+      hint: "Desde que nos entregan el papel hasta que queda registrada",
+      ayuda:
+        "No es el tiempo de resolver el problema. Es cuánto tardamos nosotros en capturar la petición y ponerle folio, después de que la persona la entregó en la gira.",
       icon: <Clock3 size={16} />,
       tone: "default" as const,
     },
     {
-      label: "WhatsApp entregados",
+      label: "WhatsApp que sí llegaron",
       value: `${waPct}%`,
-      hint: `${waEntregados} de ${waEnviables} acuses`,
+      hint: `${waEntregados} de ${waEnviables} acuses de recibo`,
+      ayuda:
+        "Cuando capturamos una petición, se manda un WhatsApp de constancia (folio y datos). Aquí ves qué porcentaje de esos mensajes WhatsApp confirma que sí llegó al teléfono.",
       icon: <IconoWhatsApp className="h-4 w-4" />,
       tone: "whatsapp" as const,
     },
     {
-      label: "COMUNITARIA",
+      label: "Denuncias comunitarias",
       value: String(comunitarias),
       hint:
         filtradas.length > 0
-          ? `${Math.round((comunitarias / filtradas.length) * 100)}% del periodo`
-          : "Sin peticiones",
+          ? `${Math.round((comunitarias / filtradas.length) * 100)}% de las peticiones del periodo`
+          : "Aún no hay peticiones",
+      ayuda:
+        "No es una persona sola: la pidió un grupo, una colonia o varios firmantes. Pesan más porque representan a más gente.",
       icon: <Users size={16} />,
       tone: "magenta" as const,
     },
     {
-      label: "Zonas en blanco",
+      label: "Municipios sin peticiones",
       value: String(zonasBlanco),
-      hint: "Municipios sin peticiones",
+      hint: "Lugares de donde no nos han entregado ningún papel",
+      ayuda:
+        "Si un municipio aparece aquí, no significa que no tenga problemas. Significa que la campaña todavía no ha recibido peticiones de ahí: falta cobertura territorial.",
       icon: <MapPin size={16} />,
       tone: "default" as const,
     },
@@ -273,16 +309,17 @@ export default function DashboardPage() {
                 Dashboard ejecutivo
               </p>
               <h1 className="text-xl font-semibold text-zinc-900">
-                Temperatura ciudadana
+                Dónde está enojada la gente
               </h1>
             </>
           )}
         </div>
-        <div className="flex flex-wrap gap-1 rounded-lg bg-white p-1 ring-1 ring-zinc-200">
+        <div className="flex flex-wrap items-center gap-1 rounded-lg bg-white p-1 ring-1 ring-zinc-200">
           {PERIODOS.map((p) => (
             <button
               key={p.id}
               type="button"
+              title={p.ayuda}
               onClick={() => setPeriodo(p.id)}
               className={`rounded-md px-3 py-1.5 text-xs font-medium ${
                 periodo === p.id
@@ -293,10 +330,11 @@ export default function DashboardPage() {
               {p.label}
             </button>
           ))}
+          <Ayuda texto="Esto recorta el mapa, las gráficas y los números de arriba. Cambia el periodo y vas a ver que se mueven." />
         </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="grid gap-3 overflow-visible sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {kpis.map((k) => (
           <KpiCard key={k.label} {...k} />
         ))}
@@ -305,9 +343,12 @@ export default function DashboardPage() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="h-[480px] overflow-hidden lg:col-span-2">
           <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
-            <p className="text-sm font-medium">Índice de Temperatura Ciudadana</p>
+            <p className="text-sm font-medium">
+              Mapa de presión ciudadana
+              <Ayuda texto="No es el clima. El color dice en qué municipio la gente está pidiendo más (volumen, urgencia y si es de grupo). Rojo = hay que poner atención. Gris = no hemos recibido peticiones de ahí." />
+            </p>
             <p className="text-[11px] text-zinc-400">
-              Clic en Acapulco para ver colonias
+              Haz clic en Acapulco para ver colonias
             </p>
           </div>
           <div className="h-[428px]">
@@ -315,28 +356,57 @@ export default function DashboardPage() {
           </div>
         </Card>
         <div className="space-y-4">
-          <Card className="p-4">
-            <p className="mb-3 text-sm font-medium">Escala ITC</p>
+          <Card className="overflow-visible p-4">
+            <p className="mb-3 text-sm font-medium">
+              Qué significan los colores
+              <Ayuda texto="Azul: poca gente se ha quejado. Amarillo: ya hay tema. Naranja/rojo: mucha presión o denuncias de grupo. Gris: cero peticiones, no sabemos qué pasa ahí." />
+            </p>
             <ul className="space-y-2 text-xs text-zinc-600">
-              {[
-                [null, "Sin dato / zona en blanco"],
-                [12, "0–25 frío"],
-                [38, "26–50 tibio"],
-                [63, "51–75 caliente"],
-                [88, "76–100 muy caliente"],
-              ].map(([score, label]) => (
-                <li key={String(label)} className="flex items-center gap-2">
+              {(
+                [
+                  [
+                    null,
+                    "Sin peticiones",
+                    "No nos han entregado ningún papel de ese municipio. El mapa no puede medir presión.",
+                  ],
+                  [
+                    12,
+                    "Poca presión",
+                    "Hay pocas peticiones, o no son urgentes ni de un grupo grande.",
+                  ],
+                  [
+                    38,
+                    "Presión media",
+                    "Ya hay un tema claro, pero todavía no es el más caliente del estado.",
+                  ],
+                  [
+                    63,
+                    "Presión alta",
+                    "Varias personas, o un grupo, están pidiendo lo mismo. Conviene ir.",
+                  ],
+                  [
+                    88,
+                    "Presión muy alta",
+                    "Es de las zonas que más están gritando. Prioridad de gira.",
+                  ],
+                ] as const
+              ).map(([score, label, ayuda]) => (
+                <li key={label} className="flex items-center gap-2">
                   <span
-                    className="h-3 w-3 rounded-sm"
-                    style={{ background: itcFill(score as number | null) }}
+                    className="h-3 w-3 shrink-0 rounded-sm"
+                    style={{ background: itcFill(score) }}
                   />
-                  {label as string}
+                  <span>{label}</span>
+                  <Ayuda texto={ayuda} />
                 </li>
               ))}
             </ul>
           </Card>
-          <Card className="p-4">
-            <p className="mb-3 text-sm font-medium">Top municipios</p>
+          <Card className="overflow-visible p-4">
+            <p className="mb-3 text-sm font-medium">
+              Municipios que más están pidiendo
+              <Ayuda texto="Ordenados por presión ciudadana, no solo por cantidad. Una denuncia de 40 vecinos puede pesar más que muchas quejas sueltas." />
+            </p>
             <ul className="space-y-2">
               {topMunicipios.map((s) => (
                 <li key={s.clave} className="flex items-center justify-between text-sm">
@@ -359,11 +429,11 @@ export default function DashboardPage() {
       <div className="grid gap-4">
         <Card className="p-5">
           <p className="text-sm font-semibold text-zinc-900">
-            Distribución por categoría
+            De qué se está quejando la gente
+            <Ayuda texto="Las 12 canastas temáticas. La barra más larga es lo que más está saliendo en el periodo. Si ves la etiqueta de denuncia comunitaria, ese tema también lo pidió un grupo, no solo personas sueltas." />
           </p>
           <p className="mt-0.5 text-xs text-zinc-500">
-            Qué le duele a la gente en el periodo · las colectivas se marcan
-            aparte
+            Temas del periodo. Las denuncias de grupo se marcan aparte.
           </p>
           <ul className="mt-5 space-y-2.5">
             {distribucion.map((cat, i) => {
@@ -377,8 +447,11 @@ export default function DashboardPage() {
                         {cat.nombre}
                       </span>
                       {cat.comun ? (
-                        <span className="shrink-0 rounded-full bg-gradient-to-r from-guinda to-magenta px-2 py-0.5 text-[10px] font-semibold tracking-wide text-white">
-                          COMUN.
+                        <span
+                          className="shrink-0 rounded-full bg-gradient-to-r from-guinda to-magenta px-2 py-0.5 text-[10px] font-semibold tracking-wide text-white"
+                          title="La pidió un grupo o colonia, no una sola persona"
+                        >
+                          Denuncia comunitaria
                         </span>
                       ) : null}
                     </div>
@@ -409,8 +482,11 @@ export default function DashboardPage() {
       <Card className="overflow-hidden">
         <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
           <div>
-            <p className="text-sm font-medium">Peticiones recientes</p>
-            <p className="text-xs text-zinc-500">Últimas capturadas</p>
+            <p className="text-sm font-medium">
+              Peticiones recién capturadas
+              <Ayuda texto="Las últimas que el equipo ya registró en el sistema, con folio. Haz clic para ir al listado completo." />
+            </p>
+            <p className="text-xs text-zinc-500">Las más nuevas primero</p>
           </div>
           <Link
             href="/peticiones"
@@ -433,8 +509,11 @@ export default function DashboardPage() {
                     <span className="text-zinc-400"> · </span>
                     {CATEGORIA_POR_ID[p.categoriaId]?.nombre}
                     {p.comunitaria ? (
-                      <span className="ml-2 rounded-full bg-magenta/10 px-2 py-0.5 text-[10px] text-magenta">
-                        COMUNITARIA
+                      <span
+                        className="ml-2 rounded-full bg-magenta/10 px-2 py-0.5 text-[10px] text-magenta"
+                        title="La pidió un grupo o colonia, no una sola persona"
+                      >
+                        Denuncia comunitaria
                       </span>
                     ) : null}
                   </p>

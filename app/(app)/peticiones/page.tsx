@@ -94,7 +94,7 @@ export default function PeticionesPage() {
                       {CATEGORIA_POR_ID[p.categoriaId]?.nombre}
                       {p.comunitaria ? (
                         <span className="ml-2 rounded-full bg-magenta/10 px-2 py-0.5 text-[10px] text-magenta">
-                          COMUNITARIA
+                          Denuncia comunitaria
                         </span>
                       ) : null}
                     </td>

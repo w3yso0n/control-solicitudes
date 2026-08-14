@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui";
+import { Ayuda, Card } from "@/components/ui";
 import {
   MUNICIPIOS_GUERRERO,
   ORDEN_REGIONES,
@@ -38,21 +38,23 @@ export function ZonasEnBlanco({ cvesActivos }: { cvesActivos: Set<string> }) {
     .flatMap((r) => r.blancas.map((m) => ({ ...m, region: r.region })));
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-visible">
       <div className="border-b border-zinc-100 bg-gradient-to-r from-zinc-50 to-white px-5 py-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-900">Zonas en blanco</p>
+            <p className="text-sm font-semibold text-zinc-900">
+              Municipios de donde no nos ha llegado nada
+              <Ayuda texto="Si está en gris o en esta lista, no hemos recibido peticiones de ahí. No quiere decir que la gente esté bien: quiere decir que la campaña todavía no ha recogido papeles en ese lugar." />
+            </p>
             <p className="mt-0.5 max-w-xl text-xs text-zinc-500">
-              Municipios sin una sola petición en el periodo. El mapa de
-              temperatura no los calienta: no es que no haya problemas, es que
-              aún no hay cobertura.
+              El mapa no puede medir presión donde no hay peticiones. Ahí falta
+              ir, no interpretar el color.
             </p>
           </div>
           <div className="flex items-baseline gap-6">
             <div>
               <p className="text-[11px] uppercase tracking-wide text-zinc-400">
-                En blanco
+                Sin peticiones
               </p>
               <p className="text-3xl font-semibold tabular-nums text-zinc-900">
                 {enBlanco}
@@ -60,7 +62,7 @@ export function ZonasEnBlanco({ cvesActivos }: { cvesActivos: Set<string> }) {
             </div>
             <div>
               <p className="text-[11px] uppercase tracking-wide text-zinc-400">
-                Índice de cobertura
+                Dónde sí hemos recibido
               </p>
               <p className="text-3xl font-semibold tabular-nums text-guinda">
                 {cobertura}%
@@ -94,7 +96,7 @@ export function ZonasEnBlanco({ cvesActivos }: { cvesActivos: Set<string> }) {
                       : "bg-guinda/10 text-guinda"
                   }`}
                 >
-                  {vacia ? "Sin presencia" : `${r.activas}/${r.total}`}
+                  {vacia ? "Nadie ha pedido" : `${r.activas} de ${r.total}`}
                 </span>
               </div>
               <div className="mb-2 h-1.5 overflow-hidden rounded-full bg-zinc-100">
@@ -127,10 +129,11 @@ export function ZonasEnBlanco({ cvesActivos }: { cvesActivos: Set<string> }) {
       <div className="grid gap-4 border-t border-zinc-100 p-5 lg:grid-cols-2">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
-            Regiones sin presencia
+            Regiones donde no hemos recogido nada
           </p>
           <p className="mt-1 text-sm text-zinc-600">
-            Ahí el ITC no sirve: hay que abrir gira, no leer el mapa.
+            Ahí el mapa no dice nada útil: hay que ir, no interpretar el color
+            gris.
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             {sinPresencia.map((r) => (
@@ -146,11 +149,11 @@ export function ZonasEnBlanco({ cvesActivos }: { cvesActivos: Set<string> }) {
         </div>
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
-            Huecos junto a zona activa
+            Municipios faltantes junto a donde ya fuimos
           </p>
           <p className="mt-1 text-sm text-zinc-600">
-            Municipios en blanco pegados a regiones donde ya hay peticiones:
-            siguiente gira de menor costo.
+            Ya hay peticiones en esa región, pero estos municipios siguen en
+            ceros. Son la gira más fácil de completar.
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             {huecosJuntoActiva.slice(0, 10).map((m) => (

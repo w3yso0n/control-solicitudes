@@ -101,8 +101,8 @@ export default function GuerreroMap({
           layer.bindPopup(
             `<strong>${nombre}</strong><br/>${
               itc?.score == null
-                ? "Sin peticiones en el periodo"
-                : `ITC ${itc.score} · ${itcLabel(itc.score)}<br/>Peticiones: ${itc.peticiones}<br/>Volumen ${itc.componentes?.volumen} · Urgencia ${itc.componentes?.urgencia}<br/>Colectividad ${itc.componentes?.colectividad} · Diversidad ${itc.componentes?.diversidad}<br/>Temas: ${itc.topCategorias.map((t) => t.nombre).join(", ") || "—"}`
+                ? "Sin peticiones: no hemos recibido papeles de este municipio."
+                : `Presión ciudadana: ${itc.score} · ${itcLabel(itc.score)}<br/>Peticiones registradas: ${itc.peticiones}<br/>Temas: ${itc.topCategorias.map((t) => t.nombre).join(", ") || "—"}`
             }`,
           );
         }}
@@ -131,14 +131,14 @@ export default function GuerreroMap({
               {MUNICIPIO_POR_CVE["001"]?.nombre}
               <br />
               {score == null
-                ? "Sin peticiones en el periodo"
-                : `ITC ${score} · ${itcLabel(score)}`}
+                ? "Sin peticiones: no hemos recibido papeles de esta colonia."
+                : `Presión: ${score} · ${itcLabel(score)}`}
               <br />
-              Peticiones: {volumen}
+              Peticiones registradas: {volumen}
               {itc?.urgenciaPromedio ? (
                 <>
                   <br />
-                  Urgencia: {itc.urgenciaPromedio}
+                  Urgencia (alta / media / baja): {itc.urgenciaPromedio}
                 </>
               ) : null}
               {itc?.topCategorias[0] ? (
