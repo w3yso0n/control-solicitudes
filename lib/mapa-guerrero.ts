@@ -1,12 +1,20 @@
 import { geoBounds, geoContains, geoMercator, geoPath } from "d3-geo";
 import { scaleLinear } from "d3-scale";
 import { feature } from "topojson-client";
-import type { Topology } from "topojson-specification";
 
 export const GEO_URL =
   "https://gist.githubusercontent.com/diegovalle/5129746/raw/mx_tj.json";
 
 const GUERRERO_STATE_CODE = 12;
+
+/** Forma mínima del TopoJSON de municipios de México que consumimos (topojson-specification no se publica como paquete instalable). */
+type Topology = {
+  type: "Topology";
+  objects: Record<string, { type: "GeometryCollection"; geometries: unknown[] }>;
+  arcs: number[][][];
+  bbox?: number[];
+  transform?: { scale: [number, number]; translate: [number, number] };
+};
 
 export type MunicipioFeature = GeoJSON.Feature<
   GeoJSON.Geometry,
@@ -24,10 +32,9 @@ export function cargarMunicipiosGuerrero(): Promise<MunicipioFeature[]> {
       return r.json() as Promise<Topology>;
     })
     .then((topo) => {
-      const all = feature(
-        topo,
-        topo.objects.municipalities,
-      ) as unknown as GeoJSON.FeatureCollection<
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const t = topo as any;
+      const all = feature(t, t.objects.municipalities) as unknown as GeoJSON.FeatureCollection<
         GeoJSON.Geometry,
         { state_code: number; mun_code: number; mun_name: string }
       >;

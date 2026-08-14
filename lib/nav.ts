@@ -8,7 +8,7 @@ export type NavItem = {
 
 export const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", roles: ["candidata", "admin"] },
-  { href: "/territorio", label: "Territorio", roles: ["territorio", "admin"] },
+  { href: "/territorio", label: "Captura de lotes", roles: ["territorio", "admin"] },
   { href: "/cuantiva", label: "Bandeja", roles: ["cuantiva", "admin"] },
   {
     href: "/peticiones",
