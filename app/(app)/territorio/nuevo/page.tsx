@@ -103,7 +103,7 @@ export default function NuevoLotePage() {
               </div>
             ))}
           </div>
-        )}
+        ) : null}
         <div className="flex gap-2 pt-2">
           <Button type="button" onClick={() => guardar(true)}>
             Cerrar lote y enviar a Cuantiva
