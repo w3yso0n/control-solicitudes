@@ -1,7 +1,7 @@
 /* Generado por scripts/importar-excel.ts — no editar a mano. */
 import type { Peticion } from "../types";
 
-export const PETICIONES_EXCEL: Peticion[] = [
+const RAW: Omit<Peticion, "transcripcion">[] = [
   {
     "id": "pet-excel-001",
     "folio": "2026-0814-ACA-0001",
@@ -5709,3 +5709,8 @@ export const PETICIONES_EXCEL: Peticion[] = [
     "documentoUrl": ""
   }
 ];
+
+export const PETICIONES_EXCEL: Peticion[] = RAW.map((p) => ({
+  ...p,
+  transcripcion: p.descripcion,
+}));

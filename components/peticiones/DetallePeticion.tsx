@@ -211,8 +211,8 @@ export function DetallePeticion({
               </div>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
-    </div>
+    </Card>
   );
 }

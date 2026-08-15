@@ -837,6 +837,7 @@ function main() {
         domicilio: f.procedencia || undefined,
       },
       descripcion,
+      transcripcion: descripcion,
       categoriaId,
       subcategorias: subs,
       tipo: "peticion" as TipoPeticion,
@@ -871,7 +872,15 @@ function main() {
   const petTs =
     header +
     `import type { Peticion } from "../types";\n\n` +
-    `export const PETICIONES_EXCEL: Peticion[] = ${JSON.stringify(peticiones, null, 2)};\n`;
+    `const RAW: Omit<Peticion, "transcripcion">[] = ${JSON.stringify(
+      peticiones.map(({ transcripcion: _t, ...rest }) => rest),
+      null,
+      2,
+    )};\n\n` +
+    `export const PETICIONES_EXCEL: Peticion[] = RAW.map((p) => ({\n` +
+    `  ...p,\n` +
+    `  transcripcion: p.descripcion,\n` +
+    `}));\n`;
 
   const evTs =
     header +

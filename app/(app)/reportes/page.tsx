@@ -187,27 +187,27 @@ export default function ReportesPage() {
 
   const porZona = useMemo(() => {
     const claves = new Set([
-      ...semana.map((p) => p.cveMun),
+      ...actual.map((p) => p.cveMun),
       ...previa.map((p) => p.cveMun),
     ]);
     return [...claves]
       .map((cveMun) => {
-        const actual = semana.filter((p) => p.cveMun === cveMun).length;
+        const nActual = actual.filter((p) => p.cveMun === cveMun).length;
         const anterior = previa.filter((p) => p.cveMun === cveMun).length;
         const temas = conteoPor(
-          semana.filter((p) => p.cveMun === cveMun).map((p) => p.categoriaId),
+          actual.filter((p) => p.cveMun === cveMun).map((p) => p.categoriaId),
         );
         const top = [...temas.entries()].sort((a, b) => b[1] - a[1])[0];
         return {
           cveMun,
           nombre: nombreMunicipio(cveMun),
-          actual,
+          actual: nActual,
           anterior,
           tema: top ? CATEGORIA_POR_ID[top[0]]?.nombre : "—",
         };
       })
       .sort((a, b) => b.actual - a.actual || a.nombre.localeCompare(b.nombre, "es"));
-  }, [semana, previa]);
+  }, [actual, previa]);
 
   const temas = [...conteoPor(actual.map((p) => p.categoriaId)).entries()]
     .map(([id, count]) => ({
@@ -221,7 +221,7 @@ export default function ReportesPage() {
   const porGira = eventos
     .map((ev) => ({
       ...ev,
-      count: semana.filter((p) => p.eventoId === ev.id).length,
+      count: actual.filter((p) => p.eventoId === ev.id).length,
       municipio: nombreMunicipio(ev.cveMun),
     }))
     .filter((ev) => ev.count > 0)
