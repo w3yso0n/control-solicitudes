@@ -43,7 +43,7 @@ function LogoMarca({ compact = false }: { compact?: boolean }) {
     );
   }
   return (
-    <div className="relative aspect-square w-full max-w-[168px]">
+    <div className="relative aspect-square w-full max-w-[156px]">
       <Image
         src="/brand/logo-wordmark.png"
         alt="Beatriz Mojica"
@@ -101,7 +101,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         } ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
         <div
-          className={`flex shrink-0 items-center justify-center border-b border-white/10 ${collapsed ? "h-20 px-2" : "px-6 py-6"}`}
+          className={`flex h-40 shrink-0 items-center justify-center border-b border-white/10 ${collapsed ? "px-2" : "px-4 py-3"}`}
         >
           <LogoMarca compact={collapsed} />
         </div>

@@ -8,6 +8,7 @@ import {
   MUNICIPIO_POR_CVE,
   MUNICIPIOS_FOCO,
 } from "@/lib/catalogos";
+import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import {
   calcularItcPorMunicipio,
   filtrarPorPeriodo,
@@ -25,6 +26,14 @@ const PERIODOS: { id: PeriodoFiltro; label: string }[] = [
   { id: "90", label: "90 días" },
   { id: "acumulado", label: "Acumulado" },
 ];
+
+function nombreMunicipio(cveMun: string) {
+  return (
+    MUNICIPIO_POR_CVE[cveMun]?.nombre ??
+    MUNICIPIOS_GUERRERO.find((m) => m.cveMun === cveMun)?.nombre ??
+    cveMun
+  );
+}
 
 const ETIQUETA_CATEGORIA: Record<string, string> = {
   servicios: "Servicios públicos",
@@ -349,7 +358,7 @@ export default function DashboardPage() {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="min-w-0 flex-1 truncate text-zinc-700">
-                    {MUNICIPIO_POR_CVE[s.clave]?.nombre ?? s.clave}
+                    {nombreMunicipio(s.clave)}
                   </span>
                   <span className="shrink-0 text-xs text-zinc-400">
                     {s.peticiones} pet.
