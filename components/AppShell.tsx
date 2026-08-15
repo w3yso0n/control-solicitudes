@@ -36,9 +36,9 @@ function LogoMarca({ compact = false }: { compact?: boolean }) {
       <Image
         src="/brand/foto-perfil.png"
         alt="Beatriz Mojica"
-        width={36}
-        height={36}
-        className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-white/25"
+        width={40}
+        height={40}
+        className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-white/25"
       />
     );
   }
@@ -97,7 +97,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {/* Sidebar: fijo respecto al viewport, no viaja con el scroll de la página. */}
       <aside
         className={`fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden rounded-r-[1.75rem] bg-gradient-to-b from-guinda to-[#4d0c22] text-white shadow-[12px_0_36px_-20px_rgba(28,10,18,0.55)] transition-[width] duration-200 ${
-          collapsed ? "w-[72px]" : "w-64"
+          collapsed ? "w-[72px]" : "w-72"
         } ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
         <div
@@ -106,43 +106,58 @@ export function AppShell({ children }: { children: ReactNode }) {
           <LogoMarca compact={collapsed} />
         </div>
         {esCandidata && !collapsed ? (
-          <div className="mx-3 mt-3 flex shrink-0 items-center gap-2.5 rounded-2xl bg-white/10 px-3 py-2.5">
+          <div className="mx-4 mt-4 flex shrink-0 items-center gap-3 rounded-2xl bg-white/10 px-3.5 py-3">
             <Image
               src="/brand/foto-perfil.png"
               alt="Beatriz Mojica"
-              width={32}
-              height={32}
-              className="h-8 w-8 rounded-full object-cover ring-2 ring-white/25"
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-cover ring-2 ring-white/25"
             />
             <div className="min-w-0">
-              <p className="truncate text-xs font-semibold text-white">
+              <p className="truncate text-sm font-semibold text-white">
                 Beatriz Mojica
               </p>
-              <p className="text-[10px] text-white/60">Fase campaña</p>
+              <p className="text-xs text-white/60">Fase campaña</p>
             </div>
           </div>
         ) : null}
-        <nav className="flex-1 space-y-1 overflow-y-auto p-3">
-          {items.map((item) => {
-            const Icon = ICONS[item.href] ?? ClipboardList;
-            const active =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm transition-colors ${
-                  active
-                    ? "bg-white text-guinda shadow-[0_8px_20px_-10px_rgba(0,0,0,0.5)]"
-                    : "text-white/75 hover:bg-white/10 hover:text-white"
-                }`}
-              >
-                <Icon size={18} />
-                {collapsed ? null : <span>{item.label}</span>}
-              </Link>
-            );
-          })}
+        <nav className="flex flex-1 flex-col overflow-y-auto p-4">
+          <div className="space-y-2">
+            {items.map((item) => {
+              const Icon = ICONS[item.href] ?? ClipboardList;
+              const active =
+                pathname === item.href || pathname.startsWith(`${item.href}/`);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`flex items-center gap-3 rounded-2xl px-3.5 py-3.5 text-[15px] font-medium transition-colors ${
+                    active
+                      ? "bg-white text-guinda shadow-[0_8px_20px_-10px_rgba(0,0,0,0.5)]"
+                      : "text-white/80 hover:bg-white/10 hover:text-white"
+                  }`}
+                >
+                  <Icon size={20} />
+                  {collapsed ? null : <span>{item.label}</span>}
+                </Link>
+              );
+            })}
+          </div>
+          {collapsed ? null : (
+            <div className="mt-auto px-2 pb-2 pt-10">
+              <p className="font-display text-[2rem] leading-none tracking-tight text-white">
+                Pulso
+              </p>
+              <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-white/50">
+                Temperatura ciudadana
+              </p>
+              <p className="mt-3 text-xs leading-5 text-white/40">
+                Guerrero · gabinete de campaña
+              </p>
+            </div>
+          )}
         </nav>
 
         {/* Pie fijo del sidebar: colapsar y cerrar sesión siempre visibles, no hacen scroll con el nav. */}
@@ -164,14 +179,14 @@ export function AppShell({ children }: { children: ReactNode }) {
             onClick={() => setCollapsed((v) => !v)}
           >
             <PanelLeftClose size={16} />
-            {collapsed ? null : "Colapsar"}
+            {collapsed ? null : "Minimizar"}
           </button>
         </div>
       </aside>
 
       {/* Columna de contenido: el margen izquierdo reserva el espacio fijo del sidebar. */}
       <div
-        className={`flex min-h-screen flex-col transition-[margin] duration-200 ${collapsed ? "md:ml-[72px]" : "md:ml-64"}`}
+        className={`flex min-h-screen flex-col transition-[margin] duration-200 ${collapsed ? "md:ml-[72px]" : "md:ml-72"}`}
       >
         <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-3 border-b border-zinc-200 bg-white px-4 shadow-[0_1px_0_rgba(28,10,18,0.04)] md:px-6">
           <button

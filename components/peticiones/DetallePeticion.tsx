@@ -67,40 +67,62 @@ export function DetallePeticion({
   }, [onCerrar]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-      <button
-        type="button"
-        className="absolute inset-0 bg-tinta/45 backdrop-blur-[2px]"
-        aria-label="Cerrar detalle"
-        onClick={onCerrar}
-      />
-      <div
-        className="relative z-10 w-full max-w-lg"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="detalle-peticion-folio"
-      >
-        <Card className="flex max-h-[min(88vh,720px)] flex-col overflow-hidden">
-          <div className="flex shrink-0 items-start justify-between gap-3 border-b border-zinc-100 px-5 py-4">
-            <div>
-              <p className="text-[11px] uppercase tracking-wide text-zinc-400">
-                Folio
+    <Card className="flex max-h-[calc(100vh-8rem)] flex-col overflow-hidden">
+      <div className="flex items-start justify-between gap-3 border-b border-zinc-100 px-4 py-3">
+        <div>
+          <p className="text-[11px] uppercase tracking-wide text-zinc-400">Folio</p>
+          <p className="font-mono text-sm font-semibold text-guinda">
+            {peticion.folio}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onCerrar}
+          className="rounded-md p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700"
+          aria-label="Cerrar detalle"
+        >
+          <X size={16} />
+        </button>
+      </div>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="bg-zinc-100">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={peticion.documentoUrl}
+            alt={`Documento ${peticion.folio}`}
+            className="mx-auto max-h-64 w-full object-contain"
+          />
+        </div>
+        <div className="space-y-4 p-4">
+          <div>
+            <p className="text-[11px] uppercase tracking-wide text-zinc-400">
+              Síntesis
+            </p>
+            <p className="mt-0.5 text-sm leading-6 text-zinc-700">
+              {peticion.descripcion}
+            </p>
+          </div>
+          <div className="rounded-xl border border-zinc-100 bg-zinc-50 px-3 py-3">
+            <p className="text-[11px] uppercase tracking-wide text-zinc-400">
+              Transcripción
+            </p>
+            {peticion.transcripcion ? (
+              <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-zinc-700">
+                {peticion.transcripcion}
               </p>
-              <p
-                id="detalle-peticion-folio"
-                className="font-mono text-sm font-semibold text-guinda"
-              >
-                {peticion.folio}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={onCerrar}
-              className="rounded-full p-1.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700"
-              aria-label="Cerrar detalle"
-            >
-              <X size={16} />
-            </button>
+            ) : (
+              <p className="mt-1 text-sm text-zinc-400">Sin transcripción.</p>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {peticion.comunitaria ? (
+              <span className="rounded-full bg-magenta/10 px-2 py-0.5 text-[10px] font-medium text-magenta">
+                COMUNITARIA
+              </span>
+            ) : null}
+            <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] capitalize text-zinc-600">
+              {peticion.estatus}
+            </span>
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto">
             {peticion.documentoUrl ? (

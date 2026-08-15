@@ -33,17 +33,34 @@ export const EVENTOS: Evento[] = [
   },
 ];
 
+function transcripcionMock(descripcion: string, nombre: string) {
+  return [
+    "C. Beatriz Mojica —",
+    "",
+    `Por medio del presente escrito, quien suscribe, ${nombre}, manifiesta:`,
+    "",
+    descripcion,
+    "",
+    "Solicito de la manera más atenta su intervención para dar seguimiento a este planteamiento.",
+    "",
+    "Atentamente,",
+    nombre,
+  ].join("\n");
+}
+
 function p(
-  partial: Omit<Peticion, "estatus" | "documentoUrl" | "comunitaria"> & {
+  partial: Omit<Peticion, "estatus" | "documentoUrl" | "comunitaria" | "transcripcion"> & {
     comunitaria?: boolean;
     documentoUrl?: string;
     estatus?: Peticion["estatus"];
+    transcripcion?: string;
   },
 ): Peticion {
   return {
     estatus: "capturada",
     documentoUrl: SCAN,
     comunitaria: partial.alcance === "colectivo",
+    transcripcion: transcripcionMock(partial.descripcion, partial.ciudadano.nombre),
     ...partial,
   };
 }

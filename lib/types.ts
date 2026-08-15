@@ -81,6 +81,7 @@ export type Peticion = {
   folio: string;
   ciudadano: Ciudadano;
   descripcion: string;
+  transcripcion: string;
   categoriaId: string;
   subcategorias: string[];
   tipo: TipoPeticion;

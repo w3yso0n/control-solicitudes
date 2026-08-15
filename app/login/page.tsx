@@ -52,7 +52,7 @@ export default function LoginPage() {
       </div>
       <div className="flex flex-col justify-center bg-hueso px-6 py-12">
         <div className="mx-auto w-full max-w-md">
-          <div className="mb-8 rounded-[1.75rem] bg-gradient-to-br from-guinda to-[#4d0c22] px-10 py-10 text-center shadow-[0_20px_40px_-20px_rgba(122,18,51,0.5)]">
+          <div className="mb-8 rounded-[1.75rem] bg-[#830333] px-10 py-10 text-center shadow-[0_20px_40px_-20px_rgba(131,3,51,0.5)]">
             <Image
               src="/brand/foto-perfil.png"
               alt="Beatriz Mojica"

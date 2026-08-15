@@ -176,7 +176,7 @@ export default function DashboardPage() {
       tone: "default" as const,
     },
     {
-      label: "Backlog sin capturar",
+      label: "Documentos sin capturar",
       value: String(backlog),
       hint: backlog === 0 ? "Bandeja al día" : "Documentos en cola",
       tone: backlog > 0 ? ("warn" as const) : ("ok" as const),
@@ -194,7 +194,7 @@ export default function DashboardPage() {
       tone: "whatsapp" as const,
     },
     {
-      label: "Comunitarias",
+      label: "Denuncias comunitarias",
       value: String(comunitarias),
       hint:
         filtradas.length > 0
