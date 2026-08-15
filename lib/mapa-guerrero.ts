@@ -2,12 +2,17 @@ import { geoBounds, geoContains, geoMercator, geoPath } from "d3-geo";
 import { scaleLinear } from "d3-scale";
 import { feature } from "topojson-client";
 
-export const GEO_URL =
-  "https://gist.githubusercontent.com/diegovalle/5129746/raw/mx_tj.json";
+/**
+ * TopoJSON propio, generado a partir del Marco Geoestadístico Nacional 2025
+ * de INEGI (shapefile de municipios, entidad 12 = Guerrero) con mapshaper:
+ *   mapshaper 12mun.shp -proj wgs84 -clean -simplify 25% keep-shapes \
+ *     -filter-fields CVE_MUN,NOMGEO -o format=topojson guerrero-municipios.json
+ * Incluye los 85 municipios vigentes (incluye las divisiones territoriales
+ * más recientes en la región Montaña, ausentes en fuentes de ~2015).
+ */
+export const GEO_URL = "/geo/guerrero-municipios.json";
 
-const GUERRERO_STATE_CODE = 12;
-
-/** Forma mínima del TopoJSON de municipios de México que consumimos (topojson-specification no se publica como paquete instalable). */
+/** Forma mínima del TopoJSON que consumimos (topojson-specification no se publica como paquete instalable). */
 type Topology = {
   type: "Topology";
   objects: Record<string, { type: "GeometryCollection"; geometries: unknown[] }>;
@@ -18,12 +23,12 @@ type Topology = {
 
 export type MunicipioFeature = GeoJSON.Feature<
   GeoJSON.Geometry,
-  { state_code: number; mun_code: number; mun_name: string; cveMun: string }
+  { CVE_MUN: string; NOMGEO: string; cveMun: string; mun_name: string }
 >;
 
 let cache: Promise<MunicipioFeature[]> | null = null;
 
-/** Descarga y filtra la geometría de los 81 municipios de Guerrero (INEGI, vía topojson). */
+/** Carga la geometría de los municipios de Guerrero (INEGI, vía topojson local). */
 export function cargarMunicipiosGuerrero(): Promise<MunicipioFeature[]> {
   if (cache) return cache;
   cache = fetch(GEO_URL)
@@ -34,19 +39,19 @@ export function cargarMunicipiosGuerrero(): Promise<MunicipioFeature[]> {
     .then((topo) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const t = topo as any;
-      const all = feature(t, t.objects.municipalities) as unknown as GeoJSON.FeatureCollection<
+      const objectKey = Object.keys(t.objects)[0];
+      const all = feature(t, t.objects[objectKey]) as unknown as GeoJSON.FeatureCollection<
         GeoJSON.Geometry,
-        { state_code: number; mun_code: number; mun_name: string }
+        { CVE_MUN: string; NOMGEO: string }
       >;
-      return all.features
-        .filter((f) => +f.properties.state_code === GUERRERO_STATE_CODE)
-        .map((f) => ({
-          ...f,
-          properties: {
-            ...f.properties,
-            cveMun: String(f.properties.mun_code).padStart(3, "0"),
-          },
-        })) as MunicipioFeature[];
+      return all.features.map((f) => ({
+        ...f,
+        properties: {
+          ...f.properties,
+          cveMun: f.properties.CVE_MUN,
+          mun_name: f.properties.NOMGEO,
+        },
+      })) as MunicipioFeature[];
     });
   return cache;
 }
