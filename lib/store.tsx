@@ -10,7 +10,9 @@ import {
 } from "react";
 import { generarFolio, siguienteSecuencia } from "./folio";
 import { HOY } from "./itc";
-import { EVENTOS, LOTES_INICIALES, PETICIONES_INICIALES } from "./mock/seed";
+import { EVENTOS, LOTES_INICIALES } from "./mock/seed";
+import { EVENTOS_EXCEL } from "./mock/eventos-excel";
+import { PETICIONES_EXCEL } from "./mock/peticiones-excel";
 import type {
   DocumentoEscaneado,
   Evento,
@@ -52,8 +54,11 @@ type Store = {
 
 const StoreContext = createContext<Store | null>(null);
 
+/** Eventos de demo: giras sintéticas del Excel + eventos mock del flujo de captura. */
+const EVENTOS_DEMO: Evento[] = [...EVENTOS_EXCEL, ...EVENTOS];
+
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [peticiones, setPeticiones] = useState<Peticion[]>(PETICIONES_INICIALES);
+  const [peticiones, setPeticiones] = useState<Peticion[]>(PETICIONES_EXCEL);
   const [lotes, setLotes] = useState<Lote[]>(LOTES_INICIALES);
 
   const agregarLote = useCallback(
@@ -148,7 +153,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     () => ({
       peticiones,
       lotes,
-      eventos: EVENTOS,
+      eventos: EVENTOS_DEMO,
       agregarLote,
       cerrarLote,
       capturar,

@@ -5,8 +5,8 @@ import {
   CATEGORIA_POR_ID,
   COLONIA_POR_ID,
   MUNICIPIO_POR_CVE,
-  MUNICIPIOS_FOCO,
 } from "@/lib/catalogos";
+import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { filtrarPorPeriodo, HOY } from "@/lib/itc";
 import { useStore } from "@/lib/store";
 import Image from "next/image";
@@ -23,6 +23,14 @@ function conteoPor<T extends string>(items: T[]): Map<T, number> {
   const map = new Map<T, number>();
   for (const item of items) map.set(item, (map.get(item) ?? 0) + 1);
   return map;
+}
+
+function nombreMunicipio(cveMun: string) {
+  return (
+    MUNICIPIO_POR_CVE[cveMun]?.nombre ??
+    MUNICIPIOS_GUERRERO.find((m) => m.cveMun === cveMun)?.nombre ??
+    cveMun
+  );
 }
 
 export default function ReportesPage() {
@@ -43,20 +51,29 @@ export default function ReportesPage() {
     });
   }, [peticiones]);
 
-  const porZona = MUNICIPIOS_FOCO.map((m) => {
-    const actual = semana.filter((p) => p.cveMun === m.cveMun).length;
-    const anterior = previa.filter((p) => p.cveMun === m.cveMun).length;
-    const temas = conteoPor(
-      semana.filter((p) => p.cveMun === m.cveMun).map((p) => p.categoriaId),
-    );
-    const top = [...temas.entries()].sort((a, b) => b[1] - a[1])[0];
-    return {
-      ...m,
-      actual,
-      anterior,
-      tema: top ? CATEGORIA_POR_ID[top[0]]?.nombre : "—",
-    };
-  }).sort((a, b) => b.actual - a.actual);
+  const porZona = useMemo(() => {
+    const claves = new Set([
+      ...semana.map((p) => p.cveMun),
+      ...previa.map((p) => p.cveMun),
+    ]);
+    return [...claves]
+      .map((cveMun) => {
+        const actual = semana.filter((p) => p.cveMun === cveMun).length;
+        const anterior = previa.filter((p) => p.cveMun === cveMun).length;
+        const temas = conteoPor(
+          semana.filter((p) => p.cveMun === cveMun).map((p) => p.categoriaId),
+        );
+        const top = [...temas.entries()].sort((a, b) => b[1] - a[1])[0];
+        return {
+          cveMun,
+          nombre: nombreMunicipio(cveMun),
+          actual,
+          anterior,
+          tema: top ? CATEGORIA_POR_ID[top[0]]?.nombre : "—",
+        };
+      })
+      .sort((a, b) => b.actual - a.actual || a.nombre.localeCompare(b.nombre, "es"));
+  }, [semana, previa]);
 
   const temas = [...conteoPor(semana.map((p) => p.categoriaId)).entries()]
     .map(([id, count]) => ({
@@ -71,7 +88,7 @@ export default function ReportesPage() {
     .map((ev) => ({
       ...ev,
       count: semana.filter((p) => p.eventoId === ev.id).length,
-      municipio: MUNICIPIO_POR_CVE[ev.cveMun]?.nombre ?? ev.cveMun,
+      municipio: nombreMunicipio(ev.cveMun),
     }))
     .filter((ev) => ev.count > 0)
     .sort((a, b) => b.count - a.count);
@@ -93,6 +110,8 @@ export default function ReportesPage() {
     .slice(0, 5);
 
   const blancas = porZona.filter((z) => z.actual === 0);
+  const municipiosActivos = porZona.filter((z) => z.actual > 0).length;
+  const municipiosConDatos = Math.max(porZona.length, 1);
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
@@ -149,9 +168,11 @@ export default function ReportesPage() {
           <div>
             <p className="text-xs text-zinc-500">Municipios activos</p>
             <p className="mt-1 text-3xl font-semibold">
-              {porZona.filter((z) => z.actual > 0).length}
+              {municipiosActivos}
             </p>
-            <p className="text-xs text-zinc-500">de {MUNICIPIOS_FOCO.length} con cobertura</p>
+            <p className="text-xs text-zinc-500">
+              de {municipiosConDatos} con datos en el periodo
+            </p>
           </div>
         </div>
 

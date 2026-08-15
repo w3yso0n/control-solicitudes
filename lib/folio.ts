@@ -1,4 +1,4 @@
-import { MUNICIPIO_POR_CVE } from "./catalogos";
+import { codigoFolioDe } from "./codigos-folio";
 
 function ymdMexico(fecha: Date): { yyyy: string; mm: string; dd: string } {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -17,7 +17,7 @@ export function generarFolio(
   secuencia: number,
 ): string {
   const { yyyy, mm, dd } = ymdMexico(fechaCaptura);
-  const codigo = MUNICIPIO_POR_CVE[cveMun]?.codigoFolio ?? "XXX";
+  const codigo = codigoFolioDe(cveMun);
   const seq = String(secuencia).padStart(4, "0");
   return `${yyyy}-${mm}${dd}-${codigo}-${seq}`;
 }
@@ -28,7 +28,7 @@ export function siguienteSecuencia(
   cveMun: string,
 ): number {
   const { yyyy, mm, dd } = ymdMexico(fechaCaptura);
-  const codigo = MUNICIPIO_POR_CVE[cveMun]?.codigoFolio ?? "XXX";
+  const codigo = codigoFolioDe(cveMun);
   const prefix = `${yyyy}-${mm}${dd}-${codigo}-`;
   const usados = folios
     .filter((f) => f.startsWith(prefix))
