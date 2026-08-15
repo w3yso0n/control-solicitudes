@@ -23,6 +23,7 @@ type CapturaInput = {
   documentoUrl: string;
   ciudadano: Omit<Peticion["ciudadano"], "id">;
   descripcion: string;
+  transcripcion?: string;
   categoriaId: string;
   subcategorias: string[];
   tipo: Peticion["tipo"];
@@ -113,6 +114,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         comunitaria: input.alcance === "colectivo",
         documentoUrl: input.documentoUrl,
         descripcion: input.descripcion,
+        transcripcion: input.transcripcion ?? "",
         categoriaId: input.categoriaId,
         subcategorias: input.subcategorias,
         tipo: input.tipo,

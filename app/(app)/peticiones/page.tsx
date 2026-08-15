@@ -63,6 +63,7 @@ function PeticionesContent() {
         p.folio.toLowerCase().includes(q) ||
         p.ciudadano.nombre.toLowerCase().includes(q) ||
         p.descripcion.toLowerCase().includes(q) ||
+        p.transcripcion.toLowerCase().includes(q) ||
         mun.toLowerCase().includes(q)
       );
     });

@@ -69,7 +69,26 @@ export function DetallePeticion({
           />
         </div>
         <div className="space-y-4 p-4">
-          <p className="text-sm leading-6 text-zinc-700">{peticion.descripcion}</p>
+          <div>
+            <p className="text-[11px] uppercase tracking-wide text-zinc-400">
+              Síntesis
+            </p>
+            <p className="mt-0.5 text-sm leading-6 text-zinc-700">
+              {peticion.descripcion}
+            </p>
+          </div>
+          <div className="rounded-xl border border-zinc-100 bg-zinc-50 px-3 py-3">
+            <p className="text-[11px] uppercase tracking-wide text-zinc-400">
+              Transcripción
+            </p>
+            {peticion.transcripcion ? (
+              <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-zinc-700">
+                {peticion.transcripcion}
+              </p>
+            ) : (
+              <p className="mt-1 text-sm text-zinc-400">Sin transcripción.</p>
+            )}
+          </div>
           <div className="flex flex-wrap gap-2">
             {peticion.comunitaria ? (
               <span className="rounded-full bg-magenta/10 px-2 py-0.5 text-[10px] font-medium text-magenta">

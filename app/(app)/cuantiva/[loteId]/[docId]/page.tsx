@@ -25,6 +25,7 @@ export default function CapturaPage() {
   const [nombre, setNombre] = useState("");
   const [telefono, setTelefono] = useState("");
   const [descripcion, setDescripcion] = useState("");
+  const [transcripcion, setTranscripcion] = useState("");
   const [categoriaId, setCategoriaId] = useState(CATEGORIAS[0].id);
   const [subcategoria, setSubcategoria] = useState(
     CATEGORIAS[0].subcategorias[0],
@@ -62,6 +63,7 @@ export default function CapturaPage() {
         coloniaId: cveMun === "001" ? coloniaId : undefined,
       },
       descripcion: descripcion || "Sin descripción.",
+      transcripcion: transcripcion.trim(),
       categoriaId,
       subcategorias: subcategoria ? [subcategoria] : [],
       tipo,
@@ -149,6 +151,14 @@ export default function CapturaPage() {
                   rows={3}
                   value={descripcion}
                   onChange={(e) => setDescripcion(e.target.value)}
+                />
+              </Field>
+              <Field label="Transcripción">
+                <Textarea
+                  rows={6}
+                  value={transcripcion}
+                  onChange={(e) => setTranscripcion(e.target.value)}
+                  placeholder="Texto del oficio, tal como se lee en el documento…"
                 />
               </Field>
               <div className="grid gap-3 sm:grid-cols-2">
