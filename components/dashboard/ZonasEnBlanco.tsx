@@ -13,7 +13,15 @@ type RegionResumen = {
   blancas: MunicipioGeo[];
 };
 
-export function ZonasEnBlanco({ cvesActivos }: { cvesActivos: Set<string> }) {
+export function ZonasEnBlanco({
+  cvesActivos,
+  regionResaltada = null,
+  onRegionClick,
+}: {
+  cvesActivos: Set<string>;
+  regionResaltada?: RegionGuerrero | null;
+  onRegionClick?: (region: RegionGuerrero) => void;
+}) {
   const regiones: RegionResumen[] = ORDEN_REGIONES.map((region) => {
     const munis = MUNICIPIOS_GUERRERO.filter((m) => m.region === region);
     const blancas = munis.filter((m) => !cvesActivos.has(m.cveMun));
@@ -42,10 +50,11 @@ export function ZonasEnBlanco({ cvesActivos }: { cvesActivos: Set<string> }) {
       <div className="border-b border-zinc-100 bg-gradient-to-r from-guinda/[0.04] to-transparent px-5 py-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold text-zinc-900">Zonas en blanco</p>
+            <p className="text-sm font-semibold text-zinc-900">Regiones en blanco</p>
             <p className="mt-0.5 max-w-sm text-xs text-zinc-500">
               Municipios sin una sola petición: no es que no haya problemas,
-              es que aún no hay cobertura.
+              es que aún no hay cobertura. Clic en una región para verla en el
+              mapa.
             </p>
           </div>
           <div className="flex shrink-0 items-baseline gap-4 text-right">
@@ -79,8 +88,16 @@ export function ZonasEnBlanco({ cvesActivos }: { cvesActivos: Set<string> }) {
         {regiones.map((r) => {
           const pct = r.total ? Math.round((r.activas / r.total) * 100) : 0;
           const vacia = r.activas === 0;
+          const activa = regionResaltada === r.region;
           return (
-            <div key={r.region} className="bg-white p-3.5">
+            <button
+              key={r.region}
+              type="button"
+              onClick={() => onRegionClick?.(r.region)}
+              className={`bg-white p-3.5 text-left transition-colors hover:bg-guinda/[0.03] ${
+                activa ? "bg-guinda/[0.06] ring-2 ring-inset ring-guinda/40" : ""
+              }`}
+            >
               <div className="mb-1.5 flex items-start justify-between gap-2">
                 <p className="truncate text-xs font-medium text-zinc-800">
                   {r.region}
@@ -105,7 +122,7 @@ export function ZonasEnBlanco({ cvesActivos }: { cvesActivos: Set<string> }) {
                   style={{ width: `${Math.max(pct, vacia ? 4 : 0)}%` }}
                 />
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -120,12 +137,18 @@ export function ZonasEnBlanco({ cvesActivos }: { cvesActivos: Set<string> }) {
               <span className="text-xs text-zinc-400">Ninguna</span>
             ) : (
               sinPresencia.map((r) => (
-                <span
+                <button
                   key={r.region}
-                  className="rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-medium text-zinc-700"
+                  type="button"
+                  onClick={() => onRegionClick?.(r.region)}
+                  className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                    regionResaltada === r.region
+                      ? "bg-guinda text-white"
+                      : "bg-zinc-100 text-zinc-700 hover:bg-zinc-200"
+                  }`}
                 >
                   {r.region}
-                </span>
+                </button>
               ))
             )}
           </div>

@@ -824,6 +824,16 @@ function main() {
     const evento = EVENTOS_POR_REGION[region];
     const telefono = normalizarTelefono(f.telefono);
     const n = i + 1;
+    // Desfase entrega → captura (6 a 42 h) para que el KPI "tiempo a folio" refleje el Excel.
+    const horasCaptura = 6 + ((n * 17) % 37);
+    const capturaDate = new Date(`${fecha}T08:00:00.000-06:00`);
+    capturaDate.setHours(capturaDate.getHours() + horasCaptura);
+    const y = capturaDate.getFullYear();
+    const m = String(capturaDate.getMonth() + 1).padStart(2, "0");
+    const d = String(capturaDate.getDate()).padStart(2, "0");
+    const hh = String(capturaDate.getHours()).padStart(2, "0");
+    const mi = String(capturaDate.getMinutes()).padStart(2, "0");
+    const fechaCaptura = `${y}-${m}-${d}T${hh}:${mi}:00.000-06:00`;
 
     peticiones.push({
       id: `pet-excel-${String(n).padStart(3, "0")}`,
@@ -849,7 +859,7 @@ function main() {
       coloniaId,
       eventoId: evento.id,
       fechaEntrega: fecha,
-      fechaCaptura: `${fecha}T15:00:00.000-06:00`,
+      fechaCaptura,
       estatus: "capturada",
       documentoUrl: "",
     });

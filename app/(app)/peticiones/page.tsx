@@ -41,8 +41,10 @@ function PeticionesContent() {
   const searchParams = useSearchParams();
   const [seleccionadaId, setSeleccionadaId] = useState<string | null>(null);
   const [busqueda, setBusqueda] = useState("");
-  const [categoriaId, setCategoriaId] = useState("");
-  // Preselecciona el municipio cuando se llega desde el mapa del dashboard (?municipio=cveMun).
+  // Preselecciona categoría/municipio cuando se llega desde el dashboard.
+  const [categoriaId, setCategoriaId] = useState(
+    () => searchParams.get("categoria") ?? "",
+  );
   const [cveMun, setCveMun] = useState(() => searchParams.get("municipio") ?? "");
 
   const municipiosConDatos = useMemo(() => {

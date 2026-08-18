@@ -122,42 +122,27 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           </div>
         ) : null}
-        <nav className="flex flex-1 flex-col overflow-y-auto p-4">
-          <div className="space-y-2">
-            {items.map((item) => {
-              const Icon = ICONS[item.href] ?? ClipboardList;
-              const active =
-                pathname === item.href || pathname.startsWith(`${item.href}/`);
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-3 rounded-2xl px-3.5 py-3.5 text-[15px] font-medium transition-colors ${
-                    active
-                      ? "bg-white text-guinda shadow-[0_8px_20px_-10px_rgba(0,0,0,0.5)]"
-                      : "text-white/80 hover:bg-white/10 hover:text-white"
-                  }`}
-                >
-                  <Icon size={20} />
-                  {collapsed ? null : <span>{item.label}</span>}
-                </Link>
-              );
-            })}
-          </div>
-          {collapsed ? null : (
-            <div className="mt-auto px-2 pb-2 pt-10">
-              <p className="font-display text-[2rem] leading-none tracking-tight text-white">
-                Pulso
-              </p>
-              <p className="mt-2 text-[11px] uppercase tracking-[0.22em] text-white/50">
-                Temperatura ciudadana
-              </p>
-              <p className="mt-3 text-xs leading-5 text-white/40">
-                Guerrero · gabinete de campaña
-              </p>
-            </div>
-          )}
+        <nav className="flex-1 space-y-2 overflow-y-auto p-4">
+          {items.map((item) => {
+            const Icon = ICONS[item.href] ?? ClipboardList;
+            const active =
+              pathname === item.href || pathname.startsWith(`${item.href}/`);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center gap-3 rounded-2xl px-3.5 py-3.5 text-[15px] font-medium transition-colors ${
+                  active
+                    ? "bg-white text-guinda shadow-[0_8px_20px_-10px_rgba(0,0,0,0.5)]"
+                    : "text-white/80 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                <Icon size={20} />
+                {collapsed ? null : <span>{item.label}</span>}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Pie fijo del sidebar: colapsar y cerrar sesión siempre visibles, no hacen scroll con el nav. */}

@@ -3,54 +3,28 @@ import type { Peticion } from "../types";
 
 const RAW: Omit<Peticion, "transcripcion">[] = [
   {
-    "id": "pet-excel-001",
-    "folio": "2026-0814-ACA-0001",
+    "id": "pet-excel-211",
+    "folio": "2026-0814-GUA-0001",
     "ciudadano": {
-      "id": "c-excel-001",
-      "nombre": "SOCORRO LÓPEZ",
-      "telefono": "7443556877",
-      "cveMun": "001",
-      "domicilio": "COLONIA PASEO DE LA CAÑADA (INFONAVIT,ALTA PROGRESO"
+      "id": "c-excel-211",
+      "nombre": "COMITÉ DE LA IGLESIA \"SAN JUAN BAUTISTA\"",
+      "telefono": "7411098357",
+      "cveMun": "036",
+      "domicilio": "SAN JUAN DE LOS LLANOS, MPIO. IGUALAPA"
     },
-    "descripcion": "SE SOLICITA DRENAJE Y AGUA POTABLE, CONSTRUCCIÓN DE UN ANDADOR",
-    "categoriaId": "servicios",
+    "descripcion": "APOYO ECONOMICO PARA LA CONTINUIDAD DE DE LAS OBRAS EN LA IGLESIA",
+    "categoriaId": "social",
     "subcategorias": [
-      "Pavimentación"
+      "Programas sociales"
     ],
     "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-164",
-    "folio": "2026-0814-OME-0001",
-    "ciudadano": {
-      "id": "c-excel-164",
-      "nombre": "ESC. PRIM. INTERCULTURAL BILINGÜE \"NIÑOS HEROES\"",
-      "telefono": "7411140797",
-      "cveMun": "046",
-      "domicilio": "ZACUALPA, MPIO. OMETEPEC."
-    },
-    "descripcion": "SOLICITAN INTERNET PARA PARA SU ESCUELA",
-    "categoriaId": "educacion",
-    "subcategorias": [
-      "Infraestructura escolar"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
+    "urgencia": "baja",
     "alcance": "colectivo",
     "comunitaria": true,
-    "cveMun": "046",
+    "cveMun": "036",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-16T01:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -76,33 +50,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "080",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-15T23:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-201",
-    "folio": "2026-0814-JUC-0002",
+    "id": "pet-excel-213",
+    "folio": "2026-0814-OME-0005",
     "ciudadano": {
-      "id": "c-excel-201",
-      "nombre": "HAB. DEL MPIO. JUCHITAN",
-      "telefono": "0000000000",
-      "cveMun": "080",
-      "domicilio": "EL NARANJO, JUCHITAN"
+      "id": "c-excel-213",
+      "nombre": "GRUPO DE ARTESANAS",
+      "telefono": "7411295093",
+      "cveMun": "046",
+      "domicilio": "ZACUALPA"
     },
-    "descripcion": "15 CARROS DE ARENA PARA RELLENO DE DICHA RECONTRUCCION DEL VADO",
+    "descripcion": "APOYOEN ESPECIE",
     "categoriaId": "otros",
     "subcategorias": [
       "No clasificado"
     ],
     "tipo": "peticion",
     "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "080",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "046",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-15T22:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -128,33 +102,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "046",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-15T20:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-203",
-    "folio": "2026-0814-AZO-0001",
+    "id": "pet-excel-215",
+    "folio": "2026-0814-OME-0007",
     "ciudadano": {
-      "id": "c-excel-203",
-      "nombre": "C. ENRIQUE AVILA COMISARIO DE HUEHUETAN",
-      "telefono": "0000000000",
-      "cveMun": "013",
-      "domicilio": "HUEHUETA, MPIO. DE AZOYU"
+      "id": "c-excel-215",
+      "nombre": "JOSEFINA SANTIAGO BENITO",
+      "telefono": "7411375494",
+      "cveMun": "046",
+      "domicilio": "OMETEPEC"
     },
-    "descripcion": "APOYO PARA EL ARCO DE LA ENTRADA DE LA POBLACION.",
+    "descripcion": "APOYO CON CABLEADO ELECTRICO",
     "categoriaId": "otros",
     "subcategorias": [
       "No clasificado"
     ],
     "tipo": "peticion",
     "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "013",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "046",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-15T19:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -180,33 +154,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "013",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-205",
-    "folio": "2026-0814-AZO-0003",
-    "ciudadano": {
-      "id": "c-excel-205",
-      "nombre": "C. ENRIQUE AVILA COMISARIO DE HUEHUETAN",
-      "telefono": "0000000000",
-      "cveMun": "013",
-      "domicilio": "HUEHUETA, MPIO. DE AZOYU"
-    },
-    "descripcion": "CONTENEDORES DE BASURA PARA COLOCAR EN LOS ESPACIOS PUBLICOS",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Recolección de basura"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "013",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-15T17:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -232,33 +180,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "013",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-207",
-    "folio": "2026-0814-OME-0003",
-    "ciudadano": {
-      "id": "c-excel-207",
-      "nombre": "C. LOURDES AGAMA BRITO",
-      "telefono": "7411055091",
-      "cveMun": "046",
-      "domicilio": "SOLEDAD, MPIO. DE OMETEPEC"
-    },
-    "descripcion": "REQUIERE APOYO ECONOMICO",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Programas sociales"
-    ],
-    "tipo": "peticion",
-    "urgencia": "baja",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "046",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-15T14:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -284,7 +206,319 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "012",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-15T11:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-210",
+    "folio": "2026-0814-XOC-0001",
+    "ciudadano": {
+      "id": "c-excel-210",
+      "nombre": "ARTESANAS DE TELAR DE CINTURA",
+      "telefono": "7411008018",
+      "cveMun": "071",
+      "domicilio": "XOCHISTLAHUACA"
+    },
+    "descripcion": "HILOS",
+    "categoriaId": "otros",
+    "subcategorias": [
+      "No clasificado"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "071",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-08-14",
+    "fechaCaptura": "2026-08-15T08:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-001",
+    "folio": "2026-0814-ACA-0001",
+    "ciudadano": {
+      "id": "c-excel-001",
+      "nombre": "SOCORRO LÓPEZ",
+      "telefono": "7443556877",
+      "cveMun": "001",
+      "domicilio": "COLONIA PASEO DE LA CAÑADA (INFONAVIT,ALTA PROGRESO"
+    },
+    "descripcion": "SE SOLICITA DRENAJE Y AGUA POTABLE, CONSTRUCCIÓN DE UN ANDADOR",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-08-14",
+    "fechaCaptura": "2026-08-15T07:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-212",
+    "folio": "2026-0814-OME-0004",
+    "ciudadano": {
+      "id": "c-excel-212",
+      "nombre": "BASILIA SANTIAGO BENITO",
+      "telefono": "7411369309",
+      "cveMun": "046",
+      "domicilio": "OMETEPEC"
+    },
+    "descripcion": "APOYO CON LA COMPRA DE PLASTITEJA PARA EL MEJORAMIENTO DE SU VIVIENDA",
+    "categoriaId": "vivienda",
+    "subcategorias": [
+      "Apoyos para construcción o mejora"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "046",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-08-14",
+    "fechaCaptura": "2026-08-15T05:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-164",
+    "folio": "2026-0814-OME-0001",
+    "ciudadano": {
+      "id": "c-excel-164",
+      "nombre": "ESC. PRIM. INTERCULTURAL BILINGÜE \"NIÑOS HEROES\"",
+      "telefono": "7411140797",
+      "cveMun": "046",
+      "domicilio": "ZACUALPA, MPIO. OMETEPEC."
+    },
+    "descripcion": "SOLICITAN INTERNET PARA PARA SU ESCUELA",
+    "categoriaId": "educacion",
+    "subcategorias": [
+      "Infraestructura escolar"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "046",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-08-14",
+    "fechaCaptura": "2026-08-15T03:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-201",
+    "folio": "2026-0814-JUC-0002",
+    "ciudadano": {
+      "id": "c-excel-201",
+      "nombre": "HAB. DEL MPIO. JUCHITAN",
+      "telefono": "0000000000",
+      "cveMun": "080",
+      "domicilio": "EL NARANJO, JUCHITAN"
+    },
+    "descripcion": "15 CARROS DE ARENA PARA RELLENO DE DICHA RECONTRUCCION DEL VADO",
+    "categoriaId": "otros",
+    "subcategorias": [
+      "No clasificado"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "080",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-08-14",
+    "fechaCaptura": "2026-08-15T03:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-214",
+    "folio": "2026-0814-OME-0006",
+    "ciudadano": {
+      "id": "c-excel-214",
+      "nombre": "GABRIELA SANTIAGO BENITO",
+      "telefono": "7411222793",
+      "cveMun": "046",
+      "domicilio": "OMETEPEC"
+    },
+    "descripcion": "MATERIAL ESCOLAR, ESTUDIANTE DE EDUCACION BASICA INDIGENA",
+    "categoriaId": "otros",
+    "subcategorias": [
+      "No clasificado"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "046",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-08-14",
+    "fechaCaptura": "2026-08-15T02:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-002",
+    "folio": "2026-0813-CGO-0001",
+    "ciudadano": {
+      "id": "c-excel-002",
+      "nombre": "EDILBERTO NIEVES GARCIA CLUB DEP LOS POLLOS",
+      "telefono": "7471254241",
+      "cveMun": "029",
+      "domicilio": "COL DEL AMATE CHILPANCINGO"
+    },
+    "descripcion": "CONSTRUCCIÓN DE UNAS GRADAS",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "029",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-08-13",
+    "fechaCaptura": "2026-08-15T00:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-203",
+    "folio": "2026-0814-AZO-0001",
+    "ciudadano": {
+      "id": "c-excel-203",
+      "nombre": "C. ENRIQUE AVILA COMISARIO DE HUEHUETAN",
+      "telefono": "0000000000",
+      "cveMun": "013",
+      "domicilio": "HUEHUETA, MPIO. DE AZOYU"
+    },
+    "descripcion": "APOYO PARA EL ARCO DE LA ENTRADA DE LA POBLACION.",
+    "categoriaId": "otros",
+    "subcategorias": [
+      "No clasificado"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "013",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-08-14",
+    "fechaCaptura": "2026-08-15T00:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-163",
+    "folio": "2026-0813-ZIH-0003",
+    "ciudadano": {
+      "id": "c-excel-163",
+      "nombre": "UNIVERSIDAD AUTONOMA DE ZIHUATANEJO",
+      "telefono": "7551150197",
+      "cveMun": "038",
+      "domicilio": "ZIHUATANEJO"
+    },
+    "descripcion": "EQUIPO DE COMPUTO, MOBILIARIO ESCOLAR, 1 AIRE ACONDICIONADO, LABORAN DE MANERA PROVISIONAL EN EL CONALEP",
+    "categoriaId": "educacion",
+    "subcategorias": [
+      "Infraestructura escolar"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "038",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-08-13",
+    "fechaCaptura": "2026-08-14T23:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-205",
+    "folio": "2026-0814-AZO-0003",
+    "ciudadano": {
+      "id": "c-excel-205",
+      "nombre": "C. ENRIQUE AVILA COMISARIO DE HUEHUETAN",
+      "telefono": "0000000000",
+      "cveMun": "013",
+      "domicilio": "HUEHUETA, MPIO. DE AZOYU"
+    },
+    "descripcion": "CONTENEDORES DE BASURA PARA COLOCAR EN LOS ESPACIOS PUBLICOS",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Recolección de basura"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "013",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-08-14",
+    "fechaCaptura": "2026-08-14T21:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-207",
+    "folio": "2026-0814-OME-0003",
+    "ciudadano": {
+      "id": "c-excel-207",
+      "nombre": "C. LOURDES AGAMA BRITO",
+      "telefono": "7411055091",
+      "cveMun": "046",
+      "domicilio": "SOLEDAD, MPIO. DE OMETEPEC"
+    },
+    "descripcion": "REQUIERE APOYO ECONOMICO",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Programas sociales"
+    ],
+    "tipo": "peticion",
+    "urgencia": "baja",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "046",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-08-14",
+    "fechaCaptura": "2026-08-14T18:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-093",
+    "folio": "2026-0813-ZIH-0001",
+    "ciudadano": {
+      "id": "c-excel-093",
+      "nombre": "JULIO CESAR PALACIOS BARRAGAN, GRUPO DE DANZA FOLCLORICA \" CANIANDYUA\"",
+      "telefono": "7551428028",
+      "cveMun": "038",
+      "domicilio": "ZIHUATANEJO"
+    },
+    "descripcion": "APOYO ECONOMICO PARA COMPRAR DIVERSAS TELAS , MATERIAL DE MERCERIA PARA ELABORAR 16 TRAJES",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "038",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-08-13",
+    "fechaCaptura": "2026-08-14T17:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -314,184 +548,55 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-210",
-    "folio": "2026-0814-XOC-0001",
+    "id": "pet-excel-108",
+    "folio": "2026-0813-CPA-0001",
     "ciudadano": {
-      "id": "c-excel-210",
-      "nombre": "ARTESANAS DE TELAR DE CINTURA",
-      "telefono": "7411008018",
-      "cveMun": "071",
-      "domicilio": "XOCHISTLAHUACA"
+      "id": "c-excel-108",
+      "nombre": "MTRO. ROGELIO GONZALEZ SALMERON, DIR. ESC. PRIM. FRANCISCO I. MADERO.",
+      "telefono": "7541034989",
+      "cveMun": "028",
+      "domicilio": "EL PERAL, MPIO. DE CHILAPA DE ALVAREZ"
     },
-    "descripcion": "HILOS",
-    "categoriaId": "otros",
-    "subcategorias": [
-      "No clasificado"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "071",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-211",
-    "folio": "2026-0814-GUA-0001",
-    "ciudadano": {
-      "id": "c-excel-211",
-      "nombre": "COMITÉ DE LA IGLESIA \"SAN JUAN BAUTISTA\"",
-      "telefono": "7411098357",
-      "cveMun": "036",
-      "domicilio": "SAN JUAN DE LOS LLANOS, MPIO. IGUALAPA"
-    },
-    "descripcion": "APOYO ECONOMICO PARA LA CONTINUIDAD DE DE LAS OBRAS EN LA IGLESIA",
+    "descripcion": "APOYO ECONOMICO PARA VIAJE DE ESTUDIOS, 21,22,23 DE ABRIL 15,000.",
     "categoriaId": "social",
     "subcategorias": [
-      "Programas sociales"
-    ],
-    "tipo": "peticion",
-    "urgencia": "baja",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "036",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-212",
-    "folio": "2026-0814-OME-0004",
-    "ciudadano": {
-      "id": "c-excel-212",
-      "nombre": "BASILIA SANTIAGO BENITO",
-      "telefono": "7411369309",
-      "cveMun": "046",
-      "domicilio": "OMETEPEC"
-    },
-    "descripcion": "APOYO CON LA COMPRA DE PLASTITEJA PARA EL MEJORAMIENTO DE SU VIVIENDA",
-    "categoriaId": "vivienda",
-    "subcategorias": [
-      "Apoyos para construcción o mejora"
+      "Despensas"
     ],
     "tipo": "peticion",
     "urgencia": "media",
     "alcance": "individual",
     "comunitaria": false,
-    "cveMun": "046",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-213",
-    "folio": "2026-0814-OME-0005",
-    "ciudadano": {
-      "id": "c-excel-213",
-      "nombre": "GRUPO DE ARTESANAS",
-      "telefono": "7411295093",
-      "cveMun": "046",
-      "domicilio": "ZACUALPA"
-    },
-    "descripcion": "APOYOEN ESPECIE",
-    "categoriaId": "otros",
-    "subcategorias": [
-      "No clasificado"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "046",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-214",
-    "folio": "2026-0814-OME-0006",
-    "ciudadano": {
-      "id": "c-excel-214",
-      "nombre": "GABRIELA SANTIAGO BENITO",
-      "telefono": "7411222793",
-      "cveMun": "046",
-      "domicilio": "OMETEPEC"
-    },
-    "descripcion": "MATERIAL ESCOLAR, ESTUDIANTE DE EDUCACION BASICA INDIGENA",
-    "categoriaId": "otros",
-    "subcategorias": [
-      "No clasificado"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "046",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-215",
-    "folio": "2026-0814-OME-0007",
-    "ciudadano": {
-      "id": "c-excel-215",
-      "nombre": "JOSEFINA SANTIAGO BENITO",
-      "telefono": "7411375494",
-      "cveMun": "046",
-      "domicilio": "OMETEPEC"
-    },
-    "descripcion": "APOYO CON CABLEADO ELECTRICO",
-    "categoriaId": "otros",
-    "subcategorias": [
-      "No clasificado"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "046",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-08-14",
-    "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-002",
-    "folio": "2026-0813-CGO-0001",
-    "ciudadano": {
-      "id": "c-excel-002",
-      "nombre": "EDILBERTO NIEVES GARCIA CLUB DEP LOS POLLOS",
-      "telefono": "7471254241",
-      "cveMun": "029",
-      "domicilio": "COL DEL AMATE CHILPANCINGO"
-    },
-    "descripcion": "CONSTRUCCIÓN DE UNAS GRADAS",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Pavimentación"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "029",
-    "eventoId": "ev-excel-aca",
+    "cveMun": "028",
+    "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-08-13",
-    "fechaCaptura": "2026-08-13T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-14T13:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-136",
+    "folio": "2026-0813-ZIH-0002",
+    "ciudadano": {
+      "id": "c-excel-136",
+      "nombre": "MTRA. MARÍA ELENA MANCILLA ACEVEDO",
+      "telefono": "7551142111",
+      "cveMun": "038",
+      "domicilio": "ZIHUATANEJO"
+    },
+    "descripcion": "[Gestión] SOLICITA SU INTERVENCIÓN PARA QUE LE SEA DEVUELTO SU TRABAJO COMO MAESTRA, EL CUAL LE FUE RETIRADO EN EL AÑO 2022, BUSCANDO JUSTICIA LABORAL",
+    "categoriaId": "empleo",
+    "subcategorias": [
+      "Gestión",
+      "Falta de empleo"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "038",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-08-13",
+    "fechaCaptura": "2026-08-14T08:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -517,59 +622,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "048",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-08-13",
-    "fechaCaptura": "2026-08-13T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-093",
-    "folio": "2026-0813-ZIH-0001",
-    "ciudadano": {
-      "id": "c-excel-093",
-      "nombre": "JULIO CESAR PALACIOS BARRAGAN, GRUPO DE DANZA FOLCLORICA \" CANIANDYUA\"",
-      "telefono": "7551428028",
-      "cveMun": "038",
-      "domicilio": "ZIHUATANEJO"
-    },
-    "descripcion": "APOYO ECONOMICO PARA COMPRAR DIVERSAS TELAS , MATERIAL DE MERCERIA PARA ELABORAR 16 TRAJES",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "038",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-08-13",
-    "fechaCaptura": "2026-08-13T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-108",
-    "folio": "2026-0813-CPA-0001",
-    "ciudadano": {
-      "id": "c-excel-108",
-      "nombre": "MTRO. ROGELIO GONZALEZ SALMERON, DIR. ESC. PRIM. FRANCISCO I. MADERO.",
-      "telefono": "7541034989",
-      "cveMun": "028",
-      "domicilio": "EL PERAL, MPIO. DE CHILAPA DE ALVAREZ"
-    },
-    "descripcion": "APOYO ECONOMICO PARA VIAJE DE ESTUDIOS, 21,22,23 DE ABRIL 15,000.",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "028",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-08-13",
-    "fechaCaptura": "2026-08-13T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-14T00:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -601,55 +654,28 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-136",
-    "folio": "2026-0813-ZIH-0002",
+    "id": "pet-excel-073",
+    "folio": "2026-0812-SAN-0001",
     "ciudadano": {
-      "id": "c-excel-136",
-      "nombre": "MTRA. MARÍA ELENA MANCILLA ACEVEDO",
-      "telefono": "7551142111",
-      "cveMun": "038",
-      "domicilio": "ZIHUATANEJO"
+      "id": "c-excel-073",
+      "nombre": "ROBERTO MACARIO MARELINO, COMISARIO MUNICIPAL",
+      "telefono": "0000000000",
+      "cveMun": "052",
+      "domicilio": "TIERRA COLORADA, MUNICIPIO DE SAN LUIS ACATLAN"
     },
-    "descripcion": "[Gestión] SOLICITA SU INTERVENCIÓN PARA QUE LE SEA DEVUELTO SU TRABAJO COMO MAESTRA, EL CUAL LE FUE RETIRADO EN EL AÑO 2022, BUSCANDO JUSTICIA LABORAL",
-    "categoriaId": "empleo",
+    "descripcion": "INSTRUMENTOS MUSICALES",
+    "categoriaId": "social",
     "subcategorias": [
-      "Gestión",
-      "Falta de empleo"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "038",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-08-13",
-    "fechaCaptura": "2026-08-13T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-163",
-    "folio": "2026-0813-ZIH-0003",
-    "ciudadano": {
-      "id": "c-excel-163",
-      "nombre": "UNIVERSIDAD AUTONOMA DE ZIHUATANEJO",
-      "telefono": "7551150197",
-      "cveMun": "038",
-      "domicilio": "ZIHUATANEJO"
-    },
-    "descripcion": "EQUIPO DE COMPUTO, MOBILIARIO ESCOLAR, 1 AIRE ACONDICIONADO, LABORAN DE MANERA PROVISIONAL EN EL CONALEP",
-    "categoriaId": "educacion",
-    "subcategorias": [
-      "Infraestructura escolar"
+      "Despensas"
     ],
     "tipo": "peticion",
     "urgencia": "media",
     "alcance": "colectivo",
     "comunitaria": true,
-    "cveMun": "038",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-08-13",
-    "fechaCaptura": "2026-08-13T15:00:00.000-06:00",
+    "cveMun": "052",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-08-12",
+    "fechaCaptura": "2026-08-13T10:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -675,59 +701,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "029",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-12",
-    "fechaCaptura": "2026-08-12T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-033",
-    "folio": "2026-0812-ACA-0001",
-    "ciudadano": {
-      "id": "c-excel-033",
-      "nombre": "JOSE LUIS EVARISTO MONTES",
-      "telefono": "0000000000",
-      "cveMun": "001",
-      "domicilio": "ACAPULCO"
-    },
-    "descripcion": "Sin asunto especificado",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-08-12",
-    "fechaCaptura": "2026-08-12T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-073",
-    "folio": "2026-0812-SAN-0001",
-    "ciudadano": {
-      "id": "c-excel-073",
-      "nombre": "ROBERTO MACARIO MARELINO, COMISARIO MUNICIPAL",
-      "telefono": "0000000000",
-      "cveMun": "052",
-      "domicilio": "TIERRA COLORADA, MUNICIPIO DE SAN LUIS ACATLAN"
-    },
-    "descripcion": "INSTRUMENTOS MUSICALES",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "052",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-08-12",
-    "fechaCaptura": "2026-08-12T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-13T04:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -753,7 +727,85 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-11",
-    "fechaCaptura": "2026-08-11T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-12T21:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-033",
+    "folio": "2026-0812-ACA-0001",
+    "ciudadano": {
+      "id": "c-excel-033",
+      "nombre": "JOSE LUIS EVARISTO MONTES",
+      "telefono": "0000000000",
+      "cveMun": "001",
+      "domicilio": "ACAPULCO"
+    },
+    "descripcion": "Sin asunto especificado",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-08-12",
+    "fechaCaptura": "2026-08-12T20:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-161",
+    "folio": "2026-0810-ALC-0002",
+    "ciudadano": {
+      "id": "c-excel-161",
+      "nombre": "ESC. PRIM. BIL. JOSE MARIAMORELOS Y PAVON",
+      "telefono": "0000000000",
+      "cveMun": "004",
+      "domicilio": "SAN MIGUEL EL GRANDE, MPIO DE ALCOZUACA DE GUERRERO"
+    },
+    "descripcion": "BANDA DE GUERRA, BANDERA COMPLETA, MATERIAL DE OFICINA Y LIMPIEZA",
+    "categoriaId": "educacion",
+    "subcategorias": [
+      "Infraestructura escolar"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "004",
+    "eventoId": "ev-excel-mon",
+    "fechaEntrega": "2026-08-10",
+    "fechaCaptura": "2026-08-12T02:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-160",
+    "folio": "2026-0810-ALC-0001",
+    "ciudadano": {
+      "id": "c-excel-160",
+      "nombre": "ESC. PRIM. BIL. JOSE MARIAMORELOS Y PAVON",
+      "telefono": "0000000000",
+      "cveMun": "004",
+      "domicilio": "SAN MIGUEL EL GRANDE, MPIO DE ALCOZUACA DE GUERRERO"
+    },
+    "descripcion": "UTILES ESCOLARES PARA 19O ALUMNOS",
+    "categoriaId": "educacion",
+    "subcategorias": [
+      "Infraestructura escolar"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "004",
+    "eventoId": "ev-excel-mon",
+    "fechaEntrega": "2026-08-10",
+    "fechaCaptura": "2026-08-11T09:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -781,59 +833,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-zapata",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-10",
-    "fechaCaptura": "2026-08-10T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-160",
-    "folio": "2026-0810-ALC-0001",
-    "ciudadano": {
-      "id": "c-excel-160",
-      "nombre": "ESC. PRIM. BIL. JOSE MARIAMORELOS Y PAVON",
-      "telefono": "0000000000",
-      "cveMun": "004",
-      "domicilio": "SAN MIGUEL EL GRANDE, MPIO DE ALCOZUACA DE GUERRERO"
-    },
-    "descripcion": "UTILES ESCOLARES PARA 19O ALUMNOS",
-    "categoriaId": "educacion",
-    "subcategorias": [
-      "Infraestructura escolar"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "004",
-    "eventoId": "ev-excel-mon",
-    "fechaEntrega": "2026-08-10",
-    "fechaCaptura": "2026-08-10T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-161",
-    "folio": "2026-0810-ALC-0002",
-    "ciudadano": {
-      "id": "c-excel-161",
-      "nombre": "ESC. PRIM. BIL. JOSE MARIAMORELOS Y PAVON",
-      "telefono": "0000000000",
-      "cveMun": "004",
-      "domicilio": "SAN MIGUEL EL GRANDE, MPIO DE ALCOZUACA DE GUERRERO"
-    },
-    "descripcion": "BANDA DE GUERRA, BANDERA COMPLETA, MATERIAL DE OFICINA Y LIMPIEZA",
-    "categoriaId": "educacion",
-    "subcategorias": [
-      "Infraestructura escolar"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "004",
-    "eventoId": "ev-excel-mon",
-    "fechaEntrega": "2026-08-10",
-    "fechaCaptura": "2026-08-10T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-11T01:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -859,7 +859,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-09",
-    "fechaCaptura": "2026-08-09T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-10T18:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -885,85 +885,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "035",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-08-09",
-    "fechaCaptura": "2026-08-09T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-007",
-    "folio": "2026-0808-ACA-0001",
-    "ciudadano": {
-      "id": "c-excel-007",
-      "nombre": "JOSEFINA DORANTES SOLIS",
-      "telefono": "7442405817",
-      "cveMun": "001",
-      "domicilio": "COL. PASO LIMONERO"
-    },
-    "descripcion": "EMBARDADO DE UN SOLAR",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Pavimentación"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-08-08",
-    "fechaCaptura": "2026-08-08T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-008",
-    "folio": "2026-0808-ACA-0002",
-    "ciudadano": {
-      "id": "c-excel-008",
-      "nombre": "EUFEMIA REYES FLORES",
-      "telefono": "7443249433",
-      "cveMun": "001",
-      "domicilio": "COL. UNIDOS POR GUERRERO"
-    },
-    "descripcion": "ALUMBRADO PUBLICO",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Pavimentación"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-08-08",
-    "fechaCaptura": "2026-08-08T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-111",
-    "folio": "2026-0808-AJU-0001",
-    "ciudadano": {
-      "id": "c-excel-111",
-      "nombre": "GAVINO GARCIA MENDOZA, COMISARIO",
-      "telefono": "7321215904",
-      "cveMun": "003",
-      "domicilio": "EJIDO DE ANONITAS, AJUCHITLAN DEL PROGRESO"
-    },
-    "descripcion": "APOYO DE 40 LUMINARIAS PARA LOS POSTES DE LUZ",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "003",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-08-08",
-    "fechaCaptura": "2026-08-08T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-10T10:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -990,47 +912,47 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "050",
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-08-08",
-    "fechaCaptura": "2026-08-08T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-09T18:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-009",
-    "folio": "2026-0807-ACA-0001",
+    "id": "pet-excel-008",
+    "folio": "2026-0808-ACA-0002",
     "ciudadano": {
-      "id": "c-excel-009",
-      "nombre": "PROFR. IRENE GERVACIO PEREZ",
-      "telefono": "7442931217",
+      "id": "c-excel-008",
+      "nombre": "EUFEMIA REYES FLORES",
+      "telefono": "7443249433",
       "cveMun": "001",
-      "domicilio": "REAL HACIENDA"
+      "domicilio": "COL. UNIDOS POR GUERRERO"
     },
-    "descripcion": "DEZASOLVE DEL CANAL PLUVIAL , JARDIN DE NIÑOS ARISTOTELES",
+    "descripcion": "ALUMBRADO PUBLICO",
     "categoriaId": "servicios",
     "subcategorias": [
       "Pavimentación"
     ],
     "tipo": "peticion",
     "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
+    "alcance": "individual",
+    "comunitaria": false,
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-08-07",
-    "fechaCaptura": "2026-08-07T15:00:00.000-06:00",
+    "fechaEntrega": "2026-08-08",
+    "fechaCaptura": "2026-08-09T15:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-016",
-    "folio": "2026-0807-IGU-0001",
+    "id": "pet-excel-007",
+    "folio": "2026-0808-ACA-0001",
     "ciudadano": {
-      "id": "c-excel-016",
-      "nombre": "PROFRA. CECILIA YOLANDA NUÑEZ RAMIREZ DELEGADA DE COLONIA",
-      "telefono": "7331016283",
-      "cveMun": "035",
-      "domicilio": "COL. PLAN DE AYALA II, IGUALA"
+      "id": "c-excel-007",
+      "nombre": "JOSEFINA DORANTES SOLIS",
+      "telefono": "7442405817",
+      "cveMun": "001",
+      "domicilio": "COL. PASO LIMONERO"
     },
-    "descripcion": "REMODELACION TOTAL DEL PARQUE INFANTIL DE DICHA COLONIA",
+    "descripcion": "EMBARDADO DE UN SOLAR",
     "categoriaId": "servicios",
     "subcategorias": [
       "Pavimentación"
@@ -1039,50 +961,24 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "urgencia": "media",
     "alcance": "individual",
     "comunitaria": false,
-    "cveMun": "035",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-08-07",
-    "fechaCaptura": "2026-08-07T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-031",
-    "folio": "2026-0807-IGU-0002",
-    "ciudadano": {
-      "id": "c-excel-031",
-      "nombre": "PROFRA. CECILIA YOLANDA NUÑEZ RAMIREZ DELEGADA DE COLONIA",
-      "telefono": "7331016283",
-      "cveMun": "035",
-      "domicilio": "COL. PLAN DE AYALA II, IGUALA"
-    },
-    "descripcion": "PAV. DE LA CALLE QUE ESTA A UN COSTADO DE LA VIA DEL FERROCARRIL",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Pavimentación"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "035",
+    "cveMun": "001",
     "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-08-07",
-    "fechaCaptura": "2026-08-07T15:00:00.000-06:00",
+    "fechaEntrega": "2026-08-08",
+    "fechaCaptura": "2026-08-08T22:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-109",
-    "folio": "2026-0807-IGU-0003",
+    "id": "pet-excel-111",
+    "folio": "2026-0808-AJU-0001",
     "ciudadano": {
-      "id": "c-excel-109",
-      "nombre": "PROFR. HILARIO VILLALOBOS , DELEGACION SINDICAL DI-396",
-      "telefono": "7331060370",
-      "cveMun": "035",
-      "domicilio": "IGUALA"
+      "id": "c-excel-111",
+      "nombre": "GAVINO GARCIA MENDOZA, COMISARIO",
+      "telefono": "7321215904",
+      "cveMun": "003",
+      "domicilio": "EJIDO DE ANONITAS, AJUCHITLAN DEL PROGRESO"
     },
-    "descripcion": "APOYO ECONOMICO (12,000) PARA EL PAGO DE LA MUSICA DEL FESTEJO DEL DIA DEL MAESTRO",
+    "descripcion": "APOYO DE 40 LUMINARIAS PARA LOS POSTES DE LUZ",
     "categoriaId": "social",
     "subcategorias": [
       "Despensas"
@@ -1091,10 +987,10 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "urgencia": "media",
     "alcance": "colectivo",
     "comunitaria": true,
-    "cveMun": "035",
+    "cveMun": "003",
     "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-08-07",
-    "fechaCaptura": "2026-08-07T15:00:00.000-06:00",
+    "fechaEntrega": "2026-08-08",
+    "fechaCaptura": "2026-08-08T14:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1120,7 +1016,111 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "055",
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-08-07",
-    "fechaCaptura": "2026-08-07T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-08T06:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-016",
+    "folio": "2026-0807-IGU-0001",
+    "ciudadano": {
+      "id": "c-excel-016",
+      "nombre": "PROFRA. CECILIA YOLANDA NUÑEZ RAMIREZ DELEGADA DE COLONIA",
+      "telefono": "7331016283",
+      "cveMun": "035",
+      "domicilio": "COL. PLAN DE AYALA II, IGUALA"
+    },
+    "descripcion": "REMODELACION TOTAL DEL PARQUE INFANTIL DE DICHA COLONIA",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "035",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-08-07",
+    "fechaCaptura": "2026-08-08T03:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-031",
+    "folio": "2026-0807-IGU-0002",
+    "ciudadano": {
+      "id": "c-excel-031",
+      "nombre": "PROFRA. CECILIA YOLANDA NUÑEZ RAMIREZ DELEGADA DE COLONIA",
+      "telefono": "7331016283",
+      "cveMun": "035",
+      "domicilio": "COL. PLAN DE AYALA II, IGUALA"
+    },
+    "descripcion": "PAV. DE LA CALLE QUE ESTA A UN COSTADO DE LA VIA DEL FERROCARRIL",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "035",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-08-07",
+    "fechaCaptura": "2026-08-07T23:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-009",
+    "folio": "2026-0807-ACA-0001",
+    "ciudadano": {
+      "id": "c-excel-009",
+      "nombre": "PROFR. IRENE GERVACIO PEREZ",
+      "telefono": "7442931217",
+      "cveMun": "001",
+      "domicilio": "REAL HACIENDA"
+    },
+    "descripcion": "DEZASOLVE DEL CANAL PLUVIAL , JARDIN DE NIÑOS ARISTOTELES",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-08-07",
+    "fechaCaptura": "2026-08-07T19:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-109",
+    "folio": "2026-0807-IGU-0003",
+    "ciudadano": {
+      "id": "c-excel-109",
+      "nombre": "PROFR. HILARIO VILLALOBOS , DELEGACION SINDICAL DI-396",
+      "telefono": "7331060370",
+      "cveMun": "035",
+      "domicilio": "IGUALA"
+    },
+    "descripcion": "APOYO ECONOMICO (12,000) PARA EL PAGO DE LA MUSICA DEL FESTEJO DEL DIA DEL MAESTRO",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "035",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-08-07",
+    "fechaCaptura": "2026-08-07T17:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1146,7 +1146,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-06",
-    "fechaCaptura": "2026-08-06T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-07T12:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1174,7 +1174,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-zapata",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-05",
-    "fechaCaptura": "2026-08-05T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-05T16:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1200,7 +1200,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "081",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-04",
-    "fechaCaptura": "2026-08-04T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-05T06:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1226,7 +1226,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "012",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-03",
-    "fechaCaptura": "2026-08-03T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-04T23:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1252,7 +1252,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "036",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-03",
-    "fechaCaptura": "2026-08-03T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-03T14:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1278,7 +1278,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-02",
-    "fechaCaptura": "2026-08-02T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-03T00:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1304,7 +1304,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "057",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-01",
-    "fechaCaptura": "2026-08-01T15:00:00.000-06:00",
+    "fechaCaptura": "2026-08-02T14:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-026",
+    "folio": "2026-0731-TEC-0001",
+    "ciudadano": {
+      "id": "c-excel-026",
+      "nombre": "COMISARIO NAZARIO MERCADO",
+      "telefono": "0000000000",
+      "cveMun": "057",
+      "domicilio": "PETATLA  MPIO TECPAN DE GALEANA"
+    },
+    "descripcion": "SOLICITUD DE PAVIMENTACIÓN DE 4 TRAMOS CARRETEROS",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "057",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-07-31",
+    "fechaCaptura": "2026-08-02T01:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1335,32 +1361,6 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-026",
-    "folio": "2026-0731-TEC-0001",
-    "ciudadano": {
-      "id": "c-excel-026",
-      "nombre": "COMISARIO NAZARIO MERCADO",
-      "telefono": "0000000000",
-      "cveMun": "057",
-      "domicilio": "PETATLA  MPIO TECPAN DE GALEANA"
-    },
-    "descripcion": "SOLICITUD DE PAVIMENTACIÓN DE 4 TRAMOS CARRETEROS",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Pavimentación"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "057",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-07-31",
-    "fechaCaptura": "2026-07-31T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
     "id": "pet-excel-032",
     "folio": "2026-0730-ACA-0001",
     "ciudadano": {
@@ -1384,7 +1384,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-renacimiento",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-30",
-    "fechaCaptura": "2026-07-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-31T16:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1410,7 +1410,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-29",
-    "fechaCaptura": "2026-07-29T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-29T17:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1438,7 +1438,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-zapata",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-28",
-    "fechaCaptura": "2026-07-28T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-29T10:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1466,7 +1466,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-renacimiento",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-27",
-    "fechaCaptura": "2026-07-27T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-27T14:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1492,7 +1492,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-26",
-    "fechaCaptura": "2026-07-26T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-27T07:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1518,7 +1518,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-25",
-    "fechaCaptura": "2026-07-25T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-27T00:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1543,7 +1543,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-25",
-    "fechaCaptura": "2026-07-25T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-26T04:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1571,7 +1571,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-renacimiento",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-24",
-    "fechaCaptura": "2026-07-24T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-25T21:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1597,7 +1597,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-23",
-    "fechaCaptura": "2026-07-23T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-24T01:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1623,7 +1623,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-22",
-    "fechaCaptura": "2026-07-22T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-23T18:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1648,7 +1648,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-21",
-    "fechaCaptura": "2026-07-21T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-21T22:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1674,7 +1674,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-20",
-    "fechaCaptura": "2026-07-20T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-21T15:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1700,7 +1700,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-19",
-    "fechaCaptura": "2026-07-19T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-19T19:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1726,7 +1726,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-18",
-    "fechaCaptura": "2026-07-18T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-19T12:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1754,7 +1754,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-zapata",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-18",
-    "fechaCaptura": "2026-07-18T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-18T16:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1782,7 +1782,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-zapata",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-17",
-    "fechaCaptura": "2026-07-17T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-18T09:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1810,7 +1810,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-zapata",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-16",
-    "fechaCaptura": "2026-07-16T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-18T02:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1838,7 +1838,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-zapata",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-15",
-    "fechaCaptura": "2026-07-15T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-16T06:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1866,33 +1866,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-zapata",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-14",
-    "fechaCaptura": "2026-07-14T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-053",
-    "folio": "2026-0713-ACA-0001",
-    "ciudadano": {
-      "id": "c-excel-053",
-      "nombre": "ELBA MARTINEZ DIAS",
-      "telefono": "6241255472",
-      "cveMun": "001",
-      "domicilio": "COL. FLORES MAGON"
-    },
-    "descripcion": "8 TAMBOS DE PINTURA VINILICA ESC. RICARDO FLORES MAGON",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-07-13",
-    "fechaCaptura": "2026-07-13T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-15T23:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1918,7 +1892,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "046",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-07-13",
-    "fechaCaptura": "2026-07-13T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-14T06:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-053",
+    "folio": "2026-0713-ACA-0001",
+    "ciudadano": {
+      "id": "c-excel-053",
+      "nombre": "ELBA MARTINEZ DIAS",
+      "telefono": "6241255472",
+      "cveMun": "001",
+      "domicilio": "COL. FLORES MAGON"
+    },
+    "descripcion": "8 TAMBOS DE PINTURA VINILICA ESC. RICARDO FLORES MAGON",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-07-13",
+    "fechaCaptura": "2026-07-14T03:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1944,7 +1944,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-12",
-    "fechaCaptura": "2026-07-12T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-13T20:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-056",
+    "folio": "2026-0711-ACA-0002",
+    "ciudadano": {
+      "id": "c-excel-056",
+      "nombre": "ELVIRA LOZANO MIRANDA",
+      "telefono": "7442078789",
+      "cveMun": "001",
+      "domicilio": "COL.KM.30"
+    },
+    "descripcion": "APOYO DE UN BASTON",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-07-11",
+    "fechaCaptura": "2026-07-12T17:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -1972,33 +1998,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-zapata",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-11",
-    "fechaCaptura": "2026-07-11T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-056",
-    "folio": "2026-0711-ACA-0002",
-    "ciudadano": {
-      "id": "c-excel-056",
-      "nombre": "ELVIRA LOZANO MIRANDA",
-      "telefono": "7442078789",
-      "cveMun": "001",
-      "domicilio": "COL.KM.30"
-    },
-    "descripcion": "APOYO DE UN BASTON",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-07-11",
-    "fechaCaptura": "2026-07-11T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-12T00:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2024,7 +2024,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-10",
-    "fechaCaptura": "2026-07-10T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-10T21:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2050,7 +2050,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-09",
-    "fechaCaptura": "2026-07-09T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-10T14:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2078,7 +2078,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-zapata",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-08",
-    "fechaCaptura": "2026-07-08T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-08T18:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2104,7 +2104,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "029",
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-07-07",
-    "fechaCaptura": "2026-07-07T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-08T11:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2130,7 +2130,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "039",
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-07-06",
-    "fechaCaptura": "2026-07-06T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-07T22:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2156,7 +2156,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "002",
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-07-05",
-    "fechaCaptura": "2026-07-05T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-06T02:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2182,7 +2182,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "029",
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-07-04",
-    "fechaCaptura": "2026-07-04T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-05T19:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2208,7 +2208,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "046",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-07-04",
-    "fechaCaptura": "2026-07-04T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-04T17:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2234,7 +2234,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "012",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-07-03",
-    "fechaCaptura": "2026-07-03T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-04T09:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2260,7 +2260,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "011",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-07-02",
-    "fechaCaptura": "2026-07-02T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-02T23:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2286,7 +2286,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "035",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-07-01",
-    "fechaCaptura": "2026-07-01T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-01T20:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2313,7 +2313,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-30",
-    "fechaCaptura": "2026-06-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-01T07:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2340,7 +2340,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-29",
-    "fechaCaptura": "2026-06-29T15:00:00.000-06:00",
+    "fechaCaptura": "2026-07-01T00:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2367,7 +2367,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-28",
-    "fechaCaptura": "2026-06-28T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-29T04:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2394,7 +2394,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-28",
-    "fechaCaptura": "2026-06-28T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-29T01:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2421,7 +2421,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-27",
-    "fechaCaptura": "2026-06-27T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-28T18:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2447,32 +2447,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "029",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-26",
-    "fechaCaptura": "2026-06-26T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-120",
-    "folio": "2026-0625-ACA-0001",
-    "ciudadano": {
-      "id": "c-excel-120",
-      "nombre": "PATRICIA GARCIA MIRANDA",
-      "telefono": "7561487546",
-      "cveMun": "001"
-    },
-    "descripcion": "[Gestión] APOYO PARA TENER UN LUGAR EN DONDE VENDER ARTESANIAS",
-    "categoriaId": "tramites",
-    "subcategorias": [
-      "Gestión"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-06-25",
-    "fechaCaptura": "2026-06-25T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-27T15:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2499,7 +2474,32 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "023",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-24",
-    "fechaCaptura": "2026-06-24T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-25T20:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-120",
+    "folio": "2026-0625-ACA-0001",
+    "ciudadano": {
+      "id": "c-excel-120",
+      "nombre": "PATRICIA GARCIA MIRANDA",
+      "telefono": "7561487546",
+      "cveMun": "001"
+    },
+    "descripcion": "[Gestión] APOYO PARA TENER UN LUGAR EN DONDE VENDER ARTESANIAS",
+    "categoriaId": "tramites",
+    "subcategorias": [
+      "Gestión"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-06-25",
+    "fechaCaptura": "2026-06-25T19:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2526,7 +2526,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "057",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-23",
-    "fechaCaptura": "2026-06-23T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-24T00:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2552,7 +2552,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "065",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-22",
-    "fechaCaptura": "2026-06-22T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-23T13:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-150",
+    "folio": "2026-0620-SMT-0001",
+    "ciudadano": {
+      "id": "c-excel-150",
+      "nombre": "PROCESO MODESTO SARIBIA COMISARIO",
+      "telefono": "5512376026",
+      "cveMun": "054",
+      "domicilio": "CORONILLA, MPIO SAN MIGUEL TOTOLAPAN"
+    },
+    "descripcion": "[Gestión] SOLICITUD PARA LA INCORPORACIÓN AL PROGRAMA DE SEMBRANDO VIDA",
+    "categoriaId": "tramites",
+    "subcategorias": [
+      "Gestión"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "054",
+    "eventoId": "ev-excel-nor",
+    "fechaEntrega": "2026-06-20",
+    "fechaCaptura": "2026-06-22T00:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2579,7 +2605,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "081",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-21",
-    "fechaCaptura": "2026-06-21T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-21T17:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2606,33 +2632,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "019",
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-21",
-    "fechaCaptura": "2026-06-21T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-150",
-    "folio": "2026-0620-SMT-0001",
-    "ciudadano": {
-      "id": "c-excel-150",
-      "nombre": "PROCESO MODESTO SARIBIA COMISARIO",
-      "telefono": "5512376026",
-      "cveMun": "054",
-      "domicilio": "CORONILLA, MPIO SAN MIGUEL TOTOLAPAN"
-    },
-    "descripcion": "[Gestión] SOLICITUD PARA LA INCORPORACIÓN AL PROGRAMA DE SEMBRANDO VIDA",
-    "categoriaId": "tramites",
-    "subcategorias": [
-      "Gestión"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "054",
-    "eventoId": "ev-excel-nor",
-    "fechaEntrega": "2026-06-20",
-    "fechaCaptura": "2026-06-20T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-21T14:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2659,7 +2659,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "067",
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-19",
-    "fechaCaptura": "2026-06-19T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-20T01:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2685,7 +2685,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "080",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-18",
-    "fechaCaptura": "2026-06-18T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-19T12:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2712,7 +2712,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "054",
     "eventoId": "ev-excel-tca",
     "fechaEntrega": "2026-06-17",
-    "fechaCaptura": "2026-06-17T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-18T20:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2738,7 +2738,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "046",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-16",
-    "fechaCaptura": "2026-06-16T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-17T00:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2764,33 +2764,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "050",
     "eventoId": "ev-excel-tca",
     "fechaEntrega": "2026-06-15",
-    "fechaCaptura": "2026-06-15T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-168",
-    "folio": "2026-0614-TEC-0001",
-    "ciudadano": {
-      "id": "c-excel-168",
-      "nombre": "ESCUELA SUPERIOR DE MEDICINA VZ N3 CAMPUS COSTA GRANDE",
-      "telefono": "7424258743",
-      "cveMun": "057",
-      "domicilio": "TECPAN DE GALEANA"
-    },
-    "descripcion": "Apadrinamiento escolar",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Programas sociales"
-    ],
-    "tipo": "peticion",
-    "urgencia": "baja",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "057",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-06-14",
-    "fechaCaptura": "2026-06-14T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-16T17:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2817,7 +2791,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "055",
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-14",
-    "fechaCaptura": "2026-06-14T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-15T14:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-168",
+    "folio": "2026-0614-TEC-0001",
+    "ciudadano": {
+      "id": "c-excel-168",
+      "nombre": "ESCUELA SUPERIOR DE MEDICINA VZ N3 CAMPUS COSTA GRANDE",
+      "telefono": "7424258743",
+      "cveMun": "057",
+      "domicilio": "TECPAN DE GALEANA"
+    },
+    "descripcion": "Apadrinamiento escolar",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Programas sociales"
+    ],
+    "tipo": "peticion",
+    "urgencia": "baja",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "057",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-06-14",
+    "fechaCaptura": "2026-06-14T21:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2844,7 +2844,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-13",
-    "fechaCaptura": "2026-06-13T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-13T18:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2870,7 +2870,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "050",
     "eventoId": "ev-excel-tca",
     "fechaEntrega": "2026-06-12",
-    "fechaCaptura": "2026-06-12T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-13T11:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2923,7 +2923,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-10",
-    "fechaCaptura": "2026-06-10T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-11T08:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2949,7 +2949,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "053",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-09",
-    "fechaCaptura": "2026-06-09T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-11T01:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -2975,7 +2975,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-08",
-    "fechaCaptura": "2026-06-08T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-09T20:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3001,7 +3001,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-08",
-    "fechaCaptura": "2026-06-08T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-09T05:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-176",
+    "folio": "2026-0607-ACA-0001",
+    "ciudadano": {
+      "id": "c-excel-176",
+      "nombre": "ESCUELA PRIMARIA \" IGNACIO MANUEL ALTAMIRANO\"",
+      "telefono": "7472733391",
+      "cveMun": "001",
+      "domicilio": "Guerrero"
+    },
+    "descripcion": "Apadrinamiento escolar · 31 ALIMNOS",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Programas sociales"
+    ],
+    "tipo": "peticion",
+    "urgencia": "baja",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-06-07",
+    "fechaCaptura": "2026-06-08T22:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3027,7 +3053,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "023",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-07",
-    "fechaCaptura": "2026-06-07T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-08T21:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3054,7 +3080,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "049",
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-07",
-    "fechaCaptura": "2026-06-07T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-08T07:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3081,33 +3107,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "054",
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-07",
-    "fechaCaptura": "2026-06-07T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-176",
-    "folio": "2026-0607-ACA-0001",
-    "ciudadano": {
-      "id": "c-excel-176",
-      "nombre": "ESCUELA PRIMARIA \" IGNACIO MANUEL ALTAMIRANO\"",
-      "telefono": "7472733391",
-      "cveMun": "001",
-      "domicilio": "Guerrero"
-    },
-    "descripcion": "Apadrinamiento escolar · 31 ALIMNOS",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Programas sociales"
-    ],
-    "tipo": "peticion",
-    "urgencia": "baja",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-06-07",
-    "fechaCaptura": "2026-06-07T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-08T04:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3133,59 +3133,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-07",
-    "fechaCaptura": "2026-06-07T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-084",
-    "folio": "2026-0606-AYU-0001",
-    "ciudadano": {
-      "id": "c-excel-084",
-      "nombre": "ANTONIO GALLARDO",
-      "telefono": "7441178337",
-      "cveMun": "012",
-      "domicilio": "CRUZ GRANDE"
-    },
-    "descripcion": "APOYO ECONOMICO PARA TERMINAR DE ARREGLAR CAPILLA DE LA COMUNIDAD",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "012",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-06-06",
-    "fechaCaptura": "2026-06-06T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-103",
-    "folio": "2026-0606-MET-0001",
-    "ciudadano": {
-      "id": "c-excel-103",
-      "nombre": "EUSTOLIA MELO SOLANO",
-      "telefono": "0000000000",
-      "cveMun": "043",
-      "domicilio": "METLATONOC"
-    },
-    "descripcion": "SOLICITA 160 DESPENSAS Y COBIJAS",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "043",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-06-06",
-    "fechaCaptura": "2026-06-06T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-08T02:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3211,7 +3159,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "043",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-06",
-    "fechaCaptura": "2026-06-06T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-07T19:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-178",
+    "folio": "2026-0606-ACA-0001",
+    "ciudadano": {
+      "id": "c-excel-178",
+      "nombre": "MARISOL MARTINEZ LOZANO",
+      "telefono": "7441052164",
+      "cveMun": "001",
+      "domicilio": "LOC. DEL VELADERO, ACAPILCO"
+    },
+    "descripcion": "APOYO DE 200 JUGUETES PARA EL DIA DEL NIÑO",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Programas sociales"
+    ],
+    "tipo": "peticion",
+    "urgencia": "baja",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-06-06",
+    "fechaCaptura": "2026-06-07T19:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3238,24 +3212,50 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "011",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-06",
-    "fechaCaptura": "2026-06-06T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-07T16:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-144",
-    "folio": "2026-0606-MET-0003",
+    "id": "pet-excel-084",
+    "folio": "2026-0606-AYU-0001",
     "ciudadano": {
-      "id": "c-excel-144",
+      "id": "c-excel-084",
+      "nombre": "ANTONIO GALLARDO",
+      "telefono": "7441178337",
+      "cveMun": "012",
+      "domicilio": "CRUZ GRANDE"
+    },
+    "descripcion": "APOYO ECONOMICO PARA TERMINAR DE ARREGLAR CAPILLA DE LA COMUNIDAD",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "012",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-06-06",
+    "fechaCaptura": "2026-06-07T12:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-103",
+    "folio": "2026-0606-MET-0001",
+    "ciudadano": {
+      "id": "c-excel-103",
       "nombre": "EUSTOLIA MELO SOLANO",
       "telefono": "0000000000",
       "cveMun": "043",
       "domicilio": "METLATONOC"
     },
-    "descripcion": "[Gestión] GESTION DE PLAZA EN ELMPROGRMA INSTITUTO NACIONAL PARA LA EDUCACION DE LOS ADULTOS",
-    "categoriaId": "tramites",
+    "descripcion": "SOLICITA 160 DESPENSAS Y COBIJAS",
+    "categoriaId": "social",
     "subcategorias": [
-      "Gestión"
+      "Despensas"
     ],
     "tipo": "peticion",
     "urgencia": "media",
@@ -3264,163 +3264,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "043",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-06",
-    "fechaCaptura": "2026-06-06T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-178",
-    "folio": "2026-0606-ACA-0001",
-    "ciudadano": {
-      "id": "c-excel-178",
-      "nombre": "MARISOL MARTINEZ LOZANO",
-      "telefono": "7441052164",
-      "cveMun": "001",
-      "domicilio": "LOC. DEL VELADERO, ACAPILCO"
-    },
-    "descripcion": "APOYO DE 200 JUGUETES PARA EL DIA DEL NIÑO",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Programas sociales"
-    ],
-    "tipo": "peticion",
-    "urgencia": "baja",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-06-06",
-    "fechaCaptura": "2026-06-06T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-034",
-    "folio": "2026-0605-ACA-0001",
-    "ciudadano": {
-      "id": "c-excel-034",
-      "nombre": "JUDITH PEREZ GUILLEN",
-      "telefono": "7443463017",
-      "cveMun": "001",
-      "domicilio": "LA ZANJA, ACAPULCO"
-    },
-    "descripcion": "APOYO PARA COMERCIAMTES DE ARTESANIAS",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-06-05",
-    "fechaCaptura": "2026-06-05T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-068",
-    "folio": "2026-0605-ZIT-0001",
-    "ciudadano": {
-      "id": "c-excel-068",
-      "nombre": "GRUPO DE MAQUINARIA AGRICOLA",
-      "telefono": "7561153254",
-      "cveMun": "074",
-      "domicilio": "TOPILTEPE, MPIO. DE ZITLALA"
-    },
-    "descripcion": "APOYO DE UN MOLINO DESITENGRADO PARA FORRAJE VERDE",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "074",
-    "eventoId": "ev-excel-nor",
-    "fechaEntrega": "2026-06-05",
-    "fechaCaptura": "2026-06-05T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-069",
-    "folio": "2026-0605-ZIT-0002",
-    "ciudadano": {
-      "id": "c-excel-069",
-      "nombre": "LUCAS CARRETO HERNANDEZ (COMPAÑERO)",
-      "telefono": "7331365164",
-      "cveMun": "074",
-      "domicilio": "TOPILTEPE, MPIO. DE ZITLALA"
-    },
-    "descripcion": "APOYO DE UNA ESTAUTA DE SAN JUDAS TADEO QUE MIDA 25 METROS DE ALTO",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "074",
-    "eventoId": "ev-excel-nor",
-    "fechaEntrega": "2026-06-05",
-    "fechaCaptura": "2026-06-05T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-070",
-    "folio": "2026-0605-ZIT-0003",
-    "ciudadano": {
-      "id": "c-excel-070",
-      "nombre": "CRISTINO ROJA HERNANDEZ",
-      "telefono": "7561153254",
-      "cveMun": "074",
-      "domicilio": "TOPILTEPE, MPIO. DE ZITLALA"
-    },
-    "descripcion": "SOLICITAN UN CONGELADOR Y UN REFRIGERADOR MARCA TOY REY",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "074",
-    "eventoId": "ev-excel-nor",
-    "fechaEntrega": "2026-06-05",
-    "fechaCaptura": "2026-06-05T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-071",
-    "folio": "2026-0605-ZIT-0004",
-    "ciudadano": {
-      "id": "c-excel-071",
-      "nombre": "ISMAEL GARCIA SALMERON",
-      "telefono": "2223618896",
-      "cveMun": "074",
-      "domicilio": "TOPILTEPE, MPIO. DE ZITLALA"
-    },
-    "descripcion": "20 ROLLOS DE ALEMBRE PARA CERCAR SU TERRENO",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "074",
-    "eventoId": "ev-excel-nor",
-    "fechaEntrega": "2026-06-05",
-    "fechaCaptura": "2026-06-05T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-07T02:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3446,7 +3290,137 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "011",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-05",
-    "fechaCaptura": "2026-06-05T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-06T20:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-144",
+    "folio": "2026-0606-MET-0003",
+    "ciudadano": {
+      "id": "c-excel-144",
+      "nombre": "EUSTOLIA MELO SOLANO",
+      "telefono": "0000000000",
+      "cveMun": "043",
+      "domicilio": "METLATONOC"
+    },
+    "descripcion": "[Gestión] GESTION DE PLAZA EN ELMPROGRMA INSTITUTO NACIONAL PARA LA EDUCACION DE LOS ADULTOS",
+    "categoriaId": "tramites",
+    "subcategorias": [
+      "Gestión"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "043",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-06-06",
+    "fechaCaptura": "2026-06-06T20:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-069",
+    "folio": "2026-0605-ZIT-0002",
+    "ciudadano": {
+      "id": "c-excel-069",
+      "nombre": "LUCAS CARRETO HERNANDEZ (COMPAÑERO)",
+      "telefono": "7331365164",
+      "cveMun": "074",
+      "domicilio": "TOPILTEPE, MPIO. DE ZITLALA"
+    },
+    "descripcion": "APOYO DE UNA ESTAUTA DE SAN JUDAS TADEO QUE MIDA 25 METROS DE ALTO",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "074",
+    "eventoId": "ev-excel-nor",
+    "fechaEntrega": "2026-06-05",
+    "fechaCaptura": "2026-06-06T16:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-034",
+    "folio": "2026-0605-ACA-0001",
+    "ciudadano": {
+      "id": "c-excel-034",
+      "nombre": "JUDITH PEREZ GUILLEN",
+      "telefono": "7443463017",
+      "cveMun": "001",
+      "domicilio": "LA ZANJA, ACAPULCO"
+    },
+    "descripcion": "APOYO PARA COMERCIAMTES DE ARTESANIAS",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-06-05",
+    "fechaCaptura": "2026-06-06T13:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-071",
+    "folio": "2026-0605-ZIT-0004",
+    "ciudadano": {
+      "id": "c-excel-071",
+      "nombre": "ISMAEL GARCIA SALMERON",
+      "telefono": "2223618896",
+      "cveMun": "074",
+      "domicilio": "TOPILTEPE, MPIO. DE ZITLALA"
+    },
+    "descripcion": "20 ROLLOS DE ALEMBRE PARA CERCAR SU TERRENO",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "074",
+    "eventoId": "ev-excel-nor",
+    "fechaEntrega": "2026-06-05",
+    "fechaCaptura": "2026-06-06T13:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-068",
+    "folio": "2026-0605-ZIT-0001",
+    "ciudadano": {
+      "id": "c-excel-068",
+      "nombre": "GRUPO DE MAQUINARIA AGRICOLA",
+      "telefono": "7561153254",
+      "cveMun": "074",
+      "domicilio": "TOPILTEPE, MPIO. DE ZITLALA"
+    },
+    "descripcion": "APOYO DE UN MOLINO DESITENGRADO PARA FORRAJE VERDE",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "074",
+    "eventoId": "ev-excel-nor",
+    "fechaEntrega": "2026-06-05",
+    "fechaCaptura": "2026-06-05T23:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3472,7 +3446,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-05",
-    "fechaCaptura": "2026-06-05T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-05T23:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-070",
+    "folio": "2026-0605-ZIT-0003",
+    "ciudadano": {
+      "id": "c-excel-070",
+      "nombre": "CRISTINO ROJA HERNANDEZ",
+      "telefono": "7561153254",
+      "cveMun": "074",
+      "domicilio": "TOPILTEPE, MPIO. DE ZITLALA"
+    },
+    "descripcion": "SOLICITAN UN CONGELADOR Y UN REFRIGERADOR MARCA TOY REY",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "074",
+    "eventoId": "ev-excel-nor",
+    "fechaEntrega": "2026-06-05",
+    "fechaCaptura": "2026-06-05T20:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3498,33 +3498,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "045",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-04",
-    "fechaCaptura": "2026-06-04T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-094",
-    "folio": "2026-0604-UAL-0001",
-    "ciudadano": {
-      "id": "c-excel-094",
-      "nombre": "FIDEL ROMANO SULPICIO",
-      "telefono": "0000000000",
-      "cveMun": "024",
-      "domicilio": "TEPOZCOTZINGO, MPIO CUALAC"
-    },
-    "descripcion": "SOLICITAN UN VEHICULO TIPO PICK UP( CAMIONETA) PARA SERVICIO DE LA COMUNIDAD",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "024",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-06-04",
-    "fechaCaptura": "2026-06-04T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-05T19:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3550,7 +3524,59 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "024",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-04",
-    "fechaCaptura": "2026-06-04T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-05T19:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-180",
+    "folio": "2026-0604-ACA-0001",
+    "ciudadano": {
+      "id": "c-excel-180",
+      "nombre": "DOMINGO MIGUEL GUERRERO",
+      "telefono": "7441048004",
+      "cveMun": "001",
+      "domicilio": "COL. LA BOCAMAR, ACAPULCO"
+    },
+    "descripcion": "APOYO DE 150 JUGUETES PARA EL DIA DEL NIÑO",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Programas sociales"
+    ],
+    "tipo": "peticion",
+    "urgencia": "baja",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-06-04",
+    "fechaCaptura": "2026-06-05T16:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-087",
+    "folio": "2026-0603-LAS-0001",
+    "ciudadano": {
+      "id": "c-excel-087",
+      "nombre": "LUIS ALFREDO MUÑOZ VINALAY",
+      "telefono": "7441318858",
+      "cveMun": "082",
+      "domicilio": "LAS VIGAS"
+    },
+    "descripcion": "APOYO PARA CAMBIO DE TRABAJO",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "082",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-06-03",
+    "fechaCaptura": "2026-06-05T02:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3577,47 +3603,21 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "024",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-04",
-    "fechaCaptura": "2026-06-04T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-04T23:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-180",
-    "folio": "2026-0604-ACA-0001",
+    "id": "pet-excel-094",
+    "folio": "2026-0604-UAL-0001",
     "ciudadano": {
-      "id": "c-excel-180",
-      "nombre": "DOMINGO MIGUEL GUERRERO",
-      "telefono": "7441048004",
-      "cveMun": "001",
-      "domicilio": "COL. LA BOCAMAR, ACAPULCO"
+      "id": "c-excel-094",
+      "nombre": "FIDEL ROMANO SULPICIO",
+      "telefono": "0000000000",
+      "cveMun": "024",
+      "domicilio": "TEPOZCOTZINGO, MPIO CUALAC"
     },
-    "descripcion": "APOYO DE 150 JUGUETES PARA EL DIA DEL NIÑO",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Programas sociales"
-    ],
-    "tipo": "peticion",
-    "urgencia": "baja",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-06-04",
-    "fechaCaptura": "2026-06-04T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-064",
-    "folio": "2026-0603-CGO-0001",
-    "ciudadano": {
-      "id": "c-excel-064",
-      "nombre": "MARTIN RIOS MENDOZA (VECINO)",
-      "telefono": "7442585560",
-      "cveMun": "029",
-      "domicilio": "CHILPANCINGO"
-    },
-    "descripcion": "APOYO DE LAMINAS",
+    "descripcion": "SOLICITAN UN VEHICULO TIPO PICK UP( CAMIONETA) PARA SERVICIO DE LA COMUNIDAD",
     "categoriaId": "social",
     "subcategorias": [
       "Despensas"
@@ -3626,88 +3626,10 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "urgencia": "media",
     "alcance": "individual",
     "comunitaria": false,
-    "cveMun": "029",
-    "eventoId": "ev-excel-nor",
-    "fechaEntrega": "2026-06-03",
-    "fechaCaptura": "2026-06-03T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-085",
-    "folio": "2026-0603-ANM-0001",
-    "ciudadano": {
-      "id": "c-excel-085",
-      "nombre": "DIRECTOR PREPARATORIA No. 23 JOSE CAMPOS CARMONA SOLANO",
-      "telefono": "7454130646",
-      "cveMun": "053",
-      "domicilio": "LAS VIGAS, SAN MARCOS"
-    },
-    "descripcion": "SOLICITA UN TECHO ( 25 METROS DE ANCHO POR 28 DE LARGO)",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "053",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-06-03",
-    "fechaCaptura": "2026-06-03T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-087",
-    "folio": "2026-0603-LAS-0001",
-    "ciudadano": {
-      "id": "c-excel-087",
-      "nombre": "LUIS ALFREDO MUÑOZ VINALAY",
-      "telefono": "7441318858",
-      "cveMun": "082",
-      "domicilio": "LAS VIGAS"
-    },
-    "descripcion": "APOYO PARA CAMBIO DE TRABAJO",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "082",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-06-03",
-    "fechaCaptura": "2026-06-03T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-106",
-    "folio": "2026-0603-CUE-0001",
-    "ciudadano": {
-      "id": "c-excel-106",
-      "nombre": "MARCELA BUSTAMANTE MENDOZA",
-      "telefono": "7361113839",
-      "cveMun": "026",
-      "domicilio": "MOLONIAL, MUNICIPIO DE CUETZALA DEL PROGRESO"
-    },
-    "descripcion": "MATERIAL PARA TUBERIA DE AGUA POTABLE Y LA CONSTRUCION DE UN DEPOSITO DE AGUA",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "026",
+    "cveMun": "024",
     "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-06-03",
-    "fechaCaptura": "2026-06-03T15:00:00.000-06:00",
+    "fechaEntrega": "2026-06-04",
+    "fechaCaptura": "2026-06-04T21:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3733,7 +3655,59 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-03",
-    "fechaCaptura": "2026-06-03T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-04T21:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-106",
+    "folio": "2026-0603-CUE-0001",
+    "ciudadano": {
+      "id": "c-excel-106",
+      "nombre": "MARCELA BUSTAMANTE MENDOZA",
+      "telefono": "7361113839",
+      "cveMun": "026",
+      "domicilio": "MOLONIAL, MUNICIPIO DE CUETZALA DEL PROGRESO"
+    },
+    "descripcion": "MATERIAL PARA TUBERIA DE AGUA POTABLE Y LA CONSTRUCION DE UN DEPOSITO DE AGUA",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "026",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-06-03",
+    "fechaCaptura": "2026-06-04T16:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-064",
+    "folio": "2026-0603-CGO-0001",
+    "ciudadano": {
+      "id": "c-excel-064",
+      "nombre": "MARTIN RIOS MENDOZA (VECINO)",
+      "telefono": "7442585560",
+      "cveMun": "029",
+      "domicilio": "CHILPANCINGO"
+    },
+    "descripcion": "APOYO DE LAMINAS",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "029",
+    "eventoId": "ev-excel-nor",
+    "fechaEntrega": "2026-06-03",
+    "fechaCaptura": "2026-06-04T05:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3759,7 +3733,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-03",
-    "fechaCaptura": "2026-06-03T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-03T20:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3785,34 +3759,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "085",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-02",
-    "fechaCaptura": "2026-06-02T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-03T18:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-127",
-    "folio": "2026-0602-ANN-0002",
+    "id": "pet-excel-085",
+    "folio": "2026-0603-ANM-0001",
     "ciudadano": {
-      "id": "c-excel-127",
-      "nombre": "REGIDOR RAÚL CRUZ MORENO",
-      "telefono": "7411273640",
-      "cveMun": "085",
-      "domicilio": "SAN NICOLÁS"
+      "id": "c-excel-085",
+      "nombre": "DIRECTOR PREPARATORIA No. 23 JOSE CAMPOS CARMONA SOLANO",
+      "telefono": "7454130646",
+      "cveMun": "053",
+      "domicilio": "LAS VIGAS, SAN MARCOS"
     },
-    "descripcion": "[Gestión] APOYO PARA LA CONSTRUCCIÓN DE UN PARQUE Y AULAS PARA UNA SECUNDARIA",
-    "categoriaId": "servicios",
+    "descripcion": "SOLICITA UN TECHO ( 25 METROS DE ANCHO POR 28 DE LARGO)",
+    "categoriaId": "social",
     "subcategorias": [
-      "Gestión",
-      "Pavimentación"
+      "Despensas"
     ],
     "tipo": "peticion",
     "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "085",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "053",
     "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-06-02",
-    "fechaCaptura": "2026-06-02T15:00:00.000-06:00",
+    "fechaEntrega": "2026-06-03",
+    "fechaCaptura": "2026-06-03T16:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3838,7 +3811,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "085",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-02",
-    "fechaCaptura": "2026-06-02T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-03T15:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -3866,295 +3839,34 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-zapata",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-02",
-    "fechaCaptura": "2026-06-02T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-03T13:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-027",
-    "folio": "2026-0601-TEC-0001",
+    "id": "pet-excel-127",
+    "folio": "2026-0602-ANN-0002",
     "ciudadano": {
-      "id": "c-excel-027",
-      "nombre": "COMISARIADO REVERIANO DOMÍNGUEZ VALDEZ",
-      "telefono": "7421120305",
-      "cveMun": "057",
-      "domicilio": "COATAN, MPIO. TECOAN DE GALEANA"
+      "id": "c-excel-127",
+      "nombre": "REGIDOR RAÚL CRUZ MORENO",
+      "telefono": "7411273640",
+      "cveMun": "085",
+      "domicilio": "SAN NICOLÁS"
     },
-    "descripcion": "SOLICITUD DE PAVIMENTACIÓN DEL CAMINO CARRETERA ACAPULCO- ZIHUATANEJO- COATAN",
+    "descripcion": "[Gestión] APOYO PARA LA CONSTRUCCIÓN DE UN PARQUE Y AULAS PARA UNA SECUNDARIA",
     "categoriaId": "servicios",
     "subcategorias": [
+      "Gestión",
       "Pavimentación"
     ],
     "tipo": "peticion",
     "urgencia": "media",
     "alcance": "colectivo",
     "comunitaria": true,
-    "cveMun": "057",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-028",
-    "folio": "2026-0601-TEC-0002",
-    "ciudadano": {
-      "id": "c-excel-028",
-      "nombre": "COMISARÍA HILARIA MAGAÑA LEON",
-      "telefono": "0000000000",
-      "cveMun": "057",
-      "domicilio": "EL CONSUELITO, MPIO TECPAN DE GALEANA"
-    },
-    "descripcion": "PAVIMENTACIÓN DEL CAMINO PRINCIPAL DE LA COMUNIDAD Y LA AMPLIACIÓN DEL SERVICIO ELEXTRICO",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Pavimentación"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "057",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-082",
-    "folio": "2026-0601-AYU-0001",
-    "ciudadano": {
-      "id": "c-excel-082",
-      "nombre": "GLORIA GONZALEZ VERGAS",
-      "telefono": "7451180551",
-      "cveMun": "012",
-      "domicilio": "AYUTLA DE LOS LIBRES"
-    },
-    "descripcion": "SOLICITA 1000 POSTES TUBULARES DE FIERRERO",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "012",
+    "cveMun": "085",
     "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-088",
-    "folio": "2026-0601-ATO-0001",
-    "ciudadano": {
-      "id": "c-excel-088",
-      "nombre": "GRUPO DE MESEROS, DAVID BRITO OCAMPO",
-      "telefono": "7441812795",
-      "cveMun": "011",
-      "domicilio": "SAN JERONIMO"
-    },
-    "descripcion": "APOYO ECONOMICO CON CHAROLAS",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "011",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-089",
-    "folio": "2026-0601-TEC-0003",
-    "ciudadano": {
-      "id": "c-excel-089",
-      "nombre": "MIGUEL SANTANA GALEANA",
-      "telefono": "74458379",
-      "cveMun": "057",
-      "domicilio": "EL SUCHIL, TECPAN DE GALEANA"
-    },
-    "descripcion": "APOYO CON MATERIAL PARA LA CONSTRUCCION DE VADOS",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "057",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-090",
-    "folio": "2026-0601-TEC-0004",
-    "ciudadano": {
-      "id": "c-excel-090",
-      "nombre": "ING. LETICIA BENÍTEZ ROSAS",
-      "telefono": "7421148204",
-      "cveMun": "057",
-      "domicilio": "LAS BARRANCAS MPIO. TECPAN DE GALEANA"
-    },
-    "descripcion": "APOYO ECONÓMICO (300,000 PESOS) PARA LA REALIZACIÓN DE UNA GRANJA PORCINA SUSTENTABLE.",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "057",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-102",
-    "folio": "2026-0601-ILI-0001",
-    "ciudadano": {
-      "id": "c-excel-102",
-      "nombre": "PROFR. HIGINIO BRUNO ABURTO",
-      "telefono": "7472754050",
-      "cveMun": "081",
-      "domicilio": "TLAHUITEPEC, MPIO ILIATENCO"
-    },
-    "descripcion": "APOYO ECONÓMICO PARA PAGAR LA MANO DE OBRA DEL ALBAÑIL ENCARGADO DE UNA OBRA EN NUESTRA INSTITUCIÓN",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "081",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-130",
-    "folio": "2026-0601-ATO-0002",
-    "ciudadano": {
-      "id": "c-excel-130",
-      "nombre": "MTRO. CUAUHTEMOC CONTRERAS JAVIER",
-      "telefono": "4435528460",
-      "cveMun": "011",
-      "domicilio": "ATOYAC  DE ALAVREZ"
-    },
-    "descripcion": "[Gestión] APOYO PARA REALIZAR GESTIONES NECESARIAS PARA EL DESARROLLO DEL PUEBLO (EL PUENTE DE CONDUCTO ENTRE NUESTRAS COMUNIDADES",
-    "categoriaId": "movilidad",
-    "subcategorias": [
-      "Gestión",
-      "Rutas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "011",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-132",
-    "folio": "2026-0601-TEC-0005",
-    "ciudadano": {
-      "id": "c-excel-132",
-      "nombre": "GESTOR PROCOLO ABARCA ABARCA",
-      "telefono": "7421146732",
-      "cveMun": "057",
-      "domicilio": "EL COBANO MPIO TECPAN DE GALEANA"
-    },
-    "descripcion": "[Gestión] CONSTRUCCIÓN DE UN PARQUE INTEGRAL",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Gestión",
-      "Pavimentación"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "057",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-133",
-    "folio": "2026-0601-COY-0001",
-    "ciudadano": {
-      "id": "c-excel-133",
-      "nombre": "SECRETARIO DE LA COMISARIA SERGIO BALDEMAR ROMERO CAMPOS",
-      "telefono": "0000000000",
-      "cveMun": "021",
-      "domicilio": "YETLA, MUNICIPIO DE COYUCA DE BENITEZ"
-    },
-    "descripcion": "[Gestión] EL DEZOLVE DEL ARROYO Y REHABILITACION DE TRAMO DE CARRECTERA",
-    "categoriaId": "tramites",
-    "subcategorias": [
-      "Gestión"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "021",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-134",
-    "folio": "2026-0601-TEC-0006",
-    "ciudadano": {
-      "id": "c-excel-134",
-      "nombre": "ARGENIS FAJARDO SOBERANIS",
-      "telefono": "7421031484",
-      "cveMun": "057",
-      "domicilio": "TECPAN DE GALEANA"
-    },
-    "descripcion": "[Gestión] APOYO PARA MEJORAR ESPACIOS RECREATIVOS EN LA COMUNIDAD",
-    "categoriaId": "tramites",
-    "subcategorias": [
-      "Gestión"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "057",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
+    "fechaEntrega": "2026-06-02",
+    "fechaCaptura": "2026-06-03T03:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4181,33 +3893,321 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "066",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-03T01:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-183",
-    "folio": "2026-0601-ACA-0001",
+    "id": "pet-excel-089",
+    "folio": "2026-0601-TEC-0003",
     "ciudadano": {
-      "id": "c-excel-183",
-      "nombre": "JUAN TERAN MARTINEZ",
-      "telefono": "7442056113",
-      "cveMun": "001",
-      "domicilio": "COL. INDUSTRIAL, ACAPULCO"
+      "id": "c-excel-089",
+      "nombre": "MIGUEL SANTANA GALEANA",
+      "telefono": "74458379",
+      "cveMun": "057",
+      "domicilio": "EL SUCHIL, TECPAN DE GALEANA"
     },
-    "descripcion": "APOYO DE JUGUETES PARA EL DIA DEL NIÑO",
+    "descripcion": "APOYO CON MATERIAL PARA LA CONSTRUCCION DE VADOS",
     "categoriaId": "social",
     "subcategorias": [
-      "Programas sociales"
+      "Despensas"
     ],
     "tipo": "peticion",
-    "urgencia": "baja",
+    "urgencia": "media",
     "alcance": "individual",
     "comunitaria": false,
-    "cveMun": "001",
+    "cveMun": "057",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-06-01",
+    "fechaCaptura": "2026-06-02T23:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-028",
+    "folio": "2026-0601-TEC-0002",
+    "ciudadano": {
+      "id": "c-excel-028",
+      "nombre": "COMISARÍA HILARIA MAGAÑA LEON",
+      "telefono": "0000000000",
+      "cveMun": "057",
+      "domicilio": "EL CONSUELITO, MPIO TECPAN DE GALEANA"
+    },
+    "descripcion": "PAVIMENTACIÓN DEL CAMINO PRINCIPAL DE LA COMUNIDAD Y LA AMPLIACIÓN DEL SERVICIO ELEXTRICO",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "057",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-01",
-    "fechaCaptura": "2026-06-01T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-02T22:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-102",
+    "folio": "2026-0601-ILI-0001",
+    "ciudadano": {
+      "id": "c-excel-102",
+      "nombre": "PROFR. HIGINIO BRUNO ABURTO",
+      "telefono": "7472754050",
+      "cveMun": "081",
+      "domicilio": "TLAHUITEPEC, MPIO ILIATENCO"
+    },
+    "descripcion": "APOYO ECONÓMICO PARA PAGAR LA MANO DE OBRA DEL ALBAÑIL ENCARGADO DE UNA OBRA EN NUESTRA INSTITUCIÓN",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "081",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-06-01",
+    "fechaCaptura": "2026-06-02T22:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-130",
+    "folio": "2026-0601-ATO-0002",
+    "ciudadano": {
+      "id": "c-excel-130",
+      "nombre": "MTRO. CUAUHTEMOC CONTRERAS JAVIER",
+      "telefono": "4435528460",
+      "cveMun": "011",
+      "domicilio": "ATOYAC  DE ALAVREZ"
+    },
+    "descripcion": "[Gestión] APOYO PARA REALIZAR GESTIONES NECESARIAS PARA EL DESARROLLO DEL PUEBLO (EL PUENTE DE CONDUCTO ENTRE NUESTRAS COMUNIDADES",
+    "categoriaId": "movilidad",
+    "subcategorias": [
+      "Gestión",
+      "Rutas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "011",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-06-01",
+    "fechaCaptura": "2026-06-02T17:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-082",
+    "folio": "2026-0601-AYU-0001",
+    "ciudadano": {
+      "id": "c-excel-082",
+      "nombre": "GLORIA GONZALEZ VERGAS",
+      "telefono": "7451180551",
+      "cveMun": "012",
+      "domicilio": "AYUTLA DE LOS LIBRES"
+    },
+    "descripcion": "SOLICITA 1000 POSTES TUBULARES DE FIERRERO",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "012",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-06-01",
+    "fechaCaptura": "2026-06-02T15:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-132",
+    "folio": "2026-0601-TEC-0005",
+    "ciudadano": {
+      "id": "c-excel-132",
+      "nombre": "GESTOR PROCOLO ABARCA ABARCA",
+      "telefono": "7421146732",
+      "cveMun": "057",
+      "domicilio": "EL COBANO MPIO TECPAN DE GALEANA"
+    },
+    "descripcion": "[Gestión] CONSTRUCCIÓN DE UN PARQUE INTEGRAL",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Gestión",
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "057",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-06-01",
+    "fechaCaptura": "2026-06-02T14:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-134",
+    "folio": "2026-0601-TEC-0006",
+    "ciudadano": {
+      "id": "c-excel-134",
+      "nombre": "ARGENIS FAJARDO SOBERANIS",
+      "telefono": "7421031484",
+      "cveMun": "057",
+      "domicilio": "TECPAN DE GALEANA"
+    },
+    "descripcion": "[Gestión] APOYO PARA MEJORAR ESPACIOS RECREATIVOS EN LA COMUNIDAD",
+    "categoriaId": "tramites",
+    "subcategorias": [
+      "Gestión"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "057",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-06-01",
+    "fechaCaptura": "2026-06-02T11:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-088",
+    "folio": "2026-0601-ATO-0001",
+    "ciudadano": {
+      "id": "c-excel-088",
+      "nombre": "GRUPO DE MESEROS, DAVID BRITO OCAMPO",
+      "telefono": "7441812795",
+      "cveMun": "011",
+      "domicilio": "SAN JERONIMO"
+    },
+    "descripcion": "APOYO ECONOMICO CON CHAROLAS",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "011",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-06-01",
+    "fechaCaptura": "2026-06-02T06:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-027",
+    "folio": "2026-0601-TEC-0001",
+    "ciudadano": {
+      "id": "c-excel-027",
+      "nombre": "COMISARIADO REVERIANO DOMÍNGUEZ VALDEZ",
+      "telefono": "7421120305",
+      "cveMun": "057",
+      "domicilio": "COATAN, MPIO. TECOAN DE GALEANA"
+    },
+    "descripcion": "SOLICITUD DE PAVIMENTACIÓN DEL CAMINO CARRETERA ACAPULCO- ZIHUATANEJO- COATAN",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "057",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-06-01",
+    "fechaCaptura": "2026-06-02T05:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-090",
+    "folio": "2026-0601-TEC-0004",
+    "ciudadano": {
+      "id": "c-excel-090",
+      "nombre": "ING. LETICIA BENÍTEZ ROSAS",
+      "telefono": "7421148204",
+      "cveMun": "057",
+      "domicilio": "LAS BARRANCAS MPIO. TECPAN DE GALEANA"
+    },
+    "descripcion": "APOYO ECONÓMICO (300,000 PESOS) PARA LA REALIZACIÓN DE UNA GRANJA PORCINA SUSTENTABLE.",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "057",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-06-01",
+    "fechaCaptura": "2026-06-02T03:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-152",
+    "folio": "2026-0531-PUN-0001",
+    "ciudadano": {
+      "id": "c-excel-152",
+      "nombre": "JOSE LUIS GARCIA",
+      "telefono": "7671078338",
+      "cveMun": "050",
+      "domicilio": "CD ALTAMIRANO"
+    },
+    "descripcion": "[Gestión] REMODELACIÓN DEL PARQUE Y MATERIAL PARA SUS AULAS DE CATESISMO",
+    "categoriaId": "tramites",
+    "subcategorias": [
+      "Gestión"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "050",
+    "eventoId": "ev-excel-nor",
+    "fechaEntrega": "2026-05-31",
+    "fechaCaptura": "2026-06-01T21:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-133",
+    "folio": "2026-0601-COY-0001",
+    "ciudadano": {
+      "id": "c-excel-133",
+      "nombre": "SECRETARIO DE LA COMISARIA SERGIO BALDEMAR ROMERO CAMPOS",
+      "telefono": "0000000000",
+      "cveMun": "021",
+      "domicilio": "YETLA, MUNICIPIO DE COYUCA DE BENITEZ"
+    },
+    "descripcion": "[Gestión] EL DEZOLVE DEL ARROYO Y REHABILITACION DE TRAMO DE CARRECTERA",
+    "categoriaId": "tramites",
+    "subcategorias": [
+      "Gestión"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "021",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-06-01",
+    "fechaCaptura": "2026-06-01T18:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4233,33 +4233,59 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "039",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-31",
-    "fechaCaptura": "2026-05-31T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-01T17:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-062",
-    "folio": "2026-0531-JUA-0002",
+    "id": "pet-excel-183",
+    "folio": "2026-0601-ACA-0001",
     "ciudadano": {
-      "id": "c-excel-062",
-      "nombre": "COMITÉ DE PADRES DE FAMILIA Y DIRECTORA GABRIELA MISTRAL",
-      "telefono": "0000000000",
-      "cveMun": "039",
-      "domicilio": "JUAN R.ESCUDERO"
+      "id": "c-excel-183",
+      "nombre": "JUAN TERAN MARTINEZ",
+      "telefono": "7442056113",
+      "cveMun": "001",
+      "domicilio": "COL. INDUSTRIAL, ACAPULCO"
     },
-    "descripcion": "APOYO ECONÓMICO PARA LA RESTAURACIÓN DEL PISO DE UN SALÓN DE CLASES",
+    "descripcion": "APOYO DE JUGUETES PARA EL DIA DEL NIÑO",
     "categoriaId": "social",
     "subcategorias": [
-      "Despensas"
+      "Programas sociales"
     ],
     "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "039",
-    "eventoId": "ev-excel-nor",
+    "urgencia": "baja",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-06-01",
+    "fechaCaptura": "2026-06-01T17:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-217",
+    "folio": "2026-0531-CGO-0002",
+    "ciudadano": {
+      "id": "c-excel-217",
+      "nombre": "HIGLABI GARCIA RAMOS",
+      "telefono": "7471506186",
+      "cveMun": "029",
+      "domicilio": "CHILPANCINGO"
+    },
+    "descripcion": "SOLICITA TRABAJO EN LA SECRETARIA DE SALUD DEL ESTADO",
+    "categoriaId": "salud",
+    "subcategorias": [
+      "Acceso a centros de salud"
+    ],
+    "tipo": "peticion",
+    "urgencia": "alta",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "029",
+    "eventoId": "ev-excel-cen",
     "fechaEntrega": "2026-05-31",
-    "fechaCaptura": "2026-05-31T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-01T16:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4285,34 +4311,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "011",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-31",
-    "fechaCaptura": "2026-05-31T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-118",
-    "folio": "2026-0531-CGO-0001",
-    "ciudadano": {
-      "id": "c-excel-118",
-      "nombre": "HIGLABI GARCIA RAMOS",
-      "telefono": "7471506186",
-      "cveMun": "029",
-      "domicilio": "CHILPANCINGO"
-    },
-    "descripcion": "[Gestión] SOLICITA TRABAJO EN LA SECRETARIA DE SALU DEL ESTADO",
-    "categoriaId": "empleo",
-    "subcategorias": [
-      "Gestión",
-      "Falta de empleo"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "029",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-05-31",
-    "fechaCaptura": "2026-05-31T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-01T14:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4339,33 +4338,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "037",
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-05-31",
-    "fechaCaptura": "2026-05-31T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-152",
-    "folio": "2026-0531-PUN-0001",
-    "ciudadano": {
-      "id": "c-excel-152",
-      "nombre": "JOSE LUIS GARCIA",
-      "telefono": "7671078338",
-      "cveMun": "050",
-      "domicilio": "CD ALTAMIRANO"
-    },
-    "descripcion": "[Gestión] REMODELACIÓN DEL PARQUE Y MATERIAL PARA SUS AULAS DE CATESISMO",
-    "categoriaId": "tramites",
-    "subcategorias": [
-      "Gestión"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "050",
-    "eventoId": "ev-excel-nor",
-    "fechaEntrega": "2026-05-31",
-    "fechaCaptura": "2026-05-31T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-01T10:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4393,7 +4366,164 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "coloniaId": "col-centro",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-31",
-    "fechaCaptura": "2026-05-31T15:00:00.000-06:00",
+    "fechaCaptura": "2026-06-01T10:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-062",
+    "folio": "2026-0531-JUA-0002",
+    "ciudadano": {
+      "id": "c-excel-062",
+      "nombre": "COMITÉ DE PADRES DE FAMILIA Y DIRECTORA GABRIELA MISTRAL",
+      "telefono": "0000000000",
+      "cveMun": "039",
+      "domicilio": "JUAN R.ESCUDERO"
+    },
+    "descripcion": "APOYO ECONÓMICO PARA LA RESTAURACIÓN DEL PISO DE UN SALÓN DE CLASES",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "039",
+    "eventoId": "ev-excel-nor",
+    "fechaEntrega": "2026-05-31",
+    "fechaCaptura": "2026-06-01T08:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-013",
+    "folio": "2026-0530-CUA-0001",
+    "ciudadano": {
+      "id": "c-excel-013",
+      "nombre": "LIC. ELEAZAR HERRERA GARCÍA",
+      "telefono": "7421377853",
+      "cveMun": "023",
+      "domicilio": "COLONIA MIGUEL ALEMÁN MPIO DE CUAJINICUILAPA"
+    },
+    "descripcion": "SOLICITUD DE CONSTRUCCIÓN DE SALÓN DE USUS MÚLTIPLES",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "023",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-06-01T02:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-124",
+    "folio": "2026-0530-CUA-0007",
+    "ciudadano": {
+      "id": "c-excel-124",
+      "nombre": "COMISARIO CONSTANCIO MARIN CALLEJA",
+      "telefono": "7411227872",
+      "cveMun": "023",
+      "domicilio": "CUAJINICUILAPA, SAN NICOLAS"
+    },
+    "descripcion": "[Gestión] SOLICITAN LA INSTALACION DE UN BANCO DEL BIENESTAR EN LA COMUNIDAD",
+    "categoriaId": "tramites",
+    "subcategorias": [
+      "Gestión"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "023",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-06-01T02:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-063",
+    "folio": "2026-0530-MOC-0001",
+    "ciudadano": {
+      "id": "c-excel-063",
+      "nombre": "ROGELIO REYES VALENZO",
+      "telefono": "7471848230",
+      "cveMun": "044",
+      "domicilio": "MOCHITLAN"
+    },
+    "descripcion": "APOYO CON DOS TONELADAS DE CENENTO PARA REALIZAR BACHEO DE CARRETERA",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "044",
+    "eventoId": "ev-excel-nor",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-06-01T01:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-076",
+    "folio": "2026-0530-AYU-0002",
+    "ciudadano": {
+      "id": "c-excel-076",
+      "nombre": "ADELA LOPEZ LOPEZ",
+      "telefono": "7411171688",
+      "cveMun": "012",
+      "domicilio": "ARROYO DE BARRANCA HONDA"
+    },
+    "descripcion": "APOYO PARA LA TERMINACION DE UNA CAPILLA",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "012",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-06-01T00:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-118",
+    "folio": "2026-0531-CGO-0001",
+    "ciudadano": {
+      "id": "c-excel-118",
+      "nombre": "HIGLABI GARCIA RAMOS",
+      "telefono": "7471506186",
+      "cveMun": "029",
+      "domicilio": "CHILPANCINGO"
+    },
+    "descripcion": "[Gestión] SOLICITA TRABAJO EN LA SECRETARIA DE SALU DEL ESTADO",
+    "categoriaId": "empleo",
+    "subcategorias": [
+      "Gestión",
+      "Falta de empleo"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "029",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-05-31",
+    "fechaCaptura": "2026-05-31T22:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4420,111 +4550,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-31",
-    "fechaCaptura": "2026-05-31T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-31T14:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-217",
-    "folio": "2026-0531-CGO-0002",
+    "id": "pet-excel-121",
+    "folio": "2026-0530-MAR-0002",
     "ciudadano": {
-      "id": "c-excel-217",
-      "nombre": "HIGLABI GARCIA RAMOS",
-      "telefono": "7471506186",
-      "cveMun": "029",
-      "domicilio": "CHILPANCINGO"
+      "id": "c-excel-121",
+      "nombre": "DEMETRIO RENDON FLORES",
+      "telefono": "7411516117",
+      "cveMun": "077",
+      "domicilio": "MARQUELIA"
     },
-    "descripcion": "SOLICITA TRABAJO EN LA SECRETARIA DE SALUD DEL ESTADO",
-    "categoriaId": "salud",
+    "descripcion": "[Gestión] APOYO PARA SOLUCIONAR INUNDACIONES EN LA CABECERA MUNICIPAL",
+    "categoriaId": "tramites",
     "subcategorias": [
-      "Acceso a centros de salud"
-    ],
-    "tipo": "peticion",
-    "urgencia": "alta",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "029",
-    "eventoId": "ev-excel-cen",
-    "fechaEntrega": "2026-05-31",
-    "fechaCaptura": "2026-05-31T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-012",
-    "folio": "2026-0530-AYU-0001",
-    "ciudadano": {
-      "id": "c-excel-012",
-      "nombre": "LIC. YADIRA NIETO ALARCON",
-      "telefono": "7411191450",
-      "cveMun": "012",
-      "domicilio": "PUNTA MALDONADO"
-    },
-    "descripcion": "APOYO PARA UN TELEBACHILLERATO COMUNITARIO, CONTRUCCION DE UN AULA Y BAÑO",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Pavimentación"
+      "Gestión"
     ],
     "tipo": "peticion",
     "urgencia": "media",
     "alcance": "individual",
     "comunitaria": false,
-    "cveMun": "012",
+    "cveMun": "077",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-013",
-    "folio": "2026-0530-CUA-0001",
-    "ciudadano": {
-      "id": "c-excel-013",
-      "nombre": "LIC. ELEAZAR HERRERA GARCÍA",
-      "telefono": "7421377853",
-      "cveMun": "023",
-      "domicilio": "COLONIA MIGUEL ALEMÁN MPIO DE CUAJINICUILAPA"
-    },
-    "descripcion": "SOLICITUD DE CONSTRUCCIÓN DE SALÓN DE USUS MÚLTIPLES",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Pavimentación"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "023",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-020",
-    "folio": "2026-0530-CUA-0002",
-    "ciudadano": {
-      "id": "c-excel-020",
-      "nombre": "REGIDORA MARIA NOYOLA MORGA",
-      "telefono": "0000000000",
-      "cveMun": "023",
-      "domicilio": "CUAJINICUILAPA, SAN NICOLAS"
-    },
-    "descripcion": "APOYO DE SISTEMA DE DRENAJE Y PAVIMENTACION",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Pavimentación"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "023",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-31T12:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4550,7 +4602,85 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-31T11:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-097",
+    "folio": "2026-0530-XOC-0002",
+    "ciudadano": {
+      "id": "c-excel-097",
+      "nombre": "JACINTO GERONIMO MARGARITA",
+      "telefono": "9541499591",
+      "cveMun": "071",
+      "domicilio": "XOCHISTLAHUACA"
+    },
+    "descripcion": "CONSTRUCCION DE UN BAÑO COMPLETO",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Despensas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "071",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-05-31T11:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-012",
+    "folio": "2026-0530-AYU-0001",
+    "ciudadano": {
+      "id": "c-excel-012",
+      "nombre": "LIC. YADIRA NIETO ALARCON",
+      "telefono": "7411191450",
+      "cveMun": "012",
+      "domicilio": "PUNTA MALDONADO"
+    },
+    "descripcion": "APOYO PARA UN TELEBACHILLERATO COMUNITARIO, CONTRUCCION DE UN AULA Y BAÑO",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "012",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-05-31T09:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-123",
+    "folio": "2026-0530-MAR-0003",
+    "ciudadano": {
+      "id": "c-excel-123",
+      "nombre": "MARIA DEL CARMEN SALGADO ROMERO",
+      "telefono": "7411009058",
+      "cveMun": "077",
+      "domicilio": "MARQUELIA"
+    },
+    "descripcion": "[Gestión] SEGUIMIENTO A LA CONSTRUCION DEL MERCADO MUNICIPAL",
+    "categoriaId": "tramites",
+    "subcategorias": [
+      "Gestión"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "077",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-05-31T09:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4576,21 +4706,21 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "023",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-31T08:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-061",
-    "folio": "2026-0530-TIX-0001",
+    "id": "pet-excel-099",
+    "folio": "2026-0530-XOC-0004",
     "ciudadano": {
-      "id": "c-excel-061",
-      "nombre": "ARNULFO GATICA MIRANDA",
-      "telefono": "7471218021",
-      "cveMun": "061",
-      "domicilio": "TIXTLA"
+      "id": "c-excel-099",
+      "nombre": "FABIOLA CARBAJAL VALTIERRA",
+      "telefono": "6242443347",
+      "cveMun": "071",
+      "domicilio": "XOCHISTLAHUACA"
     },
-    "descripcion": "APOYO PARA LA REALIZACIUON DE LA OBRA DE LA CASA DE JUBILADOS",
+    "descripcion": "APOYO DE UNA CONSTRUCCION DE VIVIENDA",
     "categoriaId": "social",
     "subcategorias": [
       "Despensas"
@@ -4599,36 +4729,10 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "urgencia": "media",
     "alcance": "individual",
     "comunitaria": false,
-    "cveMun": "061",
-    "eventoId": "ev-excel-nor",
+    "cveMun": "071",
+    "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-063",
-    "folio": "2026-0530-MOC-0001",
-    "ciudadano": {
-      "id": "c-excel-063",
-      "nombre": "ROGELIO REYES VALENZO",
-      "telefono": "7471848230",
-      "cveMun": "044",
-      "domicilio": "MOCHITLAN"
-    },
-    "descripcion": "APOYO CON DOS TONELADAS DE CENENTO PARA REALIZAR BACHEO DE CARRETERA",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "044",
-    "eventoId": "ev-excel-nor",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-31T08:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4654,21 +4758,74 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "036",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-31T07:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-076",
-    "folio": "2026-0530-AYU-0002",
+    "id": "pet-excel-186",
+    "folio": "2026-0530-ACA-0002",
     "ciudadano": {
-      "id": "c-excel-076",
-      "nombre": "ADELA LOPEZ LOPEZ",
-      "telefono": "7411171688",
-      "cveMun": "012",
-      "domicilio": "ARROYO DE BARRANCA HONDA"
+      "id": "c-excel-186",
+      "nombre": "ESCUELA MATUTINA \"EMPERADOR CUAUHTEMOC\"",
+      "telefono": "0000000000",
+      "cveMun": "001",
+      "domicilio": "COL. NUEVA LUZ, ACAPULCO"
     },
-    "descripcion": "APOYO PARA LA TERMINACION DE UNA CAPILLA",
+    "descripcion": "APOYO DE JUGUETES PARA EL DIA DEL NIÑO",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Programas sociales"
+    ],
+    "tipo": "peticion",
+    "urgencia": "baja",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-05-31T07:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-125",
+    "folio": "2026-0530-CUA-0008",
+    "ciudadano": {
+      "id": "c-excel-125",
+      "nombre": "REGIDOR ALEJANDRO CASTILLO MARIN",
+      "telefono": "9541333731",
+      "cveMun": "023",
+      "domicilio": "CUAJINICUILAPA, SAN NICOLAS"
+    },
+    "descripcion": "[Gestión] APOYO PARA UN HOSPITAL DEL BIENESTAR",
+    "categoriaId": "salud",
+    "subcategorias": [
+      "Gestión",
+      "Acceso a centros de salud"
+    ],
+    "tipo": "peticion",
+    "urgencia": "alta",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "023",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-05-31T06:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-101",
+    "folio": "2026-0530-ATO-0001",
+    "ciudadano": {
+      "id": "c-excel-101",
+      "nombre": "EPIGENIO TAPIA GERONIMO",
+      "telefono": "7411140373",
+      "cveMun": "011",
+      "domicilio": "CABEZA DE ARROYO CABALLO"
+    },
+    "descripcion": "INFRESTRUCTURA PARA LA CAPILLA",
     "categoriaId": "social",
     "subcategorias": [
       "Despensas"
@@ -4677,10 +4834,37 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "urgencia": "media",
     "alcance": "individual",
     "comunitaria": false,
-    "cveMun": "012",
-    "eventoId": "ev-excel-cch",
+    "cveMun": "011",
+    "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-31T05:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-138",
+    "folio": "2026-0530-XOC-0005",
+    "ciudadano": {
+      "id": "c-excel-138",
+      "nombre": "ANTEOGENES LOPEZ MERINO",
+      "telefono": "7411255026",
+      "cveMun": "071",
+      "domicilio": "XOCHISTLAHUACA"
+    },
+    "descripcion": "[Gestión] APOYO CON LA GESTION DE UN SISTEMA DE DRENAJE.",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Gestión",
+      "Drenaje"
+    ],
+    "tipo": "peticion",
+    "urgencia": "alta",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "071",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-05-31T05:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4706,7 +4890,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "077",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-31T04:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-140",
+    "folio": "2026-0530-ATO-0002",
+    "ciudadano": {
+      "id": "c-excel-140",
+      "nombre": "ANQUILINO ANTONIO TIBURCIO",
+      "telefono": "0000000000",
+      "cveMun": "011",
+      "domicilio": "ILIANTENCO"
+    },
+    "descripcion": "[Gestión] APOYO PARA UN CAMINO ARTESANAL",
+    "categoriaId": "tramites",
+    "subcategorias": [
+      "Gestión"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "011",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-05-31T02:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4732,7 +4942,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "023",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-31T01:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-187",
+    "folio": "2026-0529-IGU-0001",
+    "ciudadano": {
+      "id": "c-excel-187",
+      "nombre": "LIGA MUNICIPAL PREMIER DE VOLEIBOL DE IGUALA",
+      "telefono": "7331097950",
+      "cveMun": "035",
+      "domicilio": "IGUALA"
+    },
+    "descripcion": "270 JUGUETES DE NIÑAS, 215 JUGUETES DE NIÑAS",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Programas sociales"
+    ],
+    "tipo": "peticion",
+    "urgencia": "baja",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "035",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-05-29",
+    "fechaCaptura": "2026-05-31T00:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4758,7 +4994,86 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "085",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-30T22:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-155",
+    "folio": "2026-0530-CUA-0009",
+    "ciudadano": {
+      "id": "c-excel-155",
+      "nombre": "COMISARIO PEDRO LEAL GUZMÁN",
+      "telefono": "7811511022",
+      "cveMun": "023",
+      "domicilio": "EL TAMALE, CUAJINICUILAPA"
+    },
+    "descripcion": "LA TERMINACIÓN DE UN TRAMO DE CARRETERA, PERSONAL MÉDICO PARA EL CENTRO DE SALUD, SERVICIOS PÚBLICOS",
+    "categoriaId": "movilidad",
+    "subcategorias": [
+      "Rutas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "023",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-05-30T22:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-020",
+    "folio": "2026-0530-CUA-0002",
+    "ciudadano": {
+      "id": "c-excel-020",
+      "nombre": "REGIDORA MARIA NOYOLA MORGA",
+      "telefono": "0000000000",
+      "cveMun": "023",
+      "domicilio": "CUAJINICUILAPA, SAN NICOLAS"
+    },
+    "descripcion": "APOYO DE SISTEMA DE DRENAJE Y PAVIMENTACION",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "023",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-05-30T21:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-131",
+    "folio": "2026-0530-TEC-0001",
+    "ciudadano": {
+      "id": "c-excel-131",
+      "nombre": "VÍCTOR LAURENO ABARCA",
+      "telefono": "7421098075",
+      "cveMun": "057",
+      "domicilio": "EL SUCHIL, MPO. TECPAN DE GALEANA"
+    },
+    "descripcion": "[Gestión] MEJORAMIENTO DE LAS TUBERÍAS DE DRENAJE",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Gestión",
+      "Drenaje"
+    ],
+    "tipo": "peticion",
+    "urgencia": "alta",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "057",
+    "eventoId": "ev-excel-cgr",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-05-30T21:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4784,7 +5099,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "023",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-30T19:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-157",
+    "folio": "2026-0530-MOC-0002",
+    "ciudadano": {
+      "id": "c-excel-157",
+      "nombre": "ROGELIO REYES VALENZO",
+      "telefono": "7471848230",
+      "cveMun": "044",
+      "domicilio": "COAXTLAHUACAN, MOCHITLAN"
+    },
+    "descripcion": "APOYO PARA LA REALIZACIÓN DE UN ARRASTRE DE CARRETERA",
+    "categoriaId": "movilidad",
+    "subcategorias": [
+      "Rutas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "044",
+    "eventoId": "ev-excel-cen",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-05-30T19:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -4810,21 +5151,48 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "071",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-30T18:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-097",
-    "folio": "2026-0530-XOC-0002",
+    "id": "pet-excel-122",
+    "folio": "2026-0530-CUA-0006",
     "ciudadano": {
-      "id": "c-excel-097",
-      "nombre": "JACINTO GERONIMO MARGARITA",
-      "telefono": "9541499591",
-      "cveMun": "071",
-      "domicilio": "XOCHISTLAHUACA"
+      "id": "c-excel-122",
+      "nombre": "MARIA DE LOS ANGELES HERRERA",
+      "telefono": "7411275384",
+      "cveMun": "023",
+      "domicilio": "CUAJINICUILAPA"
     },
-    "descripcion": "CONSTRUCCION DE UN BAÑO COMPLETO",
+    "descripcion": "[Gestión] CAMION DE RECOLECCION DE BASURA",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Gestión",
+      "Recolección de basura"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "023",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-05-30",
+    "fechaCaptura": "2026-05-30T16:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-061",
+    "folio": "2026-0530-TIX-0001",
+    "ciudadano": {
+      "id": "c-excel-061",
+      "nombre": "ARNULFO GATICA MIRANDA",
+      "telefono": "7471218021",
+      "cveMun": "061",
+      "domicilio": "TIXTLA"
+    },
+    "descripcion": "APOYO PARA LA REALIZACIUON DE LA OBRA DE LA CASA DE JUBILADOS",
     "categoriaId": "social",
     "subcategorias": [
       "Despensas"
@@ -4833,8 +5201,8 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "urgencia": "media",
     "alcance": "individual",
     "comunitaria": false,
-    "cveMun": "071",
-    "eventoId": "ev-excel-cgr",
+    "cveMun": "061",
+    "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
     "estatus": "capturada",
@@ -4867,374 +5235,6 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-099",
-    "folio": "2026-0530-XOC-0004",
-    "ciudadano": {
-      "id": "c-excel-099",
-      "nombre": "FABIOLA CARBAJAL VALTIERRA",
-      "telefono": "6242443347",
-      "cveMun": "071",
-      "domicilio": "XOCHISTLAHUACA"
-    },
-    "descripcion": "APOYO DE UNA CONSTRUCCION DE VIVIENDA",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "071",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-101",
-    "folio": "2026-0530-ATO-0001",
-    "ciudadano": {
-      "id": "c-excel-101",
-      "nombre": "EPIGENIO TAPIA GERONIMO",
-      "telefono": "7411140373",
-      "cveMun": "011",
-      "domicilio": "CABEZA DE ARROYO CABALLO"
-    },
-    "descripcion": "INFRESTRUCTURA PARA LA CAPILLA",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Despensas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "011",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-121",
-    "folio": "2026-0530-MAR-0002",
-    "ciudadano": {
-      "id": "c-excel-121",
-      "nombre": "DEMETRIO RENDON FLORES",
-      "telefono": "7411516117",
-      "cveMun": "077",
-      "domicilio": "MARQUELIA"
-    },
-    "descripcion": "[Gestión] APOYO PARA SOLUCIONAR INUNDACIONES EN LA CABECERA MUNICIPAL",
-    "categoriaId": "tramites",
-    "subcategorias": [
-      "Gestión"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "077",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-122",
-    "folio": "2026-0530-CUA-0006",
-    "ciudadano": {
-      "id": "c-excel-122",
-      "nombre": "MARIA DE LOS ANGELES HERRERA",
-      "telefono": "7411275384",
-      "cveMun": "023",
-      "domicilio": "CUAJINICUILAPA"
-    },
-    "descripcion": "[Gestión] CAMION DE RECOLECCION DE BASURA",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Gestión",
-      "Recolección de basura"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "023",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-123",
-    "folio": "2026-0530-MAR-0003",
-    "ciudadano": {
-      "id": "c-excel-123",
-      "nombre": "MARIA DEL CARMEN SALGADO ROMERO",
-      "telefono": "7411009058",
-      "cveMun": "077",
-      "domicilio": "MARQUELIA"
-    },
-    "descripcion": "[Gestión] SEGUIMIENTO A LA CONSTRUCION DEL MERCADO MUNICIPAL",
-    "categoriaId": "tramites",
-    "subcategorias": [
-      "Gestión"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "077",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-124",
-    "folio": "2026-0530-CUA-0007",
-    "ciudadano": {
-      "id": "c-excel-124",
-      "nombre": "COMISARIO CONSTANCIO MARIN CALLEJA",
-      "telefono": "7411227872",
-      "cveMun": "023",
-      "domicilio": "CUAJINICUILAPA, SAN NICOLAS"
-    },
-    "descripcion": "[Gestión] SOLICITAN LA INSTALACION DE UN BANCO DEL BIENESTAR EN LA COMUNIDAD",
-    "categoriaId": "tramites",
-    "subcategorias": [
-      "Gestión"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "023",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-125",
-    "folio": "2026-0530-CUA-0008",
-    "ciudadano": {
-      "id": "c-excel-125",
-      "nombre": "REGIDOR ALEJANDRO CASTILLO MARIN",
-      "telefono": "9541333731",
-      "cveMun": "023",
-      "domicilio": "CUAJINICUILAPA, SAN NICOLAS"
-    },
-    "descripcion": "[Gestión] APOYO PARA UN HOSPITAL DEL BIENESTAR",
-    "categoriaId": "salud",
-    "subcategorias": [
-      "Gestión",
-      "Acceso a centros de salud"
-    ],
-    "tipo": "peticion",
-    "urgencia": "alta",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "023",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-131",
-    "folio": "2026-0530-TEC-0001",
-    "ciudadano": {
-      "id": "c-excel-131",
-      "nombre": "VÍCTOR LAURENO ABARCA",
-      "telefono": "7421098075",
-      "cveMun": "057",
-      "domicilio": "EL SUCHIL, MPO. TECPAN DE GALEANA"
-    },
-    "descripcion": "[Gestión] MEJORAMIENTO DE LAS TUBERÍAS DE DRENAJE",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Gestión",
-      "Drenaje"
-    ],
-    "tipo": "peticion",
-    "urgencia": "alta",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "057",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-138",
-    "folio": "2026-0530-XOC-0005",
-    "ciudadano": {
-      "id": "c-excel-138",
-      "nombre": "ANTEOGENES LOPEZ MERINO",
-      "telefono": "7411255026",
-      "cveMun": "071",
-      "domicilio": "XOCHISTLAHUACA"
-    },
-    "descripcion": "[Gestión] APOYO CON LA GESTION DE UN SISTEMA DE DRENAJE.",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Gestión",
-      "Drenaje"
-    ],
-    "tipo": "peticion",
-    "urgencia": "alta",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "071",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-140",
-    "folio": "2026-0530-ATO-0002",
-    "ciudadano": {
-      "id": "c-excel-140",
-      "nombre": "ANQUILINO ANTONIO TIBURCIO",
-      "telefono": "0000000000",
-      "cveMun": "011",
-      "domicilio": "ILIANTENCO"
-    },
-    "descripcion": "[Gestión] APOYO PARA UN CAMINO ARTESANAL",
-    "categoriaId": "tramites",
-    "subcategorias": [
-      "Gestión"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "011",
-    "eventoId": "ev-excel-cgr",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-155",
-    "folio": "2026-0530-CUA-0009",
-    "ciudadano": {
-      "id": "c-excel-155",
-      "nombre": "COMISARIO PEDRO LEAL GUZMÁN",
-      "telefono": "7811511022",
-      "cveMun": "023",
-      "domicilio": "EL TAMALE, CUAJINICUILAPA"
-    },
-    "descripcion": "LA TERMINACIÓN DE UN TRAMO DE CARRETERA, PERSONAL MÉDICO PARA EL CENTRO DE SALUD, SERVICIOS PÚBLICOS",
-    "categoriaId": "movilidad",
-    "subcategorias": [
-      "Rutas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "023",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-157",
-    "folio": "2026-0530-MOC-0002",
-    "ciudadano": {
-      "id": "c-excel-157",
-      "nombre": "ROGELIO REYES VALENZO",
-      "telefono": "7471848230",
-      "cveMun": "044",
-      "domicilio": "COAXTLAHUACAN, MOCHITLAN"
-    },
-    "descripcion": "APOYO PARA LA REALIZACIÓN DE UN ARRASTRE DE CARRETERA",
-    "categoriaId": "movilidad",
-    "subcategorias": [
-      "Rutas"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "044",
-    "eventoId": "ev-excel-cen",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-186",
-    "folio": "2026-0530-ACA-0002",
-    "ciudadano": {
-      "id": "c-excel-186",
-      "nombre": "ESCUELA MATUTINA \"EMPERADOR CUAUHTEMOC\"",
-      "telefono": "0000000000",
-      "cveMun": "001",
-      "domicilio": "COL. NUEVA LUZ, ACAPULCO"
-    },
-    "descripcion": "APOYO DE JUGUETES PARA EL DIA DEL NIÑO",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Programas sociales"
-    ],
-    "tipo": "peticion",
-    "urgencia": "baja",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-05-30",
-    "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-187",
-    "folio": "2026-0529-IGU-0001",
-    "ciudadano": {
-      "id": "c-excel-187",
-      "nombre": "LIGA MUNICIPAL PREMIER DE VOLEIBOL DE IGUALA",
-      "telefono": "7331097950",
-      "cveMun": "035",
-      "domicilio": "IGUALA"
-    },
-    "descripcion": "270 JUGUETES DE NIÑAS, 215 JUGUETES DE NIÑAS",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Programas sociales"
-    ],
-    "tipo": "peticion",
-    "urgencia": "baja",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "035",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-05-29",
-    "fechaCaptura": "2026-05-29T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
     "id": "pet-excel-126",
     "folio": "2026-0528-OME-0001",
     "ciudadano": {
@@ -5256,7 +5256,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "046",
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-28",
-    "fechaCaptura": "2026-05-28T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-29T23:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -5282,59 +5282,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "079",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-28",
-    "fechaCaptura": "2026-05-28T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-022",
-    "folio": "2026-0527-XOC-0001",
-    "ciudadano": {
-      "id": "c-excel-022",
-      "nombre": "DELEGACION JUNTA DE ARROYO BLANQUILLO",
-      "telefono": "7411265263",
-      "cveMun": "071",
-      "domicilio": "XOCHISTLAHUACA"
-    },
-    "descripcion": "APOYO DE LA PAVIMENTACIÓN DE LA CALLE PRINCIPAL, LA CONSTRUCCION DE UNA CASA DEL PUEBLO PARA LAS ACTIVIDADES DE LA COMUNIDAD",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Pavimentación"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "colectivo",
-    "comunitaria": true,
-    "cveMun": "071",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-05-27",
-    "fechaCaptura": "2026-05-27T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-029",
-    "folio": "2026-0527-ACA-0001",
-    "ciudadano": {
-      "id": "c-excel-029",
-      "nombre": "DELEGADO RAUL NIÑO DE JESUS",
-      "telefono": "7411075216",
-      "cveMun": "001",
-      "domicilio": "CABEZA DE ARROYO GRANIZO"
-    },
-    "descripcion": "APOYO PARA PAVIMENTACIÓN CON CAMINO ARTESANAL PARA EL TRAMO PLAN DE PIERNA A LA CABEZA DE ARROYO GRANIZO",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Pavimentación"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-05-27",
-    "fechaCaptura": "2026-05-27T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-29T04:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -5361,7 +5309,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "071",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-27",
-    "fechaCaptura": "2026-05-27T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-28T22:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -5387,33 +5335,59 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-27",
-    "fechaCaptura": "2026-05-27T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-28T21:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
   {
-    "id": "pet-excel-159",
-    "folio": "2026-0526-AZO-0001",
+    "id": "pet-excel-029",
+    "folio": "2026-0527-ACA-0001",
     "ciudadano": {
-      "id": "c-excel-159",
-      "nombre": "PROFR MIREN GUADALUPE PELÁEZ VIDAL",
-      "telefono": "0000000000",
-      "cveMun": "013",
-      "domicilio": "HUEHUETAN MPIO AZOYÚ"
+      "id": "c-excel-029",
+      "nombre": "DELEGADO RAUL NIÑO DE JESUS",
+      "telefono": "7411075216",
+      "cveMun": "001",
+      "domicilio": "CABEZA DE ARROYO GRANIZO"
     },
-    "descripcion": "SOLICITUD DE NOMBRAMIENTO ILIMITADO",
-    "categoriaId": "movilidad",
+    "descripcion": "APOYO PARA PAVIMENTACIÓN CON CAMINO ARTESANAL PARA EL TRAMO PLAN DE PIERNA A LA CABEZA DE ARROYO GRANIZO",
+    "categoriaId": "servicios",
     "subcategorias": [
-      "Rutas"
+      "Pavimentación"
     ],
     "tipo": "peticion",
     "urgencia": "media",
     "alcance": "individual",
     "comunitaria": false,
-    "cveMun": "013",
-    "eventoId": "ev-excel-cch",
-    "fechaEntrega": "2026-05-26",
-    "fechaCaptura": "2026-05-26T15:00:00.000-06:00",
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-05-27",
+    "fechaCaptura": "2026-05-28T02:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-022",
+    "folio": "2026-0527-XOC-0001",
+    "ciudadano": {
+      "id": "c-excel-022",
+      "nombre": "DELEGACION JUNTA DE ARROYO BLANQUILLO",
+      "telefono": "7411265263",
+      "cveMun": "071",
+      "domicilio": "XOCHISTLAHUACA"
+    },
+    "descripcion": "APOYO DE LA PAVIMENTACIÓN DE LA CALLE PRINCIPAL, LA CONSTRUCCION DE UNA CASA DEL PUEBLO PARA LAS ACTIVIDADES DE LA COMUNIDAD",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "colectivo",
+    "comunitaria": true,
+    "cveMun": "071",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-05-27",
+    "fechaCaptura": "2026-05-27T18:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -5440,7 +5414,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-26",
-    "fechaCaptura": "2026-05-26T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-27T01:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -5467,6 +5441,58 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-25",
+    "fechaCaptura": "2026-05-26T18:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-159",
+    "folio": "2026-0526-AZO-0001",
+    "ciudadano": {
+      "id": "c-excel-159",
+      "nombre": "PROFR MIREN GUADALUPE PELÁEZ VIDAL",
+      "telefono": "0000000000",
+      "cveMun": "013",
+      "domicilio": "HUEHUETAN MPIO AZOYÚ"
+    },
+    "descripcion": "SOLICITUD DE NOMBRAMIENTO ILIMITADO",
+    "categoriaId": "movilidad",
+    "subcategorias": [
+      "Rutas"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "013",
+    "eventoId": "ev-excel-cch",
+    "fechaEntrega": "2026-05-26",
+    "fechaCaptura": "2026-05-26T16:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-193",
+    "folio": "2026-0524-ACA-0002",
+    "ciudadano": {
+      "id": "c-excel-193",
+      "nombre": "ALBERTA GARCIA MORALES",
+      "telefono": "7444638751",
+      "cveMun": "001",
+      "domicilio": "KM. 34, ACAPULCO"
+    },
+    "descripcion": "APOYO PARA EL DIA DE LAS MADRES 8 DE MAYO",
+    "categoriaId": "social",
+    "subcategorias": [
+      "Programas sociales"
+    ],
+    "tipo": "peticion",
+    "urgencia": "baja",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-05-24",
     "fechaCaptura": "2026-05-25T15:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
@@ -5493,33 +5519,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-24",
-    "fechaCaptura": "2026-05-24T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-193",
-    "folio": "2026-0524-ACA-0002",
-    "ciudadano": {
-      "id": "c-excel-193",
-      "nombre": "ALBERTA GARCIA MORALES",
-      "telefono": "7444638751",
-      "cveMun": "001",
-      "domicilio": "KM. 34, ACAPULCO"
-    },
-    "descripcion": "APOYO PARA EL DIA DE LAS MADRES 8 DE MAYO",
-    "categoriaId": "social",
-    "subcategorias": [
-      "Programas sociales"
-    ],
-    "tipo": "peticion",
-    "urgencia": "baja",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-05-24",
-    "fechaCaptura": "2026-05-24T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-24T22:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -5546,7 +5546,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "028",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-23",
-    "fechaCaptura": "2026-05-23T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-23T19:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -5573,7 +5573,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-22",
-    "fechaCaptura": "2026-05-22T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-23T12:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -5600,7 +5600,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "001",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-21",
-    "fechaCaptura": "2026-05-21T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-21T16:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -5626,7 +5626,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "038",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-20",
-    "fechaCaptura": "2026-05-20T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-21T09:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -5652,33 +5652,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "038",
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-19",
-    "fechaCaptura": "2026-05-19T15:00:00.000-06:00",
-    "estatus": "capturada",
-    "documentoUrl": ""
-  },
-  {
-    "id": "pet-excel-216",
-    "folio": "2026-0518-ACA-0001",
-    "ciudadano": {
-      "id": "c-excel-216",
-      "nombre": "MARIA ESTHER CAMPOS",
-      "telefono": "3444660769",
-      "cveMun": "001",
-      "domicilio": "COL. LLANO LARGO"
-    },
-    "descripcion": "APOYO CON PAVIMENTACIÓN DE LA CALLE NARNJO #150",
-    "categoriaId": "servicios",
-    "subcategorias": [
-      "Pavimentación"
-    ],
-    "tipo": "peticion",
-    "urgencia": "media",
-    "alcance": "individual",
-    "comunitaria": false,
-    "cveMun": "001",
-    "eventoId": "ev-excel-aca",
-    "fechaEntrega": "2026-05-18",
-    "fechaCaptura": "2026-05-18T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-21T02:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   },
@@ -5704,7 +5678,33 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "cveMun": "071",
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-17",
-    "fechaCaptura": "2026-05-17T15:00:00.000-06:00",
+    "fechaCaptura": "2026-05-19T01:00:00.000-06:00",
+    "estatus": "capturada",
+    "documentoUrl": ""
+  },
+  {
+    "id": "pet-excel-216",
+    "folio": "2026-0518-ACA-0001",
+    "ciudadano": {
+      "id": "c-excel-216",
+      "nombre": "MARIA ESTHER CAMPOS",
+      "telefono": "3444660769",
+      "cveMun": "001",
+      "domicilio": "COL. LLANO LARGO"
+    },
+    "descripcion": "APOYO CON PAVIMENTACIÓN DE LA CALLE NARNJO #150",
+    "categoriaId": "servicios",
+    "subcategorias": [
+      "Pavimentación"
+    ],
+    "tipo": "peticion",
+    "urgencia": "media",
+    "alcance": "individual",
+    "comunitaria": false,
+    "cveMun": "001",
+    "eventoId": "ev-excel-aca",
+    "fechaEntrega": "2026-05-18",
+    "fechaCaptura": "2026-05-18T23:00:00.000-06:00",
     "estatus": "capturada",
     "documentoUrl": ""
   }

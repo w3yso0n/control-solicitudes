@@ -1,6 +1,7 @@
 "use client";
 
 import { CATEGORIA_POR_ID } from "@/lib/catalogos";
+import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import {
   ALTO_MAPA,
   ANCHO_MAPA,
@@ -30,6 +31,10 @@ const LEYENDA = [
   { pct: 100, color: "#8f1d12" },
 ];
 
+const REGION_POR_CVE = Object.fromEntries(
+  MUNICIPIOS_GUERRERO.map((m) => [m.cveMun, m.region]),
+) as Record<string, string>;
+
 type Tooltip = {
   x: number;
   y: number;
@@ -41,10 +46,12 @@ export default function GuerreroMap({
   scores,
   peticiones,
   onMunicipioClick,
+  regionResaltada = null,
 }: {
   scores: ItcScore[];
   peticiones: Peticion[];
   onMunicipioClick?: (cveMun: string, nombre: string) => void;
+  regionResaltada?: string | null;
 }) {
   const [features, setFeatures] = useState<MunicipioFeature[] | null>(null);
   const [error, setError] = useState(false);
@@ -82,13 +89,20 @@ export default function GuerreroMap({
 
     let puntos: { x: number; y: number }[] = [];
     if (capa !== "temp") {
-      const byMunFeature = new Map(features.map((f) => [f.properties.cveMun, f]));
-      const items = peticiones.map((p) => ({ cveMun: p.cveMun, item: p }));
+      const byMunFeature = new Map(
+        features.map((f) => [f.properties.cveMun, f]),
+      );
+      const items = peticiones
+        .filter(
+          (p) =>
+            !regionResaltada || REGION_POR_CVE[p.cveMun] === regionResaltada,
+        )
+        .map((p) => ({ cveMun: p.cveMun, item: p }));
       puntos = muestrearPuntos(items, byMunFeature, proyeccion);
     }
 
     return { proyeccion, path, paths, puntos };
-  }, [features, peticiones, capa]);
+  }, [features, peticiones, capa, regionResaltada]);
 
   if (error) {
     return (
@@ -107,24 +121,34 @@ export default function GuerreroMap({
   }
 
   const dotColor = capa === "points" ? "#c8215f" : "#201e1d";
+  const hayResalte = Boolean(regionResaltada);
 
   return (
     <div ref={containerRef} className="relative flex h-full min-h-0 flex-col">
-      <div className="flex shrink-0 items-center justify-end gap-1 border-b border-zinc-100 px-2.5 py-1.5">
-        {CAPAS.map((c) => (
-          <button
-            key={c.id}
-            type="button"
-            onClick={() => setCapa(c.id)}
-            className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide transition-colors ${
-              capa === c.id
-                ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(122,18,51,0.5)]"
-                : "text-zinc-500 hover:bg-zinc-100"
-            }`}
-          >
-            {c.label}
-          </button>
-        ))}
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-zinc-100 px-2.5 py-1.5">
+        {hayResalte ? (
+          <p className="truncate text-[11px] font-medium text-guinda">
+            Región: {regionResaltada}
+          </p>
+        ) : (
+          <span />
+        )}
+        <div className="flex items-center gap-1">
+          {CAPAS.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => setCapa(c.id)}
+              className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide transition-colors ${
+                capa === c.id
+                  ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(122,18,51,0.5)]"
+                  : "text-zinc-500 hover:bg-zinc-100"
+              }`}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="relative min-h-0 flex-1">
@@ -136,7 +160,9 @@ export default function GuerreroMap({
         >
           {paths.map((p) => {
             const itc = byMun.get(p.cveMun);
-            const fill =
+            const enRegion =
+              !hayResalte || REGION_POR_CVE[p.cveMun] === regionResaltada;
+            const fillBase =
               capa === "points"
                 ? COLOR_SIN_DATOS
                 : itc?.score != null
@@ -146,10 +172,11 @@ export default function GuerreroMap({
               <path
                 key={p.cveMun}
                 d={p.d}
-                fill={fill}
-                stroke="#f3f2f2"
-                strokeWidth={0.7}
-                className="cursor-pointer transition-[stroke-width] duration-150"
+                fill={fillBase}
+                fillOpacity={hayResalte ? (enRegion ? 1 : 0.18) : 1}
+                stroke={enRegion && hayResalte ? "#7A1233" : "#f3f2f2"}
+                strokeWidth={enRegion && hayResalte ? 1.5 : 0.7}
+                className="cursor-pointer transition-[fill-opacity,stroke-width] duration-200"
                 onMouseMove={(e) => {
                   const rect = containerRef.current?.getBoundingClientRect();
                   if (!rect) return;
@@ -164,8 +191,14 @@ export default function GuerreroMap({
                   e.currentTarget.setAttribute("stroke-width", "1.4");
                 }}
                 onMouseOut={(e) => {
-                  e.currentTarget.setAttribute("stroke", "#f3f2f2");
-                  e.currentTarget.setAttribute("stroke-width", "0.7");
+                  e.currentTarget.setAttribute(
+                    "stroke",
+                    enRegion && hayResalte ? "#7A1233" : "#f3f2f2",
+                  );
+                  e.currentTarget.setAttribute(
+                    "stroke-width",
+                    enRegion && hayResalte ? "1.5" : "0.7",
+                  );
                 }}
                 onClick={() => onMunicipioClick?.(p.cveMun, p.nombre)}
               />

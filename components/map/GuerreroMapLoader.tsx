@@ -16,6 +16,7 @@ export default function GuerreroMapLoader(props: {
   scores: ItcScore[];
   peticiones: Peticion[];
   onMunicipioClick?: (cveMun: string, nombre: string) => void;
+  regionResaltada?: string | null;
 }) {
   return <GuerreroMap {...props} />;
 }

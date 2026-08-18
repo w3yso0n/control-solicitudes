@@ -8,7 +8,7 @@ import {
   MUNICIPIO_POR_CVE,
   MUNICIPIOS_FOCO,
 } from "@/lib/catalogos";
-import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
+import { MUNICIPIOS_GUERRERO, type RegionGuerrero } from "@/lib/geografia-guerrero";
 import {
   calcularItcPorMunicipio,
   filtrarPorPeriodo,
@@ -18,7 +18,7 @@ import { useStore } from "@/lib/store";
 import type { PeriodoFiltro } from "@/lib/types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 const PERIODOS: { id: PeriodoFiltro; label: string }[] = [
   { id: "7", label: "7 días" },
@@ -97,7 +97,11 @@ function KpiCard({
 export default function DashboardPage() {
   const { peticiones, lotes } = useStore();
   const router = useRouter();
-  const [periodo, setPeriodo] = useState<PeriodoFiltro>("30");
+  // Acumulado por defecto: la demo Excel se ve completa en los KPIs.
+  const [periodo, setPeriodo] = useState<PeriodoFiltro>("acumulado");
+  const [regionResaltada, setRegionResaltada] =
+    useState<RegionGuerrero | null>(null);
+  const mapaRef = useRef<HTMLDivElement>(null);
 
   const filtradas = useMemo(
     () => filtrarPorPeriodo(peticiones, periodo),
@@ -112,29 +116,34 @@ export default function DashboardPage() {
     return calcularItcPorMunicipio(filtradas, [...claves]);
   }, [filtradas]);
 
-  const backlog = lotes
+  const totalMunicipios = MUNICIPIOS_GUERRERO.length;
+  const municipiosActivos = new Set(filtradas.map((p) => p.cveMun)).size;
+  const zonasBlanco = totalMunicipios - municipiosActivos;
+
+  const comunitarias = filtradas.filter((p) => p.comunitaria).length;
+
+  const conTelefono = filtradas.filter(
+    (p) => p.ciudadano.telefono && p.ciudadano.telefono !== "0000000000",
+  );
+  const sinTelefono = filtradas.length - conTelefono.length;
+  // En la demo Excel no hay envío real: cobertura = % con teléfono usable.
+  const waPct =
+    filtradas.length > 0
+      ? Math.round((conTelefono.length / filtradas.length) * 100)
+      : 0;
+
+  // Backlog operativo: docs pendientes en lotes + peticiones del Excel sin teléfono
+  // (no se puede cerrar el ciclo WhatsApp).
+  const backlogLotes = lotes
     .filter((l) => l.estatus === "cerrado")
     .flatMap((l) => l.documentos)
     .filter((d) => d.estatus === "pendiente").length;
-
-  const comunitarias = filtradas.filter((p) => p.comunitaria).length;
-  const zonasBlanco = 85 - new Set(filtradas.map((p) => p.cveMun)).size;
-
-  const waEnviables = filtradas.filter(
-    (p) => p.ciudadano.telefono && p.ciudadano.telefono !== "0000000000",
-  ).length;
-  const waEntregados = filtradas.filter((p) => {
-    const tel = p.ciudadano.telefono;
-    if (!tel || tel === "0000000000") return false;
-    return !p.folio.endsWith("0000");
-  }).length;
-  const waPct =
-    waEnviables > 0 ? Math.round((waEntregados / waEnviables) * 100) : 0;
+  const backlog = backlogLotes + sinTelefono;
 
   const horasAFolio = (() => {
     if (filtradas.length === 0) return null;
     const horas = filtradas.map((p) => {
-      const entrega = new Date(`${p.fechaEntrega}T12:00:00-06:00`).getTime();
+      const entrega = new Date(`${p.fechaEntrega}T08:00:00-06:00`).getTime();
       const captura = new Date(p.fechaCaptura).getTime();
       return Math.max(0, (captura - entrega) / 36e5);
     });
@@ -168,17 +177,32 @@ export default function DashboardPage() {
     router.push(`/peticiones?municipio=${cveMun}`);
   }
 
+  function verPeticionesPorCategoria(categoriaId: string) {
+    router.push(`/peticiones?categoria=${categoriaId}`);
+  }
+
+  function resaltarRegion(region: RegionGuerrero) {
+    setRegionResaltada((prev) => (prev === region ? null : region));
+    mapaRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
   const kpis = [
     {
       label: "Peticiones en el periodo",
       value: String(filtradas.length),
-      hint: "Capturadas y con folio",
+      hint:
+        periodo === "acumulado"
+          ? `${municipiosActivos} municipios con datos`
+          : "Capturadas y con folio",
       tone: "default" as const,
     },
     {
-      label: "Documentos sin capturar",
+      label: "Sin teléfono / pendientes",
       value: String(backlog),
-      hint: backlog === 0 ? "Bandeja al día" : "Documentos en cola",
+      hint:
+        backlog === 0
+          ? "Bandeja al día"
+          : `${sinTelefono} sin tel. · ${backlogLotes} pendientes`,
       tone: backlog > 0 ? ("warn" as const) : ("ok" as const),
     },
     {
@@ -188,9 +212,9 @@ export default function DashboardPage() {
       tone: "default" as const,
     },
     {
-      label: "WhatsApp entregados",
+      label: "Cobertura WhatsApp",
       value: `${waPct}%`,
-      hint: `${waEntregados} de ${waEnviables} acuses`,
+      hint: `${conTelefono.length} de ${filtradas.length} con teléfono`,
       tone: "whatsapp" as const,
     },
     {
@@ -203,9 +227,9 @@ export default function DashboardPage() {
       tone: "magenta" as const,
     },
     {
-      label: "Zonas en blanco",
+      label: "Regiones en blanco",
       value: String(zonasBlanco),
-      hint: "Municipios sin peticiones",
+      hint: `${municipiosActivos} de ${totalMunicipios} municipios activos`,
       tone: "default" as const,
     },
   ];
@@ -272,17 +296,21 @@ export default function DashboardPage() {
 
       <div className="grid gap-3 lg:grid-cols-3">
         <Card className="overflow-hidden lg:col-span-2">
-          <div className="border-b border-zinc-100 px-4 py-2.5">
+          <div ref={mapaRef} className="border-b border-zinc-100 px-4 py-2.5">
             <p className="text-sm font-medium">Índice de Temperatura Ciudadana</p>
             <p className="text-[11px] text-zinc-400">
               Vol ·40 / Urg ·25 / Col ·20 / Div ·15 — clic en un municipio para
               ver sus peticiones
+              {regionResaltada
+                ? ` · resaltando ${regionResaltada} (clic de nuevo en la región para quitar)`
+                : ""}
             </p>
           </div>
           <div className="aspect-[980/620] w-full sm:aspect-[980/540]">
             <GuerreroMapLoader
               scores={scores}
               peticiones={filtradas}
+              regionResaltada={regionResaltada}
               onMunicipioClick={(cveMun) => verPeticionesDe(cveMun)}
             />
           </div>
@@ -296,36 +324,49 @@ export default function DashboardPage() {
             <p className="mt-0.5 text-sm font-semibold text-zinc-900">
               Top categorías del periodo
             </p>
+            <p className="mt-0.5 text-[11px] text-zinc-400">
+              Clic en una categoría para ver sus peticiones
+            </p>
             <ul className="mt-3 space-y-2">
               {distribucion.slice(0, 6).map((cat, i) => {
                 const max = Math.max(1, distribucion[0]?.count ?? 1);
                 const pct = (cat.count / max) * 100;
                 return (
                   <li key={cat.id}>
-                    <div className="mb-0.5 flex items-baseline justify-between gap-3">
-                      <div className="flex min-w-0 items-center gap-2">
-                        <span className="truncate text-sm font-medium text-zinc-800">
-                          {cat.nombre}
-                        </span>
-                        {cat.comun ? (
-                          <span className="shrink-0 rounded-full bg-gradient-to-r from-guinda to-magenta px-2 py-0.5 text-[10px] font-semibold tracking-wide text-white">
-                            COMUN.
+                    <button
+                      type="button"
+                      disabled={cat.count === 0}
+                      onClick={() => verPeticionesPorCategoria(cat.id)}
+                      className="w-full rounded-lg px-1.5 py-1 text-left transition-colors hover:bg-zinc-50 disabled:cursor-default disabled:hover:bg-transparent"
+                    >
+                      <div className="mb-0.5 flex items-baseline justify-between gap-3">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <span className="truncate text-sm font-medium text-zinc-800">
+                            {cat.nombre}
                           </span>
-                        ) : null}
+                          {cat.comun ? (
+                            <span className="shrink-0 rounded-full bg-gradient-to-r from-guinda to-magenta px-2 py-0.5 text-[10px] font-semibold tracking-wide text-white">
+                              COMUN.
+                            </span>
+                          ) : null}
+                        </div>
+                        <span className="tabular-nums text-sm font-semibold text-zinc-900">
+                          {cat.count}
+                        </span>
                       </div>
-                      <span className="tabular-nums text-sm font-semibold text-zinc-900">
-                        {cat.count}
-                      </span>
-                    </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-zinc-100">
-                      <div
-                        className="h-full rounded-full transition-[width] duration-500"
-                        style={{
-                          width: `${pct}%`,
-                          background: degradadoCategoria(i, distribucion.length),
-                        }}
-                      />
-                    </div>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-zinc-100">
+                        <div
+                          className="h-full rounded-full transition-[width] duration-500"
+                          style={{
+                            width: `${pct}%`,
+                            background: degradadoCategoria(
+                              i,
+                              distribucion.length,
+                            ),
+                          }}
+                        />
+                      </div>
+                    </button>
                   </li>
                 );
               })}
@@ -376,7 +417,11 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <ZonasEnBlanco cvesActivos={new Set(filtradas.map((p) => p.cveMun))} />
+      <ZonasEnBlanco
+        cvesActivos={new Set(filtradas.map((p) => p.cveMun))}
+        regionResaltada={regionResaltada}
+        onRegionClick={resaltarRegion}
+      />
     </div>
   );
 }
