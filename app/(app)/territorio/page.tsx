@@ -1,7 +1,8 @@
 "use client";
 
-import { Button, Card, Field, Input, Select, Textarea } from "@/components/ui";
-import { MUNICIPIOS_FOCO } from "@/lib/catalogos";
+import { MunicipioSelect } from "@/components/MunicipioSelect";
+import { Button, Card, Field, Input, Textarea } from "@/components/ui";
+import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { useStore } from "@/lib/store";
 import { UploadCloud } from "lucide-react";
 import { useRef, useState, type DragEvent } from "react";
@@ -17,7 +18,7 @@ export default function TerritorioPage() {
 
   const [fechaEntrega, setFechaEntrega] = useState("2026-08-14");
   const [evento, setEvento] = useState("");
-  const [cveMun, setCveMun] = useState(MUNICIPIOS_FOCO[0]?.cveMun ?? "");
+  const [cveMun, setCveMun] = useState("001");
   const [notas, setNotas] = useState("");
   const [archivos, setArchivos] = useState<{ nombre: string; url: string }[]>(
     [],
@@ -45,7 +46,7 @@ export default function TerritorioPage() {
   }
 
   function cerrarLoteYEnviar() {
-    const municipio = MUNICIPIOS_FOCO.find((m) => m.cveMun === cveMun);
+    const municipio = MUNICIPIOS_GUERRERO.find((m) => m.cveMun === cveMun);
     const id = agregarLote({
       fechaEntrega,
       lugar: evento || municipio?.nombre || "Territorio",
@@ -177,13 +178,7 @@ export default function TerritorioPage() {
             </datalist>
           </Field>
           <Field label="Municipio del evento">
-            <Select value={cveMun} onChange={(e) => setCveMun(e.target.value)}>
-              {MUNICIPIOS_FOCO.map((m) => (
-                <option key={m.cveMun} value={m.cveMun}>
-                  {m.nombre}
-                </option>
-              ))}
-            </Select>
+            <MunicipioSelect value={cveMun} onChange={setCveMun} />
           </Field>
           <Field label="Notas (opcional)">
             <Textarea
