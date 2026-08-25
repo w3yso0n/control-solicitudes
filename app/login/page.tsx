@@ -1,33 +1,39 @@
 "use client";
 
-import { HOME_POR_ROL } from "@/lib/catalogos";
-import { useSession } from "@/lib/session";
-import type { Rol } from "@/lib/types";
 import { Button, Field, Input } from "@/components/ui";
+import { signIn } from "next-auth/react";
+import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-function rolDesdeUsuario(usuario: string): Rol {
-  const clave = usuario.trim().toLowerCase();
-  if (clave === "territorio" || clave === "cuantiva" || clave === "admin") {
-    return clave;
-  }
-  return "candidata";
-}
-
 export default function LoginPage() {
-  const { setRol } = useSession();
   const router = useRouter();
-  const [usuario, setUsuario] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [mostrarPassword, setMostrarPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  function entrar(e: React.FormEvent) {
+  async function entrar(e: React.FormEvent) {
     e.preventDefault();
-    void password;
-    const rol = rolDesdeUsuario(usuario);
-    setRol(rol);
-    router.replace(HOME_POR_ROL[rol]);
+    setError("");
+    setEnviando(true);
+    try {
+      const result = await signIn("credentials", {
+        email: email.trim(),
+        password,
+        redirect: false,
+      });
+      if (result?.error) {
+        setError("Correo o contraseña incorrectos");
+        return;
+      }
+      router.replace("/");
+      router.refresh();
+    } finally {
+      setEnviando(false);
+    }
   }
 
   return (
@@ -74,25 +80,46 @@ export default function LoginPage() {
             </p>
           </div>
           <form onSubmit={entrar} className="space-y-4">
-            <Field label="Usuario">
+            <Field label="Correo">
               <Input
-                value={usuario}
-                onChange={(e) => setUsuario(e.target.value)}
-                placeholder="Usuario"
-                autoComplete="username"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="correo@ejemplo.com"
+                autoComplete="email"
+                required
               />
             </Field>
             <Field label="Contraseña">
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                autoComplete="current-password"
-              />
+              <div className="relative">
+                <Input
+                  type={mostrarPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  required
+                  className="pr-11"
+                />
+                <button
+                  type="button"
+                  onClick={() => setMostrarPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-zinc-400 transition-colors hover:text-zinc-700"
+                  aria-label={
+                    mostrarPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                  }
+                >
+                  {mostrarPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </Field>
-            <Button type="submit" className="w-full py-2.5">
-              Entrar
+            {error ? (
+              <p className="text-sm text-guinda" role="alert">
+                {error}
+              </p>
+            ) : null}
+            <Button type="submit" className="w-full py-2.5" disabled={enviando}>
+              {enviando ? "Entrando…" : "Entrar"}
             </Button>
           </form>
         </div>

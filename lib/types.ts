@@ -113,3 +113,24 @@ export type ItcScore = {
   topCategorias: { id: string; nombre: string; count: number }[];
   urgenciaPromedio: Urgencia | null;
 };
+
+export type LoteDocumentoDto = {
+  id: string;
+  loteId: string;
+  nombreArchivo: string;
+  mimeType: string;
+  sizeBytes: number;
+  estatus: EstatusDocumento;
+  url: string;
+};
+
+export type LoteDto = {
+  id: string;
+  fechaEntrega: string;
+  eventoOrigen: string;
+  cveMun: string;
+  notas: string | null;
+  estatus: EstatusLote;
+  creadoEn: string;
+  documentos: LoteDocumentoDto[];
+};

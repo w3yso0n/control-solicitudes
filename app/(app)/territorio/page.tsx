@@ -1,42 +1,97 @@
 "use client";
 
 import { MunicipioSelect } from "@/components/MunicipioSelect";
+import { DetalleLote } from "@/components/territorio/DetalleLote";
 import { Button, Card, Field, Input, Textarea } from "@/components/ui";
-import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { useStore } from "@/lib/store";
-import { UploadCloud } from "lucide-react";
-import { useRef, useState, type DragEvent } from "react";
+import type { LoteDto } from "@/lib/types";
+import { FileText, UploadCloud } from "lucide-react";
+import { useCallback, useEffect, useRef, useState, type DragEvent } from "react";
 
 const ESTADO_LOTE_LABEL: Record<string, { label: string; tone: string }> = {
   abierto: { label: "En captura", tone: "bg-ambar/15 text-[#a05a10]" },
   cerrado: { label: "Procesado", tone: "bg-emerald-100 text-emerald-700" },
 };
 
+type ArchivoLocal = {
+  file: File;
+  url: string;
+};
+
+function todayDateString() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function esImagenPreview(file: File) {
+  return (
+    file.type.startsWith("image/") &&
+    file.type !== "image/heic" &&
+    file.type !== "image/heif"
+  );
+}
+
+function etiquetaCorta(id: string, fechaEntrega: string) {
+  if (fechaEntrega.length >= 10) {
+    return `L-${fechaEntrega.slice(5).replace("-", "")}`;
+  }
+  return id.slice(0, 8);
+}
+
 export default function TerritorioPage() {
-  const { eventos, lotes, agregarLote, cerrarLote } = useStore();
+  const { eventos } = useStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [fechaEntrega, setFechaEntrega] = useState("2026-08-14");
+  const [fechaEntrega, setFechaEntrega] = useState(todayDateString);
   const [evento, setEvento] = useState("");
   const [cveMun, setCveMun] = useState("001");
   const [notas, setNotas] = useState("");
-  const [archivos, setArchivos] = useState<{ nombre: string; url: string }[]>(
-    [],
-  );
+  const [archivos, setArchivos] = useState<ArchivoLocal[]>([]);
   const [arrastrando, setArrastrando] = useState(false);
   const [enviando, setEnviando] = useState(false);
+  const [exito, setExito] = useState(false);
+  const [error, setError] = useState("");
+  const [lotes, setLotes] = useState<LoteDto[]>([]);
+  const [cargando, setCargando] = useState(true);
+  const [loteDetalle, setLoteDetalle] = useState<LoteDto | null>(null);
+
+  const cargarLotes = useCallback(async () => {
+    try {
+      const res = await fetch("/api/lotes");
+      if (!res.ok) return;
+      const data = (await res.json()) as LoteDto[];
+      setLotes(data);
+    } finally {
+      setCargando(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void cargarLotes();
+  }, [cargarLotes]);
+
+  useEffect(() => {
+    return () => {
+      for (const a of archivos) URL.revokeObjectURL(a.url);
+    };
+    // Solo al desmontar.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function agregarArchivos(list: FileList | null) {
     if (!list) return;
     const next = [...archivos];
     for (const file of Array.from(list)) {
-      next.push({ nombre: file.name, url: URL.createObjectURL(file) });
+      next.push({ file, url: URL.createObjectURL(file) });
     }
     setArchivos(next);
   }
 
   function quitarArchivo(url: string) {
-    setArchivos((prev) => prev.filter((a) => a.url !== url));
+    setArchivos((prev) => {
+      const found = prev.find((a) => a.url === url);
+      if (found) URL.revokeObjectURL(found.url);
+      return prev.filter((a) => a.url !== url);
+    });
   }
 
   function onDrop(e: DragEvent<HTMLDivElement>) {
@@ -45,23 +100,39 @@ export default function TerritorioPage() {
     agregarArchivos(e.dataTransfer.files);
   }
 
-  function cerrarLoteYEnviar() {
-    const municipio = MUNICIPIOS_GUERRERO.find((m) => m.cveMun === cveMun);
-    const id = agregarLote({
-      fechaEntrega,
-      lugar: evento || municipio?.nombre || "Territorio",
-      notas: notas || undefined,
-      archivos:
-        archivos.length > 0
-          ? archivos
-          : [{ nombre: "oficio-placeholder.jpg", url: "/scans/oficio-1.jpg" }],
-    });
-    cerrarLote(id);
+  async function cerrarLoteYEnviar() {
+    if (enviando) return;
+    setError("");
+    setExito(false);
     setEnviando(true);
-    setEvento("");
-    setNotas("");
-    setArchivos([]);
-    setTimeout(() => setEnviando(false), 2000);
+    try {
+      const form = new FormData();
+      form.set("fechaEntrega", fechaEntrega);
+      form.set("eventoOrigen", evento);
+      form.set("cveMun", cveMun);
+      if (notas.trim()) form.set("notas", notas.trim());
+      for (const a of archivos) {
+        form.append("files", a.file);
+      }
+
+      const res = await fetch("/api/lotes", { method: "POST", body: form });
+      const data = (await res.json()) as { error?: string; lote?: LoteDto };
+      if (!res.ok || data.error) {
+        setError(data.error || "No se pudo enviar el lote");
+        return;
+      }
+
+      for (const a of archivos) URL.revokeObjectURL(a.url);
+      setEvento("");
+      setNotas("");
+      setArchivos([]);
+      setExito(true);
+      await cargarLotes();
+    } catch {
+      setError("No se pudo enviar el lote");
+    } finally {
+      setEnviando(false);
+    }
   }
 
   return (
@@ -80,7 +151,6 @@ export default function TerritorioPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-5">
-        {/* Dropzone */}
         <Card className="p-5 lg:col-span-3">
           <div
             onDragOver={(e) => {
@@ -118,7 +188,10 @@ export default function TerritorioPage() {
               accept="image/*,.pdf"
               multiple
               className="hidden"
-              onChange={(e) => agregarArchivos(e.target.files)}
+              onChange={(e) => {
+                agregarArchivos(e.target.files);
+                e.target.value = "";
+              }}
             />
           </div>
           <p className="mt-3 text-xs text-zinc-400">
@@ -132,17 +205,26 @@ export default function TerritorioPage() {
                   key={a.url}
                   className="group relative overflow-hidden rounded-xl border border-zinc-200"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={a.url}
-                    alt={a.nombre}
-                    className="h-20 w-full object-cover"
-                  />
+                  {esImagenPreview(a.file) ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={a.url}
+                      alt={a.file.name}
+                      className="h-20 w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-20 w-full flex-col items-center justify-center bg-zinc-50 text-zinc-400">
+                      <FileText size={18} />
+                      <span className="mt-1 max-w-full truncate px-1 text-[10px]">
+                        {a.file.name}
+                      </span>
+                    </div>
+                  )}
                   <button
                     type="button"
                     onClick={() => quitarArchivo(a.url)}
                     className="absolute right-1 top-1 hidden h-5 w-5 items-center justify-center rounded-full bg-tinta/70 text-[10px] text-white group-hover:flex"
-                    aria-label={`Quitar ${a.nombre}`}
+                    aria-label={`Quitar ${a.file.name}`}
                   >
                     ×
                   </button>
@@ -152,7 +234,6 @@ export default function TerritorioPage() {
           ) : null}
         </Card>
 
-        {/* Datos del lote */}
         <Card className="flex flex-col gap-4 p-5 lg:col-span-2">
           <p className="text-[10px] font-semibold uppercase tracking-wide text-guinda">
             Datos del lote
@@ -189,17 +270,27 @@ export default function TerritorioPage() {
             />
           </Field>
 
+          {error ? (
+            <p className="text-sm text-guinda" role="alert">
+              {error}
+            </p>
+          ) : null}
+
           <Button
             type="button"
-            onClick={cerrarLoteYEnviar}
+            onClick={() => void cerrarLoteYEnviar()}
             className="mt-auto w-full py-3"
+            disabled={enviando}
           >
-            {enviando ? "Lote enviado ✓" : "Cerrar lote y enviar a captura"}
+            {enviando
+              ? "Enviando…"
+              : exito
+                ? "Lote enviado ✓"
+                : "Cerrar lote y enviar a captura"}
           </Button>
         </Card>
       </div>
 
-      {/* Historial de lotes */}
       <Card className="overflow-hidden">
         <div className="border-b border-zinc-100 px-5 py-3.5">
           <p className="text-sm font-semibold text-zinc-900">
@@ -215,6 +306,7 @@ export default function TerritorioPage() {
                 <th className="px-5 py-3">Evento</th>
                 <th className="px-5 py-3">Archivos</th>
                 <th className="px-5 py-3">Estado</th>
+                <th className="px-5 py-3" />
               </tr>
             </thead>
             <tbody>
@@ -224,14 +316,14 @@ export default function TerritorioPage() {
                 return (
                   <tr key={lote.id} className="border-b border-zinc-100">
                     <td className="px-5 py-3 font-mono text-xs text-guinda">
-                      {lote.id.startsWith("lote-")
-                        ? `L-${lote.fechaEntrega.slice(5).replace("-", "")}`
-                        : lote.id}
+                      {etiquetaCorta(lote.id, lote.fechaEntrega)}
                     </td>
                     <td className="px-5 py-3 text-zinc-500">
                       {lote.fechaEntrega}
                     </td>
-                    <td className="px-5 py-3 text-zinc-800">{lote.lugar}</td>
+                    <td className="px-5 py-3 text-zinc-800">
+                      {lote.eventoOrigen}
+                    </td>
                     <td className="px-5 py-3 text-zinc-500">
                       {lote.documentos.length} escaneados
                     </td>
@@ -242,13 +334,28 @@ export default function TerritorioPage() {
                         {estado.label}
                       </span>
                     </td>
+                    <td className="px-5 py-3 text-right">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        className="px-3 py-1 text-xs text-guinda hover:bg-guinda/8"
+                        onClick={() => setLoteDetalle(lote)}
+                      >
+                        Detalles
+                      </Button>
+                    </td>
                   </tr>
                 );
               })}
               {lotes.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-8 text-center text-zinc-500">
-                    Aún no se han subido lotes.
+                  <td
+                    colSpan={6}
+                    className="px-5 py-8 text-center text-zinc-500"
+                  >
+                    {cargando
+                      ? "Cargando lotes…"
+                      : "Aún no se han subido lotes."}
                   </td>
                 </tr>
               ) : null}
@@ -256,6 +363,18 @@ export default function TerritorioPage() {
           </table>
         </div>
       </Card>
+
+      {loteDetalle ? (
+        <DetalleLote
+          lote={loteDetalle}
+          etiqueta={etiquetaCorta(loteDetalle.id, loteDetalle.fechaEntrega)}
+          onCerrar={() => setLoteDetalle(null)}
+          onEliminado={() => {
+            setLoteDetalle(null);
+            void cargarLotes();
+          }}
+        />
+      ) : null}
     </div>
   );
 }

@@ -209,7 +209,7 @@ export const ROL_LABEL: Record<string, string> = {
   territorio: "Capturista Territorio",
   cuantiva: "Capturista Cuantiva",
   candidata: "Candidata",
-  // admin: "Administrador",
+  admin: "Administrador",
 };
 
 export const HOME_POR_ROL: Record<string, string> = {
