@@ -1,7 +1,9 @@
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { headers } from "next/headers";
 import { auth } from "@/auth";
+import { verifyMobileToken } from "@/lib/mobile-auth";
 import type { Rol } from "@/lib/types";
 
 export type CurrentUser = {
@@ -23,11 +25,23 @@ async function findUserById(userId: string) {
   return row[0] ?? null;
 }
 
+async function getUserIdFromBearerToken(): Promise<string | null> {
+  const headerList = await headers();
+  const authHeader = headerList.get("authorization");
+  if (!authHeader?.startsWith("Bearer ")) return null;
+
+  const token = authHeader.slice("Bearer ".length).trim();
+  if (!token) return null;
+
+  return verifyMobileToken(token);
+}
+
 export async function getCurrentUser(): Promise<CurrentUser | null> {
   const session = await auth();
-  if (!session?.user?.id) return null;
+  const userId = session?.user?.id ?? (await getUserIdFromBearerToken());
+  if (!userId) return null;
 
-  const u = await findUserById(session.user.id);
+  const u = await findUserById(userId);
   if (!u) return null;
 
   return {
