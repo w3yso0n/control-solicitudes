@@ -25,6 +25,7 @@ export function puedeVer(rol: Rol, href: string): boolean {
   if (!item) {
     if (href.startsWith("/territorio")) return rol === "territorio" || rol === "admin";
     if (href.startsWith("/cuantiva")) return rol === "cuantiva" || rol === "admin";
+    if (href.startsWith("/usuarios")) return rol === "admin";
     return false;
   }
   return item.roles.includes(rol);

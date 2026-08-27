@@ -150,8 +150,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           <button
             type="button"
             onClick={() => {
-              logout();
-              router.replace("/login");
+              void (async () => {
+                await logout();
+                window.location.assign("/login");
+              })();
             }}
             className={`flex w-full items-center gap-3 px-3 py-3 text-sm text-white/75 transition-colors hover:bg-white/10 hover:text-white ${collapsed ? "justify-center" : ""}`}
           >

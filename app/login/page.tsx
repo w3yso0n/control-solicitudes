@@ -52,7 +52,7 @@ export default function LoginPage() {
             Guerrero
           </p>
           <p className="mt-2 max-w-md text-3xl font-semibold leading-tight tracking-tight">
-            El pulso de la campaña, municipio por municipio
+            La campaña, municipio por municipio
           </p>
         </div>
       </div>
@@ -76,7 +76,7 @@ export default function LoginPage() {
               priority
             />
             <p className="mt-4 text-[11px] uppercase tracking-[0.3em] text-white/60">
-              Pulso · temperatura ciudadana
+              Temperatura ciudadana
             </p>
           </div>
           <form onSubmit={entrar} className="space-y-4">

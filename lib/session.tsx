@@ -22,8 +22,8 @@ export function useSession() {
   return {
     rol,
     ready: status !== "loading",
-    logout: () => {
-      void signOut({ callbackUrl: "/login" });
+    logout: async () => {
+      await signOut({ redirect: false });
     },
   };
 }

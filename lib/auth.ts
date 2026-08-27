@@ -56,3 +56,13 @@ export async function getCurrentUserId(): Promise<string | null> {
   const user = await getCurrentUser();
   return user?.id ?? null;
 }
+
+export async function requireAdmin(): Promise<
+  | { user: CurrentUser }
+  | { error: string; status: 401 | 403 }
+> {
+  const user = await getCurrentUser();
+  if (!user) return { error: "No autenticado", status: 401 };
+  if (user.role !== "admin") return { error: "No autorizado", status: 403 };
+  return { user };
+}

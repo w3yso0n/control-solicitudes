@@ -134,3 +134,12 @@ export type LoteDto = {
   creadoEn: string;
   documentos: LoteDocumentoDto[];
 };
+
+export type UsuarioPublico = {
+  id: string;
+  email: string;
+  displayName: string | null;
+  role: Rol;
+  createdAt: string;
+  updatedAt: string;
+};

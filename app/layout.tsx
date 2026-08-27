@@ -20,8 +20,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pulso — Beatriz Mojica",
+  title: "Beatriz Mojica",
   description: "Temperatura ciudadana en tiempo real. Fase campaña.",
+  icons: {
+    icon: [{ url: "/brand/logo-wordmark_og.png", type: "image/png" }],
+    apple: "/brand/logo-wordmark_og.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

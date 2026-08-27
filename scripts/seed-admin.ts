@@ -10,7 +10,7 @@ import postgres from "postgres";
 import { users } from "../lib/db/schema";
 import type { Rol } from "../lib/types";
 
-config({ path: ".env.local", override: true, quiet: true });
+config({ path: ".env.local", override: false, quiet: true });
 
 const ROLES: Rol[] = ["territorio", "cuantiva", "candidata", "admin"];
 
@@ -31,6 +31,11 @@ async function ensureUser(
   input: SeedUser,
 ) {
   const email = input.email.trim().toLowerCase();
+  if (input.password.length < 6) {
+    throw new Error(`La contraseña de ${email} debe tener al menos 6 caracteres.`);
+  }
+
+  const passwordHash = await hash(input.password, 10);
   const existing = await db
     .select({ id: users.id })
     .from(users)
@@ -38,15 +43,19 @@ async function ensureUser(
     .limit(1);
 
   if (existing[0]) {
-    console.log(`El usuario ${email} ya existe. Nada que hacer.`);
+    await db
+      .update(users)
+      .set({
+        passwordHash,
+        role: input.role,
+        displayName: input.displayName,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, existing[0].id));
+    console.log(`Usuario actualizado: ${email} (rol ${input.role}).`);
     return;
   }
 
-  if (input.password.length < 6) {
-    throw new Error(`La contraseña de ${email} debe tener al menos 6 caracteres.`);
-  }
-
-  const passwordHash = await hash(input.password, 10);
   await db.insert(users).values({
     email,
     displayName: input.displayName,

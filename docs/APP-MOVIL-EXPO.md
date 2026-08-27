@@ -145,7 +145,7 @@ src/
 
 ### Diseño visual
 
-Se replicó la identidad de marca "Pulso — Beatriz Mojica" del proyecto web
+Se replicó la identidad de marca "Beatriz Mojica" del proyecto web
 (`app/globals.css`, `components/AppShell.tsx`, `app/login/page.tsx`):
 
 - Colores de marca (definidos en `tailwind.config.js` de la app móvil):
@@ -401,7 +401,7 @@ centralizada (`lib/config.ts`).
 - Sincronización manual (botón) y automática (al guardar, si hay señal) —
   confirmado funcionando end-to-end contra el backend local
   (`pnpm run dev`), incluyendo la subida real de archivos.
-- Diseño visual alineado a la identidad "Pulso — Beatriz Mojica" del
+- Diseño visual alineado a la identidad "Beatriz Mojica" del
   proyecto web.
 - Logout (borra el token de SecureStore).
 
