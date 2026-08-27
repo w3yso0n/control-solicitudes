@@ -3,6 +3,7 @@
 import { Button, Card } from "@/components/ui";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import type { LoteDocumentoDto, LoteDto } from "@/lib/types";
+import { etiquetaEvento } from "@/components/territorio/EventoOrigenField";
 import { FileText, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -170,7 +171,7 @@ export function DetalleLote({
           <div className="grid grid-cols-2 gap-3">
             <Dato label="Fecha de entrega" value={fechaCorta(lote.fechaEntrega)} />
             <Dato label="Registrado" value={fechaCorta(lote.creadoEn)} />
-            <Dato label="Evento o gira" value={lote.eventoOrigen} />
+            <Dato label="Evento o gira" value={etiquetaEvento(lote.eventoOrigen)} />
             <Dato label="Municipio" value={nombreMunicipio(lote.cveMun)} />
             <div className="col-span-2">
               <p className="text-[11px] uppercase tracking-wide text-zinc-400">

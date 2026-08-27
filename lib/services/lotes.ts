@@ -98,9 +98,6 @@ export async function createLote(userId: string, input: CreateLoteInput) {
   if (!DATE_RE.test(fechaEntrega)) {
     return { error: "La fecha de entrega es inválida" };
   }
-  if (!eventoOrigen) {
-    return { error: "El evento o gira de origen es requerido" };
-  }
   if (!CVE_MUN_VALIDOS.has(cveMun)) {
     return { error: "Municipio inválido" };
   }
@@ -171,6 +168,31 @@ export async function createLote(userId: string, input: CreateLoteInput) {
       documentos: documentos.map(toDocumentoDto),
     } satisfies LoteDto,
   };
+}
+
+export async function getEventosRecientes(limit = 8): Promise<string[]> {
+  const rows = await db
+    .select({
+      eventoOrigen: lotes.eventoOrigen,
+      createdAt: lotes.createdAt,
+    })
+    .from(lotes)
+    .orderBy(desc(lotes.createdAt))
+    .limit(200);
+
+  const vistos = new Set<string>();
+  const recientes: string[] = [];
+  for (const row of rows) {
+    const nombre = row.eventoOrigen.trim();
+    if (!nombre) continue;
+    const clave = nombre.toLowerCase();
+    if (clave === "no aplica") continue;
+    if (vistos.has(clave)) continue;
+    vistos.add(clave);
+    recientes.push(nombre);
+    if (recientes.length >= limit) break;
+  }
+  return recientes;
 }
 
 export async function getLoteById(id: string) {

@@ -2,8 +2,11 @@
 
 import { MunicipioSelect } from "@/components/MunicipioSelect";
 import { DetalleLote } from "@/components/territorio/DetalleLote";
+import {
+  EventoOrigenField,
+  etiquetaEvento,
+} from "@/components/territorio/EventoOrigenField";
 import { Button, Card, Field, Input, Textarea } from "@/components/ui";
-import { useStore } from "@/lib/store";
 import type { LoteDto } from "@/lib/types";
 import { FileText, UploadCloud } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type DragEvent } from "react";
@@ -38,11 +41,11 @@ function etiquetaCorta(id: string, fechaEntrega: string) {
 }
 
 export default function TerritorioPage() {
-  const { eventos } = useStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [fechaEntrega, setFechaEntrega] = useState(todayDateString);
   const [evento, setEvento] = useState("");
+  const [eventosRecientes, setEventosRecientes] = useState<string[]>([]);
   const [cveMun, setCveMun] = useState("001");
   const [notas, setNotas] = useState("");
   const [archivos, setArchivos] = useState<ArchivoLocal[]>([]);
@@ -65,9 +68,21 @@ export default function TerritorioPage() {
     }
   }, []);
 
+  const cargarEventos = useCallback(async () => {
+    try {
+      const res = await fetch("/api/lotes/eventos");
+      if (!res.ok) return;
+      const data = (await res.json()) as string[];
+      if (Array.isArray(data)) setEventosRecientes(data);
+    } catch {
+      /* el campo sigue siendo de texto libre */
+    }
+  }, []);
+
   useEffect(() => {
     void cargarLotes();
-  }, [cargarLotes]);
+    void cargarEventos();
+  }, [cargarLotes, cargarEventos]);
 
   useEffect(() => {
     return () => {
@@ -108,7 +123,7 @@ export default function TerritorioPage() {
     try {
       const form = new FormData();
       form.set("fechaEntrega", fechaEntrega);
-      form.set("eventoOrigen", evento);
+      form.set("eventoOrigen", evento.trim());
       form.set("cveMun", cveMun);
       if (notas.trim()) form.set("notas", notas.trim());
       for (const a of archivos) {
@@ -128,6 +143,7 @@ export default function TerritorioPage() {
       setArchivos([]);
       setExito(true);
       await cargarLotes();
+      await cargarEventos();
     } catch {
       setError("No se pudo enviar el lote");
     } finally {
@@ -245,19 +261,11 @@ export default function TerritorioPage() {
               onChange={(e) => setFechaEntrega(e.target.value)}
             />
           </Field>
-          <Field label="Evento o gira de origen">
-            <Input
-              value={evento}
-              onChange={(e) => setEvento(e.target.value)}
-              placeholder="p. ej. Asamblea Chilpancingo"
-              list="eventos-territorio"
-            />
-            <datalist id="eventos-territorio">
-              {eventos.map((ev) => (
-                <option key={ev.id} value={ev.nombre} />
-              ))}
-            </datalist>
-          </Field>
+          <EventoOrigenField
+            value={evento}
+            onChange={setEvento}
+            recientes={eventosRecientes}
+          />
           <Field label="Municipio del evento">
             <MunicipioSelect value={cveMun} onChange={setCveMun} />
           </Field>
@@ -322,7 +330,7 @@ export default function TerritorioPage() {
                       {lote.fechaEntrega}
                     </td>
                     <td className="px-5 py-3 text-zinc-800">
-                      {lote.eventoOrigen}
+                      {etiquetaEvento(lote.eventoOrigen)}
                     </td>
                     <td className="px-5 py-3 text-zinc-500">
                       {lote.documentos.length} escaneados
