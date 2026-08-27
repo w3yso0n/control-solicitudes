@@ -23,7 +23,11 @@ export const metadata: Metadata = {
   title: "Beatriz Mojica",
   description: "Temperatura ciudadana en tiempo real. Fase campaña.",
   icons: {
-    icon: [{ url: "/brand/logo-wordmark_og.png", type: "image/png" }],
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/brand/logo-wordmark_og.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
     apple: "/brand/logo-wordmark_og.png",
   },
 };
