@@ -23,7 +23,7 @@ import { useEffect, useState, type ReactNode } from "react";
 const ICONS: Record<string, typeof LayoutDashboard> = {
   "/dashboard": LayoutDashboard,
   "/territorio": FolderOpen,
-  "/cuantiva": Inbox,
+  "/bandeja": Inbox,
   "/peticiones": ClipboardList,
   "/reportes": ClipboardList,
   "/configuracion": Settings,

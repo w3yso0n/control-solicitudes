@@ -9,7 +9,7 @@ export type NavItem = {
 export const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", roles: ["candidata", "admin"] },
   { href: "/territorio", label: "Captura de lotes", roles: ["territorio", "admin"] },
-  { href: "/cuantiva", label: "Bandeja", roles: ["cuantiva", "admin"] },
+  { href: "/bandeja", label: "Bandeja", roles: ["cuantiva", "admin"] },
   {
     href: "/peticiones",
     label: "Consulta",
@@ -24,7 +24,7 @@ export function puedeVer(rol: Rol, href: string): boolean {
   const item = NAV_ITEMS.find((n) => href === n.href || href.startsWith(`${n.href}/`));
   if (!item) {
     if (href.startsWith("/territorio")) return rol === "territorio" || rol === "admin";
-    if (href.startsWith("/cuantiva")) return rol === "cuantiva" || rol === "admin";
+    if (href.startsWith("/bandeja")) return rol === "cuantiva" || rol === "admin";
     if (href.startsWith("/usuarios")) return rol === "admin";
     return false;
   }

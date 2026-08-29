@@ -214,7 +214,7 @@ export const ROL_LABEL: Record<string, string> = {
 
 export const HOME_POR_ROL: Record<string, string> = {
   territorio: "/territorio",
-  cuantiva: "/cuantiva",
+  cuantiva: "/bandeja",
   candidata: "/dashboard",
   admin: "/dashboard",
 };

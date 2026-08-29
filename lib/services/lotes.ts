@@ -1,7 +1,11 @@
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { db } from "@/lib/db";
-import { loteDocumentos, lotes } from "@/lib/db/schema";
-import type { LoteDocumentoDto, LoteDto } from "@/lib/types";
+import { loteDocumentos, lotes, peticiones } from "@/lib/db/schema";
+import type {
+  CapturaPeticionDto,
+  LoteDocumentoDto,
+  LoteDto,
+} from "@/lib/types";
 import {
   MAX_FILES_PER_LOTE,
   publicUploadUrl,
@@ -10,7 +14,7 @@ import {
   saveLoteFile,
   type SavedUpload,
 } from "@/lib/uploads";
-import { and, desc, eq } from "drizzle-orm";
+import { asc, desc, eq, inArray } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -24,8 +28,36 @@ export type CreateLoteInput = {
   files: File[];
 };
 
+function toPeticionDto(
+  row: typeof peticiones.$inferSelect,
+  loteId: string,
+): CapturaPeticionDto {
+  const subs = Array.isArray(row.subcategorias)
+    ? row.subcategorias.filter((s): s is string => typeof s === "string")
+    : [];
+  return {
+    id: row.id,
+    folio: row.folio,
+    documentoId: row.documentoId,
+    loteId,
+    ciudadanoNombre: row.ciudadanoNombre,
+    ciudadanoTelefono: row.ciudadanoTelefono,
+    descripcion: row.descripcion,
+    transcripcion: row.transcripcion,
+    categoriaId: row.categoriaId,
+    subcategorias: subs,
+    tipo: row.tipo,
+    urgencia: row.urgencia,
+    alcance: row.alcance,
+    firmantes: row.firmantes,
+    cveMun: row.cveMun,
+    coloniaId: row.coloniaId,
+  };
+}
+
 function toDocumentoDto(
   row: typeof loteDocumentos.$inferSelect,
+  peticion: CapturaPeticionDto | null = null,
 ): LoteDocumentoDto {
   return {
     id: row.id,
@@ -35,7 +67,59 @@ function toDocumentoDto(
     sizeBytes: row.sizeBytes,
     estatus: row.estatus,
     url: publicUploadUrl(row.storageKey),
+    peticionId: row.peticionId ?? peticion?.id ?? null,
+    folio: peticion?.folio ?? null,
+    peticion,
   };
+}
+
+function toLoteDto(
+  lote: typeof lotes.$inferSelect,
+  documentos: LoteDocumentoDto[],
+): LoteDto {
+  return {
+    id: lote.id,
+    fechaEntrega: lote.fechaEntrega,
+    eventoOrigen: lote.eventoOrigen,
+    cveMun: lote.cveMun,
+    notas: lote.notas,
+    estatus: lote.estatus,
+    creadoEn: lote.createdAt.toISOString(),
+    documentos,
+  };
+}
+
+async function documentosPorLoteIds(
+  loteIds: string[],
+): Promise<Map<string, LoteDocumentoDto[]>> {
+  const byLote = new Map<string, LoteDocumentoDto[]>();
+  if (loteIds.length === 0) return byLote;
+
+  const rows = await db
+    .select({
+      doc: loteDocumentos,
+      peticion: peticiones,
+    })
+    .from(loteDocumentos)
+    .leftJoin(peticiones, eq(peticiones.documentoId, loteDocumentos.id))
+    .where(inArray(loteDocumentos.loteId, loteIds));
+
+  for (const row of rows) {
+    const list = byLote.get(row.doc.loteId) ?? [];
+    const peticion = row.peticion
+      ? toPeticionDto(row.peticion, row.doc.loteId)
+      : null;
+    list.push(toDocumentoDto(row.doc, peticion));
+    byLote.set(row.doc.loteId, list);
+  }
+  return byLote;
+}
+
+function ensamblarLotes(
+  rows: (typeof lotes.$inferSelect)[],
+  byLote: Map<string, LoteDocumentoDto[]>,
+): LoteDto[] {
+  return rows.map((lote) => toLoteDto(lote, byLote.get(lote.id) ?? []));
 }
 
 export async function getLotes(userId: string): Promise<LoteDto[]> {
@@ -45,45 +129,28 @@ export async function getLotes(userId: string): Promise<LoteDto[]> {
     .where(eq(lotes.userId, userId))
     .orderBy(desc(lotes.createdAt));
 
-  if (rows.length === 0) return [];
-
-  const docs = await db
-    .select()
-    .from(loteDocumentos)
-    .where(eq(loteDocumentos.userId, userId));
-
-  const byLote = new Map<string, LoteDocumentoDto[]>();
-  for (const doc of docs) {
-    const list = byLote.get(doc.loteId) ?? [];
-    list.push(toDocumentoDto(doc));
-    byLote.set(doc.loteId, list);
-  }
-
-  return rows.map((lote) => ({
-    id: lote.id,
-    fechaEntrega: lote.fechaEntrega,
-    eventoOrigen: lote.eventoOrigen,
-    cveMun: lote.cveMun,
-    notas: lote.notas,
-    estatus: lote.estatus,
-    creadoEn: lote.createdAt.toISOString(),
-    documentos: byLote.get(lote.id) ?? [],
-  }));
+  const byLote = await documentosPorLoteIds(rows.map((r) => r.id));
+  return ensamblarLotes(rows, byLote);
 }
 
-export async function getLoteDocumentoByStorageKey(
-  userId: string,
-  storageKey: string,
-) {
+export async function getLotesBandeja(): Promise<LoteDto[]> {
+  const rows = await db.select().from(lotes).orderBy(asc(lotes.createdAt));
+  const byLote = await documentosPorLoteIds(rows.map((r) => r.id));
+  return ensamblarLotes(rows, byLote);
+}
+
+export async function getLoteDtoById(id: string): Promise<LoteDto | null> {
+  const existing = await getLoteById(id);
+  if (!existing) return null;
+  const byLote = await documentosPorLoteIds([id]);
+  return toLoteDto(existing, byLote.get(id) ?? []);
+}
+
+export async function getLoteDocumentoByStorageKey(storageKey: string) {
   const rows = await db
     .select()
     .from(loteDocumentos)
-    .where(
-      and(
-        eq(loteDocumentos.storageKey, storageKey),
-        eq(loteDocumentos.userId, userId),
-      ),
-    )
+    .where(eq(loteDocumentos.storageKey, storageKey))
     .limit(1);
   return rows[0] ?? null;
 }
@@ -165,7 +232,7 @@ export async function createLote(userId: string, input: CreateLoteInput) {
       notas,
       estatus: "cerrado" as const,
       creadoEn: new Date().toISOString(),
-      documentos: documentos.map(toDocumentoDto),
+      documentos: documentos.map((row) => toDocumentoDto(row)),
     } satisfies LoteDto,
   };
 }

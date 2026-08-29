@@ -1,7 +1,7 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { Readable } from "node:stream";
-import { getCurrentUserId } from "@/lib/auth";
+import { getCurrentUser, puedeCapturar } from "@/lib/auth";
 import { getLoteDocumentoByStorageKey } from "@/lib/services/lotes";
 import { absolutePathForStorageKey } from "@/lib/uploads";
 import { NextRequest, NextResponse } from "next/server";
@@ -11,8 +11,8 @@ export async function GET(
   { params }: { params: Promise<{ path: string[] }> },
 ) {
   try {
-    const userId = await getCurrentUserId();
-    if (!userId) {
+    const user = await getCurrentUser();
+    if (!user) {
       return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     }
 
@@ -23,8 +23,13 @@ export async function GET(
       return NextResponse.json({ error: "Ruta inválida" }, { status: 400 });
     }
 
-    const doc = await getLoteDocumentoByStorageKey(userId, storageKey);
+    const doc = await getLoteDocumentoByStorageKey(storageKey);
     if (!doc) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+    }
+
+    const esDueno = doc.userId === user.id;
+    if (!esDueno && !puedeCapturar(user.role)) {
       return NextResponse.json({ error: "No autorizado" }, { status: 403 });
     }
 
@@ -55,3 +60,4 @@ export async function GET(
     );
   }
 }
+

@@ -114,6 +114,25 @@ export type ItcScore = {
   urgenciaPromedio: Urgencia | null;
 };
 
+export type CapturaPeticionDto = {
+  id: string;
+  folio: string;
+  documentoId: string;
+  loteId: string;
+  ciudadanoNombre: string;
+  ciudadanoTelefono: string;
+  descripcion: string;
+  transcripcion: string;
+  categoriaId: string;
+  subcategorias: string[];
+  tipo: TipoPeticion;
+  urgencia: Urgencia;
+  alcance: Alcance;
+  firmantes: number | null;
+  cveMun: string;
+  coloniaId: string | null;
+};
+
 export type LoteDocumentoDto = {
   id: string;
   loteId: string;
@@ -122,6 +141,9 @@ export type LoteDocumentoDto = {
   sizeBytes: number;
   estatus: EstatusDocumento;
   url: string;
+  peticionId: string | null;
+  folio: string | null;
+  peticion: CapturaPeticionDto | null;
 };
 
 export type LoteDto = {

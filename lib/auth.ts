@@ -66,3 +66,19 @@ export async function requireAdmin(): Promise<
   if (user.role !== "admin") return { error: "No autorizado", status: 403 };
   return { user };
 }
+
+export function puedeCapturar(role: Rol): boolean {
+  return role === "cuantiva" || role === "admin";
+}
+
+export async function requireCuantiva(): Promise<
+  | { user: CurrentUser }
+  | { error: string; status: 401 | 403 }
+> {
+  const user = await getCurrentUser();
+  if (!user) return { error: "No autenticado", status: 401 };
+  if (!puedeCapturar(user.role)) {
+    return { error: "No autorizado", status: 403 };
+  }
+  return { user };
+}
