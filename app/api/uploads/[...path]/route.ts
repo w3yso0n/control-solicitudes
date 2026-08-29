@@ -1,7 +1,7 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { Readable } from "node:stream";
-import { getCurrentUser, puedeCapturar } from "@/lib/auth";
+import { getCurrentUser, puedeConsultar } from "@/lib/auth";
 import { getLoteDocumentoByStorageKey } from "@/lib/services/lotes";
 import { absolutePathForStorageKey } from "@/lib/uploads";
 import { NextRequest, NextResponse } from "next/server";
@@ -29,7 +29,7 @@ export async function GET(
     }
 
     const esDueno = doc.userId === user.id;
-    if (!esDueno && !puedeCapturar(user.role)) {
+    if (!esDueno && !puedeConsultar(user.role)) {
       return NextResponse.json({ error: "No autorizado" }, { status: 403 });
     }
 

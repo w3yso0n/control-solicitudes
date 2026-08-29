@@ -71,6 +71,10 @@ export function puedeCapturar(role: Rol): boolean {
   return role === "cuantiva" || role === "admin";
 }
 
+export function puedeConsultar(role: Rol): boolean {
+  return role === "cuantiva" || role === "candidata" || role === "admin";
+}
+
 export async function requireCuantiva(): Promise<
   | { user: CurrentUser }
   | { error: string; status: 401 | 403 }
@@ -78,6 +82,18 @@ export async function requireCuantiva(): Promise<
   const user = await getCurrentUser();
   if (!user) return { error: "No autenticado", status: 401 };
   if (!puedeCapturar(user.role)) {
+    return { error: "No autorizado", status: 403 };
+  }
+  return { user };
+}
+
+export async function requireConsulta(): Promise<
+  | { user: CurrentUser }
+  | { error: string; status: 401 | 403 }
+> {
+  const user = await getCurrentUser();
+  if (!user) return { error: "No autenticado", status: 401 };
+  if (!puedeConsultar(user.role)) {
     return { error: "No autorizado", status: 403 };
   }
   return { user };

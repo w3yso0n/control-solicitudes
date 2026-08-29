@@ -6,16 +6,18 @@ import {
   URGENCIAS,
 } from "@/lib/catalogos";
 import { db } from "@/lib/db";
-import { loteDocumentos, lotes, peticiones } from "@/lib/db/schema";
+import { loteDocumentos, lotes, peticiones, users } from "@/lib/db/schema";
 import { generarFolio, siguienteSecuencia } from "@/lib/folio";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import type {
   Alcance,
   CapturaPeticionDto,
+  PeticionConsultaDto,
   TipoPeticion,
   Urgencia,
 } from "@/lib/types";
-import { eq, like } from "drizzle-orm";
+import { publicUploadUrl } from "@/lib/uploads";
+import { desc, eq, like } from "drizzle-orm";
 
 const CVE_MUN_VALIDOS = new Set(MUNICIPIOS_GUERRERO.map((m) => m.cveMun));
 const TIPOS = new Set<string>(TIPOS_PETICION.map((t) => t.id));
@@ -285,4 +287,93 @@ export async function capturarDocumento(
     }
     throw err;
   }
+}
+
+function toConsultaDto(
+  row: typeof peticiones.$inferSelect,
+  doc: typeof loteDocumentos.$inferSelect,
+  lote: typeof lotes.$inferSelect,
+  capturista: { displayName: string | null; email: string },
+): PeticionConsultaDto {
+  const subs = Array.isArray(row.subcategorias)
+    ? row.subcategorias.filter((s): s is string => typeof s === "string")
+    : [];
+  return {
+    id: row.id,
+    folio: row.folio,
+    documentoId: row.documentoId,
+    loteId: lote.id,
+    eventoOrigen: lote.eventoOrigen,
+    loteFechaEntrega: lote.fechaEntrega,
+    ciudadanoNombre: row.ciudadanoNombre,
+    ciudadanoTelefono: row.ciudadanoTelefono,
+    descripcion: row.descripcion,
+    transcripcion: row.transcripcion,
+    categoriaId: row.categoriaId,
+    subcategorias: subs,
+    tipo: row.tipo,
+    urgencia: row.urgencia,
+    alcance: row.alcance,
+    firmantes: row.firmantes,
+    cveMun: row.cveMun,
+    coloniaId: row.coloniaId,
+    fechaEntrega: row.fechaEntrega,
+    fechaCaptura: row.fechaCaptura.toISOString(),
+    estatus: row.estatus,
+    capturistaNombre: capturista.displayName,
+    capturistaEmail: capturista.email,
+    documento: {
+      id: doc.id,
+      nombreArchivo: doc.nombreArchivo,
+      mimeType: doc.mimeType,
+      sizeBytes: doc.sizeBytes,
+      estatus: doc.estatus,
+      url: publicUploadUrl(doc.storageKey),
+    },
+  };
+}
+
+export async function listPeticiones(): Promise<PeticionConsultaDto[]> {
+  const rows = await db
+    .select({
+      peticion: peticiones,
+      doc: loteDocumentos,
+      lote: lotes,
+      capturista: {
+        displayName: users.displayName,
+        email: users.email,
+      },
+    })
+    .from(peticiones)
+    .innerJoin(loteDocumentos, eq(peticiones.documentoId, loteDocumentos.id))
+    .innerJoin(lotes, eq(loteDocumentos.loteId, lotes.id))
+    .innerJoin(users, eq(peticiones.capturadoPor, users.id))
+    .orderBy(desc(peticiones.fechaCaptura));
+
+  return rows.map((r) =>
+    toConsultaDto(r.peticion, r.doc, r.lote, r.capturista),
+  );
+}
+
+export async function getPeticionConsultaById(id: string) {
+  if (!UUID_RE.test(id)) return null;
+  const rows = await db
+    .select({
+      peticion: peticiones,
+      doc: loteDocumentos,
+      lote: lotes,
+      capturista: {
+        displayName: users.displayName,
+        email: users.email,
+      },
+    })
+    .from(peticiones)
+    .innerJoin(loteDocumentos, eq(peticiones.documentoId, loteDocumentos.id))
+    .innerJoin(lotes, eq(loteDocumentos.loteId, lotes.id))
+    .innerJoin(users, eq(peticiones.capturadoPor, users.id))
+    .where(eq(peticiones.id, id))
+    .limit(1);
+  const row = rows[0];
+  if (!row) return null;
+  return toConsultaDto(row.peticion, row.doc, row.lote, row.capturista);
 }

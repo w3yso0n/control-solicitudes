@@ -165,3 +165,37 @@ export type UsuarioPublico = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type PeticionConsultaDto = {
+  id: string;
+  folio: string;
+  documentoId: string;
+  loteId: string;
+  eventoOrigen: string;
+  loteFechaEntrega: string;
+  ciudadanoNombre: string;
+  ciudadanoTelefono: string;
+  descripcion: string;
+  transcripcion: string;
+  categoriaId: string;
+  subcategorias: string[];
+  tipo: TipoPeticion;
+  urgencia: Urgencia;
+  alcance: Alcance;
+  firmantes: number | null;
+  cveMun: string;
+  coloniaId: string | null;
+  fechaEntrega: string;
+  fechaCaptura: string;
+  estatus: EstatusPeticion;
+  capturistaNombre: string | null;
+  capturistaEmail: string;
+  documento: {
+    id: string;
+    nombreArchivo: string;
+    mimeType: string;
+    sizeBytes: number;
+    estatus: EstatusDocumento;
+    url: string;
+  };
+};

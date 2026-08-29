@@ -1,13 +1,15 @@
 "use client";
 
+import { FilterCombobox } from "@/components/FilterCombobox";
 import { DetallePeticion } from "@/components/peticiones/DetallePeticion";
-import { Card, Input, Select } from "@/components/ui";
-import { CATEGORIA_POR_ID, CATEGORIAS, MUNICIPIO_POR_CVE } from "@/lib/catalogos";
+import { Card, Input } from "@/components/ui";
+import { CATEGORIA_POR_ID, CATEGORIAS } from "@/lib/catalogos";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
-import { useStore } from "@/lib/store";
-import type { Peticion } from "@/lib/types";
+import { nombreMunicipio } from "@/lib/lote-titulo";
+import { useSession } from "@/lib/session";
+import type { PeticionConsultaDto } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 
 const ETIQUETA_TIPO: Record<string, string> = {
   peticion: "Petición",
@@ -17,42 +19,74 @@ const ETIQUETA_TIPO: Record<string, string> = {
   reconocimiento: "Reconocimiento",
 };
 
-function estadoWhatsApp(p: Peticion): { label: string; tone: string } {
-  const tel = p.ciudadano.telefono;
-  if (!tel || tel === "0000000000") {
-    return { label: "Sin teléfono", tone: "text-zinc-400" };
-  }
-  if (!p.folio.endsWith("0000")) {
-    return { label: "Entregado", tone: "text-[#128C7E]" };
-  }
-  return { label: "Pendiente", tone: "text-ambar" };
+function etiquetaLote(p: PeticionConsultaDto) {
+  const evento = p.eventoOrigen.trim();
+  if (evento && evento.toLowerCase() !== "no aplica") return evento;
+  return "Sin evento";
 }
 
-function nombreMunicipio(cveMun: string) {
-  return (
-    MUNICIPIO_POR_CVE[cveMun]?.nombre ??
-    MUNICIPIOS_GUERRERO.find((m) => m.cveMun === cveMun)?.nombre ??
-    cveMun
-  );
+function telefonoLabel(tel: string) {
+  if (!tel || tel === "0000000000") return "Sin teléfono";
+  return tel;
 }
 
 function PeticionesContent() {
-  const { peticiones, eventos } = useStore();
+  const { rol } = useSession();
   const searchParams = useSearchParams();
+  const puedeBandeja = rol === "cuantiva" || rol === "admin";
+
+  const [peticiones, setPeticiones] = useState<PeticionConsultaDto[]>([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
   const [seleccionadaId, setSeleccionadaId] = useState<string | null>(null);
   const [busqueda, setBusqueda] = useState("");
-  // Preselecciona categoría/municipio cuando se llega desde el dashboard.
   const [categoriaId, setCategoriaId] = useState(
     () => searchParams.get("categoria") ?? "",
   );
   const [cveMun, setCveMun] = useState(() => searchParams.get("municipio") ?? "");
 
+  const cargar = useCallback(async () => {
+    setError("");
+    try {
+      const res = await fetch("/api/peticiones");
+      const data = (await res.json()) as
+        | PeticionConsultaDto[]
+        | { error?: string };
+      if (!res.ok || !Array.isArray(data)) {
+        setError(
+          !Array.isArray(data) && data.error
+            ? data.error
+            : "No se pudieron cargar las peticiones",
+        );
+        return;
+      }
+      setPeticiones(data);
+    } catch {
+      setError("No se pudieron cargar las peticiones");
+    } finally {
+      setCargando(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void cargar();
+  }, [cargar]);
+
   const municipiosConDatos = useMemo(() => {
     const claves = new Set(peticiones.map((p) => p.cveMun));
     return [...claves]
-      .map((clave) => ({ clave, nombre: nombreMunicipio(clave) }))
-      .sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
+      .map((clave) => ({
+        id: clave,
+        label: nombreMunicipio(clave),
+        meta: MUNICIPIOS_GUERRERO.find((m) => m.cveMun === clave)?.region,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label, "es"));
   }, [peticiones]);
+
+  const categoriasOpciones = useMemo(
+    () => CATEGORIAS.map((c) => ({ id: c.id, label: c.nombre })),
+    [],
+  );
 
   const filtradas = useMemo(() => {
     const q = busqueda.trim().toLowerCase();
@@ -62,21 +96,22 @@ function PeticionesContent() {
       if (!q) return true;
       const mun = nombreMunicipio(p.cveMun);
       const cat = CATEGORIA_POR_ID[p.categoriaId]?.nombre ?? "";
+      const lote = etiquetaLote(p).toLowerCase();
       return (
         p.folio.toLowerCase().includes(q) ||
-        p.ciudadano.nombre.toLowerCase().includes(q) ||
+        p.ciudadanoNombre.toLowerCase().includes(q) ||
         p.descripcion.toLowerCase().includes(q) ||
         mun.toLowerCase().includes(q) ||
         cat.toLowerCase().includes(q) ||
+        lote.includes(q) ||
         p.subcategorias.some((s) => s.toLowerCase().includes(q))
       );
     });
   }, [peticiones, busqueda, categoriaId, cveMun]);
 
   const hayFiltros = busqueda.trim() !== "" || categoriaId !== "" || cveMun !== "";
-
-  const seleccionada = peticiones.find((p) => p.id === seleccionadaId) ?? null;
-  const evento = eventos.find((e) => e.id === seleccionada?.eventoId);
+  const seleccionada =
+    peticiones.find((p) => p.id === seleccionadaId) ?? null;
 
   return (
     <div className="space-y-4">
@@ -86,7 +121,7 @@ function PeticionesContent() {
             Gestión y consulta
           </p>
           <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
-            {filtradas.length} peticiones
+            {cargando ? "Peticiones" : `${filtradas.length} peticiones`}
           </h1>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -98,27 +133,24 @@ function PeticionesContent() {
             />
           </div>
           <div className="w-full sm:w-52">
-            <Select
+            <FilterCombobox
               value={categoriaId}
-              onChange={(e) => setCategoriaId(e.target.value)}
-            >
-              <option value="">Todas las categorías</option>
-              {CATEGORIAS.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.nombre}
-                </option>
-              ))}
-            </Select>
+              onChange={setCategoriaId}
+              options={categoriasOpciones}
+              placeholder="Todas las categorías"
+              emptyLabel="Todas las categorías"
+              searchPlaceholder="Buscar categoría…"
+            />
           </div>
           <div className="w-full sm:w-52">
-            <Select value={cveMun} onChange={(e) => setCveMun(e.target.value)}>
-              <option value="">Todos los municipios</option>
-              {municipiosConDatos.map((m) => (
-                <option key={m.clave} value={m.clave}>
-                  {m.nombre}
-                </option>
-              ))}
-            </Select>
+            <FilterCombobox
+              value={cveMun}
+              onChange={setCveMun}
+              options={municipiosConDatos}
+              placeholder="Todos los municipios"
+              emptyLabel="Todos los municipios"
+              searchPlaceholder="Buscar municipio…"
+            />
           </div>
           {hayFiltros ? (
             <button
@@ -136,6 +168,12 @@ function PeticionesContent() {
         </div>
       </div>
 
+      {error ? (
+        <p className="text-sm text-guinda" role="alert">
+          {error}
+        </p>
+      ) : null}
+
       <Card className="overflow-x-auto">
         <table className="w-full min-w-[860px] text-left text-sm">
           <thead className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase text-zinc-500">
@@ -145,16 +183,18 @@ function PeticionesContent() {
               <th className="px-3 py-3">Fecha</th>
               <th className="px-3 py-3">Ciudadano</th>
               <th className="px-3 py-3">Lugar</th>
+              <th className="px-3 py-3">Lote</th>
               <th className="px-3 py-3">Categoría</th>
               <th className="px-3 py-3">Tipo</th>
               <th className="px-3 py-3">Urgencia</th>
-              <th className="px-3 py-3">WhatsApp</th>
+              <th className="px-3 py-3">Teléfono</th>
             </tr>
           </thead>
           <tbody>
             {filtradas.map((p) => {
               const activa = p.id === seleccionadaId;
-              const wa = estadoWhatsApp(p);
+              const comunitaria = p.alcance === "colectivo";
+              const tel = telefonoLabel(p.ciudadanoTelefono);
               return (
                 <tr
                   key={p.id}
@@ -179,19 +219,24 @@ function PeticionesContent() {
                   <td className="px-3 py-2 text-zinc-500">
                     {p.fechaCaptura.slice(0, 10)}
                   </td>
-                  <td className="px-3 py-2">{p.ciudadano.nombre}</td>
+                  <td className="px-3 py-2">{p.ciudadanoNombre}</td>
+                  <td className="px-3 py-2">{nombreMunicipio(p.cveMun)}</td>
                   <td className="px-3 py-2">
-                    {nombreMunicipio(p.cveMun)}
-                    {p.ciudadano.domicilio ? (
-                      <span className="text-zinc-400">
-                        {" · "}
-                        {p.ciudadano.domicilio}
-                      </span>
-                    ) : null}
+                    {puedeBandeja ? (
+                      <a
+                        href={`/bandeja/${p.loteId}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="font-medium text-guinda hover:underline"
+                      >
+                        {etiquetaLote(p)}
+                      </a>
+                    ) : (
+                      etiquetaLote(p)
+                    )}
                   </td>
                   <td className="px-3 py-2">
                     {CATEGORIA_POR_ID[p.categoriaId]?.nombre}
-                    {p.comunitaria ? (
+                    {comunitaria ? (
                       <span className="ml-2 rounded-full bg-magenta/10 px-2 py-0.5 text-[10px] text-magenta">
                         COMUNITARIA
                       </span>
@@ -213,15 +258,27 @@ function PeticionesContent() {
                       {p.urgencia}
                     </span>
                   </td>
-                  <td className={`px-3 py-2 ${wa.tone}`}>{wa.label}</td>
+                  <td
+                    className={`px-3 py-2 ${
+                      tel === "Sin teléfono" ? "text-zinc-400" : "text-zinc-700"
+                    }`}
+                  >
+                    {tel}
+                  </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
-        {filtradas.length === 0 ? (
+        {cargando ? (
           <p className="px-4 py-8 text-center text-sm text-zinc-500">
-            No hay peticiones que coincidan.
+            Cargando…
+          </p>
+        ) : filtradas.length === 0 ? (
+          <p className="px-4 py-8 text-center text-sm text-zinc-500">
+            {peticiones.length === 0
+              ? "Aún no hay peticiones capturadas."
+              : "No hay peticiones que coincidan."}
           </p>
         ) : null}
       </Card>
@@ -229,7 +286,7 @@ function PeticionesContent() {
       {seleccionada ? (
         <DetallePeticion
           peticion={seleccionada}
-          evento={evento}
+          puedeBandeja={puedeBandeja}
           onCerrar={() => setSeleccionadaId(null)}
         />
       ) : null}
