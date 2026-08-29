@@ -5,7 +5,7 @@
 import { config } from "dotenv";
 import postgres from "postgres";
 
-config({ path: ".env.local", override: true, quiet: true });
+config({ path: ".env.local", override: false, quiet: true });
 
 const DB_NAME = "beatriz-solicitudes";
 

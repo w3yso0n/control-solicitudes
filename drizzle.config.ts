@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 
-config({ path: ".env.local", override: true, quiet: true });
+config({ path: ".env.local", override: false, quiet: true });
 
 import { defineConfig } from "drizzle-kit";
 

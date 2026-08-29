@@ -11,7 +11,9 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:create": "tsx scripts/create-db.ts",
-    "db:seed": "tsx scripts/seed-admin.ts"
+    "db:seed": "tsx scripts/seed-admin.ts",
+    "docker:up": "docker compose up",
+    "docker:down": "docker compose down"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
