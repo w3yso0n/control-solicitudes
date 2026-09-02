@@ -37,8 +37,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="es"
       className={`${fraunces.variable} ${inter.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full bg-hueso font-sans text-tinta">
+      <body
+        className="min-h-full bg-hueso font-sans text-tinta"
+        suppressHydrationWarning
+      >
         <Providers>{children}</Providers>
       </body>
     </html>

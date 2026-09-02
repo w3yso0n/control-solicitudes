@@ -36,6 +36,11 @@ function etiquetaEvento(valor: string) {
   return nombre;
 }
 
+function etiquetaColonia(coloniaId: string | null) {
+  if (!coloniaId?.trim()) return "N/A";
+  return COLONIA_POR_ID[coloniaId]?.nombre ?? "N/A";
+}
+
 function Dato({ label, value }: { label: string; value: string }) {
   return (
     <div>
@@ -214,12 +219,7 @@ export function DetallePeticion({
               />
               <Dato
                 label="Colonia"
-                value={
-                  peticion.coloniaId
-                    ? COLONIA_POR_ID[peticion.coloniaId]?.nombre ??
-                      peticion.coloniaId
-                    : "—"
-                }
+                value={etiquetaColonia(peticion.coloniaId)}
               />
               <Dato
                 label="Categoría"

@@ -3,7 +3,7 @@
 import { FilterCombobox } from "@/components/FilterCombobox";
 import { DetallePeticion } from "@/components/peticiones/DetallePeticion";
 import { Card, Input } from "@/components/ui";
-import { CATEGORIA_POR_ID, CATEGORIAS } from "@/lib/catalogos";
+import { CATEGORIA_POR_ID, CATEGORIAS, COLONIA_POR_ID } from "@/lib/catalogos";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { nombreMunicipio } from "@/lib/lote-titulo";
 import { useSession } from "@/lib/session";
@@ -19,10 +19,9 @@ const ETIQUETA_TIPO: Record<string, string> = {
   reconocimiento: "Reconocimiento",
 };
 
-function etiquetaLote(p: PeticionConsultaDto) {
-  const evento = p.eventoOrigen.trim();
-  if (evento && evento.toLowerCase() !== "no aplica") return evento;
-  return "Sin evento";
+function etiquetaColonia(coloniaId: string | null) {
+  if (!coloniaId?.trim()) return "N/A";
+  return COLONIA_POR_ID[coloniaId]?.nombre ?? "N/A";
 }
 
 function telefonoLabel(tel: string) {
@@ -96,14 +95,14 @@ function PeticionesContent() {
       if (!q) return true;
       const mun = nombreMunicipio(p.cveMun);
       const cat = CATEGORIA_POR_ID[p.categoriaId]?.nombre ?? "";
-      const lote = etiquetaLote(p).toLowerCase();
+      const colonia = etiquetaColonia(p.coloniaId).toLowerCase();
       return (
         p.folio.toLowerCase().includes(q) ||
         p.ciudadanoNombre.toLowerCase().includes(q) ||
         p.descripcion.toLowerCase().includes(q) ||
         mun.toLowerCase().includes(q) ||
         cat.toLowerCase().includes(q) ||
-        lote.includes(q) ||
+        colonia.includes(q) ||
         p.subcategorias.some((s) => s.toLowerCase().includes(q))
       );
     });
@@ -183,7 +182,7 @@ function PeticionesContent() {
               <th className="px-3 py-3">Fecha</th>
               <th className="px-3 py-3">Ciudadano</th>
               <th className="px-3 py-3">Lugar</th>
-              <th className="px-3 py-3">Lote</th>
+              <th className="px-3 py-3">Descripción</th>
               <th className="px-3 py-3">Categoría</th>
               <th className="px-3 py-3">Tipo</th>
               <th className="px-3 py-3">Urgencia</th>
@@ -195,6 +194,8 @@ function PeticionesContent() {
               const activa = p.id === seleccionadaId;
               const comunitaria = p.alcance === "colectivo";
               const tel = telefonoLabel(p.ciudadanoTelefono);
+              const colonia = etiquetaColonia(p.coloniaId);
+              const descripcion = p.descripcion.trim() || "N/A";
               return (
                 <tr
                   key={p.id}
@@ -220,19 +221,21 @@ function PeticionesContent() {
                     {p.fechaCaptura.slice(0, 10)}
                   </td>
                   <td className="px-3 py-2">{p.ciudadanoNombre}</td>
-                  <td className="px-3 py-2">{nombreMunicipio(p.cveMun)}</td>
                   <td className="px-3 py-2">
-                    {puedeBandeja ? (
-                      <a
-                        href={`/bandeja/${p.loteId}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="font-medium text-guinda hover:underline"
-                      >
-                        {etiquetaLote(p)}
-                      </a>
-                    ) : (
-                      etiquetaLote(p)
-                    )}
+                    <span>{nombreMunicipio(p.cveMun)}</span>
+                    <span
+                      className={
+                        colonia === "N/A" ? "text-zinc-400" : "text-zinc-600"
+                      }
+                    >
+                      {" · "}
+                      {colonia}
+                    </span>
+                  </td>
+                  <td className="max-w-xs px-3 py-2 text-zinc-700">
+                    <span className="line-clamp-2" title={descripcion}>
+                      {descripcion}
+                    </span>
                   </td>
                   <td className="px-3 py-2">
                     {CATEGORIA_POR_ID[p.categoriaId]?.nombre}

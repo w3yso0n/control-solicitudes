@@ -1,10 +1,11 @@
 "use client";
 
 import { HOME_POR_ROL, ROL_LABEL } from "@/lib/catalogos";
-import { NAV_ITEMS, puedeVer } from "@/lib/nav";
+import { navPorGrupos, puedeVer } from "@/lib/nav";
 import { useSession } from "@/lib/session";
 import type { Rol } from "@/lib/types";
 import {
+  // BarChart3,
   ClipboardList,
   FolderOpen,
   Inbox,
@@ -14,6 +15,7 @@ import {
   PanelLeftClose,
   Settings,
   Shield,
+  Users,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,7 +27,8 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
   "/territorio": FolderOpen,
   "/bandeja": Inbox,
   "/peticiones": ClipboardList,
-  "/reportes": ClipboardList,
+  // "/reportes": BarChart3,
+  "/usuarios": Users,
   "/configuracion": Settings,
   "/auditoria": Shield,
 };
@@ -80,7 +83,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     );
   }
 
-  const items = NAV_ITEMS.filter((item) => item.roles.includes(rol));
+  const grupos = navPorGrupos(rol);
   const esCandidata = rol === "candidata";
 
   return (
@@ -122,27 +125,45 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           </div>
         ) : null}
-        <nav className="flex-1 space-y-2 overflow-y-auto p-4">
-          {items.map((item) => {
-            const Icon = ICONS[item.href] ?? ClipboardList;
-            const active =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 rounded-2xl px-3.5 py-3.5 text-[15px] font-medium transition-colors ${
-                  active
-                    ? "bg-white text-guinda shadow-[0_8px_20px_-10px_rgba(0,0,0,0.5)]"
-                    : "text-white/80 hover:bg-white/10 hover:text-white"
-                }`}
-              >
-                <Icon size={20} />
-                {collapsed ? null : <span>{item.label}</span>}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 overflow-y-auto p-4">
+          {grupos.map((grupo, index) => (
+            <div key={grupo.id} className={index > 0 ? "mt-4" : ""}>
+              {index > 0 ? (
+                <div
+                  className="mx-1 mb-3 border-t border-white/15"
+                  aria-hidden
+                />
+              ) : null}
+              {collapsed ? null : (
+                <p className="mb-2 px-3.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/40">
+                  {grupo.label}
+                </p>
+              )}
+              <div className="space-y-2">
+                {grupo.items.map((item) => {
+                  const Icon = ICONS[item.href] ?? ClipboardList;
+                  const active =
+                    pathname === item.href ||
+                    pathname.startsWith(`${item.href}/`);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className={`flex items-center gap-3 rounded-2xl px-3.5 py-3.5 text-[15px] font-medium transition-colors ${
+                        active
+                          ? "bg-white text-guinda shadow-[0_8px_20px_-10px_rgba(0,0,0,0.5)]"
+                          : "text-white/80 hover:bg-white/10 hover:text-white"
+                      }`}
+                    >
+                      <Icon size={20} />
+                      {collapsed ? null : <span>{item.label}</span>}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         {/* Pie fijo del sidebar: colapsar y cerrar sesión siempre visibles, no hacen scroll con el nav. */}
