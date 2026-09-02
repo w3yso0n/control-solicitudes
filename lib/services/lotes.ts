@@ -14,7 +14,7 @@ import {
   saveLoteFile,
   type SavedUpload,
 } from "@/lib/uploads";
-import { asc, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -137,6 +137,20 @@ export async function getLotesBandeja(): Promise<LoteDto[]> {
   const rows = await db.select().from(lotes).orderBy(asc(lotes.createdAt));
   const byLote = await documentosPorLoteIds(rows.map((r) => r.id));
   return ensamblarLotes(rows, byLote);
+}
+
+export async function countDocumentosPendientesBandeja(): Promise<number> {
+  const rows = await db
+    .select({ n: count() })
+    .from(loteDocumentos)
+    .innerJoin(lotes, eq(loteDocumentos.loteId, lotes.id))
+    .where(
+      and(
+        eq(loteDocumentos.estatus, "pendiente"),
+        eq(lotes.estatus, "cerrado"),
+      ),
+    );
+  return Number(rows[0]?.n ?? 0);
 }
 
 export async function getLoteDtoById(id: string): Promise<LoteDto | null> {

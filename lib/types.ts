@@ -199,3 +199,8 @@ export type PeticionConsultaDto = {
     url: string;
   };
 };
+
+export type DashboardDto = {
+  peticiones: PeticionConsultaDto[];
+  documentosPendientes: number;
+};

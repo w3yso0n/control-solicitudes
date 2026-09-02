@@ -14,11 +14,11 @@ import {
   filtrarPorPeriodo,
   itcFill,
 } from "@/lib/itc";
-import { useStore } from "@/lib/store";
-import type { PeriodoFiltro } from "@/lib/types";
+import { peticionDesdeConsulta } from "@/lib/peticion-from-consulta";
+import type { DashboardDto, PeriodoFiltro, Peticion } from "@/lib/types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const PERIODOS: { id: PeriodoFiltro; label: string }[] = [
   { id: "7", label: "7 días" },
@@ -95,16 +95,48 @@ function KpiCard({
 }
 
 export default function DashboardPage() {
-  const { peticiones, lotes } = useStore();
   const router = useRouter();
-  // Acumulado por defecto: la demo Excel se ve completa en los KPIs.
   const [periodo, setPeriodo] = useState<PeriodoFiltro>("acumulado");
   const [regionResaltada, setRegionResaltada] =
     useState<RegionGuerrero | null>(null);
   const mapaRef = useRef<HTMLDivElement>(null);
+  const [peticiones, setPeticiones] = useState<Peticion[]>([]);
+  const [documentosPendientes, setDocumentosPendientes] = useState(0);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
+
+  const cargar = useCallback(async () => {
+    try {
+      const res = await fetch("/api/dashboard");
+      const data = (await res.json()) as DashboardDto | { error?: string };
+      if (!res.ok || !("peticiones" in data) || !Array.isArray(data.peticiones)) {
+        setError(
+          "error" in data && data.error
+            ? data.error
+            : "No se pudo cargar el dashboard",
+        );
+        return;
+      }
+      setError("");
+      setPeticiones(data.peticiones.map(peticionDesdeConsulta));
+      setDocumentosPendientes(
+        typeof data.documentosPendientes === "number"
+          ? data.documentosPendientes
+          : 0,
+      );
+    } catch {
+      setError("No se pudo cargar el dashboard");
+    } finally {
+      setCargando(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void cargar();
+  }, [cargar]);
 
   const filtradas = useMemo(
-    () => filtrarPorPeriodo(peticiones, periodo),
+    () => filtrarPorPeriodo(peticiones, periodo, new Date()),
     [peticiones, periodo],
   );
 
@@ -126,18 +158,12 @@ export default function DashboardPage() {
     (p) => p.ciudadano.telefono && p.ciudadano.telefono !== "0000000000",
   );
   const sinTelefono = filtradas.length - conTelefono.length;
-  // En la demo Excel no hay envío real: cobertura = % con teléfono usable.
   const waPct =
     filtradas.length > 0
       ? Math.round((conTelefono.length / filtradas.length) * 100)
       : 0;
 
-  // Backlog operativo: docs pendientes en lotes + peticiones del Excel sin teléfono
-  // (no se puede cerrar el ciclo WhatsApp).
-  const backlogLotes = lotes
-    .filter((l) => l.estatus === "cerrado")
-    .flatMap((l) => l.documentos)
-    .filter((d) => d.estatus === "pendiente").length;
+  const backlogLotes = documentosPendientes;
   const backlog = backlogLotes + sinTelefono;
 
   const horasAFolio = (() => {
@@ -288,6 +314,16 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {error ? (
+        <p className="text-sm text-guinda" role="alert">
+          {error}
+        </p>
+      ) : null}
+
+      {cargando ? (
+        <p className="text-sm text-zinc-500">Cargando…</p>
+      ) : error ? null : (
+        <div className="space-y-4">
       <Card className="grid grid-cols-2 divide-y divide-zinc-100 sm:grid-cols-3 sm:divide-y-0 sm:divide-x lg:grid-cols-6">
         {kpis.map((k) => (
           <KpiCard key={k.label} {...k} />
@@ -389,7 +425,12 @@ export default function DashboardPage() {
               Municipios más calientes
             </p>
             <ul className="mt-3 space-y-0.5">
-              {topMunicipios.map((s, i) => (
+              {topMunicipios.length === 0 ? (
+                <li className="px-1.5 py-2 text-sm text-zinc-500">
+                  Sin peticiones.
+                </li>
+              ) : (
+                topMunicipios.map((s, i) => (
                 <li
                   key={s.clave}
                   onClick={() => verPeticionesDe(s.clave)}
@@ -411,7 +452,8 @@ export default function DashboardPage() {
                     {s.score}
                   </span>
                 </li>
-              ))}
+                ))
+              )}
             </ul>
           </Card>
         </div>
@@ -422,6 +464,8 @@ export default function DashboardPage() {
         regionResaltada={regionResaltada}
         onRegionClick={resaltarRegion}
       />
+        </div>
+      )}
     </div>
   );
 }
