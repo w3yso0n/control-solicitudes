@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import {
+  boolean,
   index,
   integer,
   jsonb,
@@ -86,7 +87,21 @@ export const peticiones = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
     ciudadanoNombre: text("ciudadano_nombre").notNull(),
-    ciudadanoTelefono: text("ciudadano_telefono").notNull(),
+    ciudadanoDomicilio: text("ciudadano_domicilio").notNull().default(""),
+    ciudadanoTelefono: text("ciudadano_telefono"),
+    identidadHash: text("identidad_hash").notNull().default(""),
+    remitenteNombre: text("remitente_nombre"),
+    remitenteTelefono: text("remitente_telefono"),
+    remitenteRelacion: text("remitente_relacion", {
+      enum: [
+        "mismo",
+        "familiar",
+        "vecino",
+        "representante",
+        "promotor",
+        "no_especificada",
+      ],
+    }),
     descripcion: text("descripcion").notNull(),
     transcripcion: text("transcripcion").notNull(),
     categoriaId: text("categoria_id").notNull(),
@@ -104,17 +119,53 @@ export const peticiones = pgTable(
     alcance: text("alcance", {
       enum: ["individual", "familiar", "colectivo"],
     }).notNull(),
+    complejidad: text("complejidad", {
+      enum: ["simple", "media", "estructural"],
+    })
+      .notNull()
+      .default("media"),
     firmantes: integer("firmantes"),
     cveMun: text("cve_mun").notNull(),
     coloniaId: text("colonia_id"),
     eventoOrigen: text("evento_origen").notNull(),
     fechaEntrega: text("fecha_entrega").notNull(),
     fechaCaptura: timestamp("fecha_captura").defaultNow().notNull(),
-    estatus: text("estatus", {
-      enum: ["recibida", "capturada", "archivada"],
+    origenCaptura: text("origen_captura", {
+      enum: ["escaneado_territorio", "whatsapp_ciudadano"],
     })
       .notNull()
-      .default("capturada"),
+      .default("escaneado_territorio"),
+    escenarioAcuse: text("escenario_acuse", {
+      enum: ["A", "B", "C", "D"],
+    })
+      .notNull()
+      .default("D"),
+    estatus: text("estatus", {
+      enum: [
+        "recibida",
+        "en_gestion",
+        "cumplida",
+        "no_procede",
+        "compromiso_gobierno",
+        "archivada",
+      ],
+    })
+      .notNull()
+      .default("recibida"),
+    marcaDuplicado: boolean("marca_duplicado").notNull().default(false),
+    fechaCumplimiento: text("fecha_cumplimiento"),
+    descripcionCumplimiento: text("descripcion_cumplimiento"),
+    evidenciaUrls: jsonb("evidencia_urls").$type<string[]>(),
+    cerradoPor: uuid("cerrado_por").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    motivoNoProcede: text("motivo_no_procede"),
+    costoEstimado: text("costo_estimado"),
+    responsableAsignado: text("responsable_asignado"),
+    nivelGobierno: text("nivel_gobierno", {
+      enum: ["municipal", "estatal", "federal"],
+    }),
+    fechaCompromiso: text("fecha_compromiso"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
@@ -122,6 +173,9 @@ export const peticiones = pgTable(
     index("peticiones_documento_id_idx").on(table.documentoId),
     index("peticiones_capturado_por_idx").on(table.capturadoPor),
     index("peticiones_cve_mun_idx").on(table.cveMun),
+    index("peticiones_identidad_hash_idx").on(table.identidadHash),
+    index("peticiones_estatus_idx").on(table.estatus),
+    index("peticiones_complejidad_idx").on(table.complejidad),
   ],
 );
 

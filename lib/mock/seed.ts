@@ -57,7 +57,7 @@ function p(
   },
 ): Peticion {
   return {
-    estatus: "capturada",
+    estatus: "recibida",
     documentoUrl: SCAN,
     comunitaria: partial.alcance === "colectivo",
     transcripcion: transcripcionMock(partial.descripcion, partial.ciudadano.nombre),

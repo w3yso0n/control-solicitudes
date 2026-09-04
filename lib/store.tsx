@@ -115,7 +115,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         id: `pet-${prev.length + 1}`,
         folio,
         fechaCaptura: ahora.toISOString(),
-        estatus: "capturada",
+        estatus: "recibida",
         comunitaria: input.alcance === "colectivo",
         documentoUrl: input.documentoUrl,
         descripcion: input.descripcion,

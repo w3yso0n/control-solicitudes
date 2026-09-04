@@ -11,7 +11,27 @@ export type Urgencia = "alta" | "media" | "baja";
 
 export type Alcance = "individual" | "familiar" | "colectivo";
 
-export type EstatusPeticion = "recibida" | "capturada" | "archivada";
+export type Complejidad = "simple" | "media" | "estructural";
+
+export type OrigenCaptura = "escaneado_territorio" | "whatsapp_ciudadano";
+
+export type EscenarioAcuse = "A" | "B" | "C" | "D";
+
+export type RelacionRemitente =
+  | "mismo"
+  | "familiar"
+  | "vecino"
+  | "representante"
+  | "promotor"
+  | "no_especificada";
+
+export type EstatusPeticion =
+  | "recibida"
+  | "en_gestion"
+  | "cumplida"
+  | "no_procede"
+  | "compromiso_gobierno"
+  | "archivada";
 
 export type EstatusLote = "abierto" | "cerrado";
 
@@ -87,6 +107,7 @@ export type Peticion = {
   tipo: TipoPeticion;
   urgencia: Urgencia;
   alcance: Alcance;
+  complejidad?: Complejidad;
   comunitaria: boolean;
   firmantes?: number;
   cveMun: string;
@@ -120,7 +141,11 @@ export type CapturaPeticionDto = {
   documentoId: string;
   loteId: string;
   ciudadanoNombre: string;
-  ciudadanoTelefono: string;
+  ciudadanoDomicilio: string;
+  ciudadanoTelefono: string | null;
+  remitenteNombre: string | null;
+  remitenteTelefono: string | null;
+  remitenteRelacion: RelacionRemitente | null;
   descripcion: string;
   transcripcion: string;
   categoriaId: string;
@@ -128,9 +153,13 @@ export type CapturaPeticionDto = {
   tipo: TipoPeticion;
   urgencia: Urgencia;
   alcance: Alcance;
+  complejidad: Complejidad;
   firmantes: number | null;
   cveMun: string;
   coloniaId: string | null;
+  origenCaptura: OrigenCaptura;
+  escenarioAcuse: EscenarioAcuse;
+  estatus: EstatusPeticion;
 };
 
 export type LoteDocumentoDto = {
@@ -174,7 +203,11 @@ export type PeticionConsultaDto = {
   eventoOrigen: string;
   loteFechaEntrega: string;
   ciudadanoNombre: string;
-  ciudadanoTelefono: string;
+  ciudadanoDomicilio: string;
+  ciudadanoTelefono: string | null;
+  remitenteNombre: string | null;
+  remitenteTelefono: string | null;
+  remitenteRelacion: RelacionRemitente | null;
   descripcion: string;
   transcripcion: string;
   categoriaId: string;
@@ -182,14 +215,19 @@ export type PeticionConsultaDto = {
   tipo: TipoPeticion;
   urgencia: Urgencia;
   alcance: Alcance;
+  complejidad: Complejidad;
   firmantes: number | null;
   cveMun: string;
   coloniaId: string | null;
   fechaEntrega: string;
   fechaCaptura: string;
+  origenCaptura: OrigenCaptura;
+  escenarioAcuse: EscenarioAcuse;
   estatus: EstatusPeticion;
   capturistaNombre: string | null;
   capturistaEmail: string;
+  subidaPorNombre: string | null;
+  subidaPorEmail: string | null;
   documento: {
     id: string;
     nombreArchivo: string;
@@ -198,6 +236,18 @@ export type PeticionConsultaDto = {
     estatus: EstatusDocumento;
     url: string;
   };
+};
+
+export type CoincidenciaIdentidad = {
+  id: string;
+  folio: string;
+  fechaEntrega: string;
+  categoriaId: string;
+  subcategorias: string[];
+  ciudadanoNombre: string;
+  ciudadanoDomicilio: string;
+  ciudadanoTelefono: string | null;
+  mismoDiaMismoTema: boolean;
 };
 
 export type DashboardDto = {

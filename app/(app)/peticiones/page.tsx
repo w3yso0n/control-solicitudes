@@ -3,7 +3,7 @@
 import { FilterCombobox } from "@/components/FilterCombobox";
 import { DetallePeticion } from "@/components/peticiones/DetallePeticion";
 import { Card, Input } from "@/components/ui";
-import { CATEGORIA_POR_ID, CATEGORIAS, COLONIA_POR_ID } from "@/lib/catalogos";
+import { CATEGORIA_POR_ID, CATEGORIAS, COLONIA_POR_ID, COMPLEJIDADES, ESTATUS_PETICION, ORIGENES_CAPTURA } from "@/lib/catalogos";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { nombreMunicipio } from "@/lib/lote-titulo";
 import { useSession } from "@/lib/session";
@@ -24,7 +24,7 @@ function etiquetaColonia(coloniaId: string | null) {
   return COLONIA_POR_ID[coloniaId]?.nombre ?? "N/A";
 }
 
-function telefonoLabel(tel: string) {
+function telefonoLabel(tel: string | null) {
   if (!tel || tel === "0000000000") return "Sin teléfono";
   return tel;
 }
@@ -43,6 +43,11 @@ function PeticionesContent() {
     () => searchParams.get("categoria") ?? "",
   );
   const [cveMun, setCveMun] = useState(() => searchParams.get("municipio") ?? "");
+  const [complejidad, setComplejidad] = useState(
+    () => searchParams.get("complejidad") ?? "",
+  );
+  const [estatus, setEstatus] = useState(() => searchParams.get("estatus") ?? "");
+  const [origen, setOrigen] = useState(() => searchParams.get("origen") ?? "");
 
   const cargar = useCallback(async () => {
     setError("");
@@ -86,12 +91,27 @@ function PeticionesContent() {
     () => CATEGORIAS.map((c) => ({ id: c.id, label: c.nombre })),
     [],
   );
+  const complejidadOpciones = useMemo(
+    () => COMPLEJIDADES.map((c) => ({ id: c.id, label: c.nombre })),
+    [],
+  );
+  const estatusOpciones = useMemo(
+    () => ESTATUS_PETICION.map((e) => ({ id: e.id, label: e.nombre })),
+    [],
+  );
+  const origenOpciones = useMemo(
+    () => ORIGENES_CAPTURA.map((o) => ({ id: o.id, label: o.nombre })),
+    [],
+  );
 
   const filtradas = useMemo(() => {
     const q = busqueda.trim().toLowerCase();
     return peticiones.filter((p) => {
       if (categoriaId && p.categoriaId !== categoriaId) return false;
       if (cveMun && p.cveMun !== cveMun) return false;
+      if (complejidad && p.complejidad !== complejidad) return false;
+      if (estatus && p.estatus !== estatus) return false;
+      if (origen && p.origenCaptura !== origen) return false;
       if (!q) return true;
       const mun = nombreMunicipio(p.cveMun);
       const cat = CATEGORIA_POR_ID[p.categoriaId]?.nombre ?? "";
@@ -99,6 +119,7 @@ function PeticionesContent() {
       return (
         p.folio.toLowerCase().includes(q) ||
         p.ciudadanoNombre.toLowerCase().includes(q) ||
+        p.ciudadanoDomicilio.toLowerCase().includes(q) ||
         p.descripcion.toLowerCase().includes(q) ||
         mun.toLowerCase().includes(q) ||
         cat.toLowerCase().includes(q) ||
@@ -106,9 +127,15 @@ function PeticionesContent() {
         p.subcategorias.some((s) => s.toLowerCase().includes(q))
       );
     });
-  }, [peticiones, busqueda, categoriaId, cveMun]);
+  }, [peticiones, busqueda, categoriaId, cveMun, complejidad, estatus, origen]);
 
-  const hayFiltros = busqueda.trim() !== "" || categoriaId !== "" || cveMun !== "";
+  const hayFiltros =
+    busqueda.trim() !== "" ||
+    categoriaId !== "" ||
+    cveMun !== "" ||
+    complejidad !== "" ||
+    estatus !== "" ||
+    origen !== "";
   const seleccionada =
     peticiones.find((p) => p.id === seleccionadaId) ?? null;
 
@@ -151,6 +178,36 @@ function PeticionesContent() {
               searchPlaceholder="Buscar municipio…"
             />
           </div>
+          <div className="w-full sm:w-44">
+            <FilterCombobox
+              value={complejidad}
+              onChange={setComplejidad}
+              options={complejidadOpciones}
+              placeholder="Toda complejidad"
+              emptyLabel="Toda complejidad"
+              searchPlaceholder="Buscar…"
+            />
+          </div>
+          <div className="w-full sm:w-44">
+            <FilterCombobox
+              value={estatus}
+              onChange={setEstatus}
+              options={estatusOpciones}
+              placeholder="Todo estatus"
+              emptyLabel="Todo estatus"
+              searchPlaceholder="Buscar…"
+            />
+          </div>
+          <div className="w-full sm:w-48">
+            <FilterCombobox
+              value={origen}
+              onChange={setOrigen}
+              options={origenOpciones}
+              placeholder="Todo origen"
+              emptyLabel="Todo origen"
+              searchPlaceholder="Buscar…"
+            />
+          </div>
           {hayFiltros ? (
             <button
               type="button"
@@ -158,6 +215,9 @@ function PeticionesContent() {
                 setBusqueda("");
                 setCategoriaId("");
                 setCveMun("");
+                setComplejidad("");
+                setEstatus("");
+                setOrigen("");
               }}
               className="shrink-0 text-sm font-medium text-guinda hover:underline"
             >
@@ -174,7 +234,7 @@ function PeticionesContent() {
       ) : null}
 
       <Card className="overflow-x-auto">
-        <table className="w-full min-w-[860px] text-left text-sm">
+        <table className="w-full min-w-[1100px] text-left text-sm">
           <thead className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase text-zinc-500">
             <tr>
               <th className="w-10 px-3 py-3" />
@@ -184,6 +244,8 @@ function PeticionesContent() {
               <th className="px-3 py-3">Lugar</th>
               <th className="px-3 py-3">Descripción</th>
               <th className="px-3 py-3">Categoría</th>
+              <th className="px-3 py-3">Complejidad</th>
+              <th className="px-3 py-3">Estatus</th>
               <th className="px-3 py-3">Tipo</th>
               <th className="px-3 py-3">Urgencia</th>
               <th className="px-3 py-3">Teléfono</th>
@@ -244,6 +306,11 @@ function PeticionesContent() {
                         COMUNITARIA
                       </span>
                     ) : null}
+                  </td>
+                  <td className="px-3 py-2 capitalize">{p.complejidad}</td>
+                  <td className="px-3 py-2">
+                    {ESTATUS_PETICION.find((e) => e.id === p.estatus)?.nombre ??
+                      p.estatus}
                   </td>
                   <td className="px-3 py-2">
                     {ETIQUETA_TIPO[p.tipo] ?? p.tipo}

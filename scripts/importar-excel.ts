@@ -860,7 +860,7 @@ function main() {
       eventoId: evento.id,
       fechaEntrega: fecha,
       fechaCaptura,
-      estatus: "capturada",
+      estatus: "recibida",
       documentoUrl: "",
     });
   }

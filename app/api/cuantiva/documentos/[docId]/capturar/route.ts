@@ -1,6 +1,11 @@
 import { requireCuantiva } from "@/lib/auth";
 import { capturarDocumento } from "@/lib/services/peticiones";
+import type { RelacionRemitente } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
+
+function asString(value: unknown): string {
+  return typeof value === "string" ? value : "";
+}
 
 export async function POST(
   request: NextRequest,
@@ -23,32 +28,36 @@ export async function POST(
           : null;
 
     const result = await capturarDocumento(authz.user.id, docId, {
-      ciudadanoNombre:
-        typeof body.ciudadanoNombre === "string" ? body.ciudadanoNombre : "",
-      ciudadanoTelefono:
-        typeof body.ciudadanoTelefono === "string"
-          ? body.ciudadanoTelefono
-          : "",
-      descripcion: typeof body.descripcion === "string" ? body.descripcion : "",
-      transcripcion:
-        typeof body.transcripcion === "string" ? body.transcripcion : "",
-      categoriaId:
-        typeof body.categoriaId === "string" ? body.categoriaId : "",
+      ciudadanoNombre: asString(body.ciudadanoNombre),
+      ciudadanoDomicilio: asString(body.ciudadanoDomicilio),
+      ciudadanoTelefono: asString(body.ciudadanoTelefono),
+      remitenteNombre: asString(body.remitenteNombre) || null,
+      remitenteTelefono: asString(body.remitenteTelefono) || null,
+      remitenteRelacion: asString(body.remitenteRelacion) as RelacionRemitente,
+      descripcion: asString(body.descripcion),
+      transcripcion: asString(body.transcripcion),
+      categoriaId: asString(body.categoriaId),
       subcategorias: Array.isArray(body.subcategorias)
         ? body.subcategorias.filter((s): s is string => typeof s === "string")
         : [],
-      tipo: typeof body.tipo === "string" ? body.tipo : "",
-      urgencia: typeof body.urgencia === "string" ? body.urgencia : "",
-      alcance: typeof body.alcance === "string" ? body.alcance : "",
+      tipo: asString(body.tipo),
+      urgencia: asString(body.urgencia),
+      alcance: asString(body.alcance),
+      complejidad: asString(body.complejidad),
       firmantes:
         firmantes != null && Number.isFinite(firmantes) ? firmantes : null,
-      cveMun: typeof body.cveMun === "string" ? body.cveMun : "",
+      cveMun: asString(body.cveMun),
       coloniaId: typeof body.coloniaId === "string" ? body.coloniaId : null,
+      escenarioAcuse: asString(body.escenarioAcuse),
+      confirmarDuplicado: body.confirmarDuplicado === true,
     });
 
     if ("error" in result) {
       return NextResponse.json(
-        { error: result.error },
+        {
+          error: result.error,
+          coincidencias: result.coincidencias ?? [],
+        },
         { status: result.status },
       );
     }

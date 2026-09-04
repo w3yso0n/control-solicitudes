@@ -1,6 +1,7 @@
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { db } from "@/lib/db";
 import { loteDocumentos, lotes, peticiones } from "@/lib/db/schema";
+import { toCapturaDto } from "@/lib/services/peticiones";
 import type {
   CapturaPeticionDto,
   LoteDocumentoDto,
@@ -32,27 +33,7 @@ function toPeticionDto(
   row: typeof peticiones.$inferSelect,
   loteId: string,
 ): CapturaPeticionDto {
-  const subs = Array.isArray(row.subcategorias)
-    ? row.subcategorias.filter((s): s is string => typeof s === "string")
-    : [];
-  return {
-    id: row.id,
-    folio: row.folio,
-    documentoId: row.documentoId,
-    loteId,
-    ciudadanoNombre: row.ciudadanoNombre,
-    ciudadanoTelefono: row.ciudadanoTelefono,
-    descripcion: row.descripcion,
-    transcripcion: row.transcripcion,
-    categoriaId: row.categoriaId,
-    subcategorias: subs,
-    tipo: row.tipo,
-    urgencia: row.urgencia,
-    alcance: row.alcance,
-    firmantes: row.firmantes,
-    cveMun: row.cveMun,
-    coloniaId: row.coloniaId,
-  };
+  return toCapturaDto(row, loteId);
 }
 
 function toDocumentoDto(

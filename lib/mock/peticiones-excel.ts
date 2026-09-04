@@ -25,7 +25,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-16T01:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -51,7 +51,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T23:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -77,7 +77,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T22:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -103,7 +103,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T20:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -129,7 +129,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T19:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -155,7 +155,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T17:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -181,7 +181,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T14:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -207,7 +207,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T11:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -233,7 +233,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T08:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -259,7 +259,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T07:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -285,7 +285,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T05:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -311,7 +311,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T03:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -337,7 +337,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T03:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -363,7 +363,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T02:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -389,7 +389,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-13",
     "fechaCaptura": "2026-08-15T00:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -415,7 +415,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-15T00:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -441,7 +441,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-08-13",
     "fechaCaptura": "2026-08-14T23:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -467,7 +467,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-14T21:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -493,7 +493,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-14T18:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -519,7 +519,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-08-13",
     "fechaCaptura": "2026-08-14T17:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -544,7 +544,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-14",
     "fechaCaptura": "2026-08-14T15:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -570,7 +570,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-08-13",
     "fechaCaptura": "2026-08-14T13:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -597,7 +597,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-08-13",
     "fechaCaptura": "2026-08-14T08:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -623,7 +623,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-08-13",
     "fechaCaptura": "2026-08-14T00:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -650,7 +650,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-08-13",
     "fechaCaptura": "2026-08-13T15:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -676,7 +676,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-12",
     "fechaCaptura": "2026-08-13T10:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -702,7 +702,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-12",
     "fechaCaptura": "2026-08-13T04:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -728,7 +728,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-11",
     "fechaCaptura": "2026-08-12T21:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -754,7 +754,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-12",
     "fechaCaptura": "2026-08-12T20:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -780,7 +780,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-mon",
     "fechaEntrega": "2026-08-10",
     "fechaCaptura": "2026-08-12T02:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -806,7 +806,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-mon",
     "fechaEntrega": "2026-08-10",
     "fechaCaptura": "2026-08-11T09:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -834,7 +834,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-10",
     "fechaCaptura": "2026-08-11T01:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -860,7 +860,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-09",
     "fechaCaptura": "2026-08-10T18:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -886,7 +886,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-08-09",
     "fechaCaptura": "2026-08-10T10:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -913,7 +913,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-08-08",
     "fechaCaptura": "2026-08-09T18:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -939,7 +939,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-08",
     "fechaCaptura": "2026-08-09T15:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -965,7 +965,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-08",
     "fechaCaptura": "2026-08-08T22:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -991,7 +991,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-08-08",
     "fechaCaptura": "2026-08-08T14:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1017,7 +1017,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-08-07",
     "fechaCaptura": "2026-08-08T06:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1043,7 +1043,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-07",
     "fechaCaptura": "2026-08-08T03:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1069,7 +1069,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-07",
     "fechaCaptura": "2026-08-07T23:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1095,7 +1095,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-07",
     "fechaCaptura": "2026-08-07T19:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1121,7 +1121,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-08-07",
     "fechaCaptura": "2026-08-07T17:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1147,7 +1147,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-06",
     "fechaCaptura": "2026-08-07T12:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1175,7 +1175,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-05",
     "fechaCaptura": "2026-08-05T16:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1201,7 +1201,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-04",
     "fechaCaptura": "2026-08-05T06:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1227,7 +1227,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-03",
     "fechaCaptura": "2026-08-04T23:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1253,7 +1253,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-08-03",
     "fechaCaptura": "2026-08-03T14:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1279,7 +1279,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-02",
     "fechaCaptura": "2026-08-03T00:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1305,7 +1305,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-01",
     "fechaCaptura": "2026-08-02T14:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1331,7 +1331,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-31",
     "fechaCaptura": "2026-08-02T01:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1357,7 +1357,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-08-01",
     "fechaCaptura": "2026-08-01T15:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1385,7 +1385,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-30",
     "fechaCaptura": "2026-07-31T16:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1411,7 +1411,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-29",
     "fechaCaptura": "2026-07-29T17:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1439,7 +1439,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-28",
     "fechaCaptura": "2026-07-29T10:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1467,7 +1467,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-27",
     "fechaCaptura": "2026-07-27T14:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1493,7 +1493,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-26",
     "fechaCaptura": "2026-07-27T07:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1519,7 +1519,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-25",
     "fechaCaptura": "2026-07-27T00:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1544,7 +1544,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-25",
     "fechaCaptura": "2026-07-26T04:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1572,7 +1572,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-24",
     "fechaCaptura": "2026-07-25T21:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1598,7 +1598,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-23",
     "fechaCaptura": "2026-07-24T01:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1624,7 +1624,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-22",
     "fechaCaptura": "2026-07-23T18:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1649,7 +1649,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-21",
     "fechaCaptura": "2026-07-21T22:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1675,7 +1675,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-20",
     "fechaCaptura": "2026-07-21T15:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1701,7 +1701,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-19",
     "fechaCaptura": "2026-07-19T19:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1727,7 +1727,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-18",
     "fechaCaptura": "2026-07-19T12:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1755,7 +1755,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-18",
     "fechaCaptura": "2026-07-18T16:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1783,7 +1783,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-17",
     "fechaCaptura": "2026-07-18T09:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1811,7 +1811,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-16",
     "fechaCaptura": "2026-07-18T02:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1839,7 +1839,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-15",
     "fechaCaptura": "2026-07-16T06:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1867,7 +1867,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-14",
     "fechaCaptura": "2026-07-15T23:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1893,7 +1893,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-07-13",
     "fechaCaptura": "2026-07-14T06:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1919,7 +1919,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-13",
     "fechaCaptura": "2026-07-14T03:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1945,7 +1945,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-12",
     "fechaCaptura": "2026-07-13T20:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1971,7 +1971,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-11",
     "fechaCaptura": "2026-07-12T17:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -1999,7 +1999,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-11",
     "fechaCaptura": "2026-07-12T00:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2025,7 +2025,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-10",
     "fechaCaptura": "2026-07-10T21:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2051,7 +2051,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-09",
     "fechaCaptura": "2026-07-10T14:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2079,7 +2079,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-07-08",
     "fechaCaptura": "2026-07-08T18:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2105,7 +2105,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-07-07",
     "fechaCaptura": "2026-07-08T11:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2131,7 +2131,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-07-06",
     "fechaCaptura": "2026-07-07T22:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2157,7 +2157,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-07-05",
     "fechaCaptura": "2026-07-06T02:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2183,7 +2183,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-07-04",
     "fechaCaptura": "2026-07-05T19:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2209,7 +2209,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-07-04",
     "fechaCaptura": "2026-07-04T17:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2235,7 +2235,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-07-03",
     "fechaCaptura": "2026-07-04T09:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2261,7 +2261,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-07-02",
     "fechaCaptura": "2026-07-02T23:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2287,7 +2287,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-07-01",
     "fechaCaptura": "2026-07-01T20:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2314,7 +2314,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-30",
     "fechaCaptura": "2026-07-01T07:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2341,7 +2341,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-29",
     "fechaCaptura": "2026-07-01T00:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2368,7 +2368,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-28",
     "fechaCaptura": "2026-06-29T04:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2395,7 +2395,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-28",
     "fechaCaptura": "2026-06-29T01:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2422,7 +2422,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-27",
     "fechaCaptura": "2026-06-28T18:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2448,7 +2448,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-26",
     "fechaCaptura": "2026-06-27T15:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2475,7 +2475,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-24",
     "fechaCaptura": "2026-06-25T20:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2500,7 +2500,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-25",
     "fechaCaptura": "2026-06-25T19:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2527,7 +2527,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-23",
     "fechaCaptura": "2026-06-24T00:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2553,7 +2553,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-22",
     "fechaCaptura": "2026-06-23T13:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2579,7 +2579,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-20",
     "fechaCaptura": "2026-06-22T00:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2606,7 +2606,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-21",
     "fechaCaptura": "2026-06-21T17:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2633,7 +2633,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-21",
     "fechaCaptura": "2026-06-21T14:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2660,7 +2660,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-19",
     "fechaCaptura": "2026-06-20T01:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2686,7 +2686,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-18",
     "fechaCaptura": "2026-06-19T12:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2713,7 +2713,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-tca",
     "fechaEntrega": "2026-06-17",
     "fechaCaptura": "2026-06-18T20:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2739,7 +2739,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-16",
     "fechaCaptura": "2026-06-17T00:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2765,7 +2765,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-tca",
     "fechaEntrega": "2026-06-15",
     "fechaCaptura": "2026-06-16T17:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2792,7 +2792,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-14",
     "fechaCaptura": "2026-06-15T14:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2818,7 +2818,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-14",
     "fechaCaptura": "2026-06-14T21:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2845,7 +2845,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-13",
     "fechaCaptura": "2026-06-13T18:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2871,7 +2871,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-tca",
     "fechaEntrega": "2026-06-12",
     "fechaCaptura": "2026-06-13T11:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2897,7 +2897,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-11",
     "fechaCaptura": "2026-06-11T15:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2924,7 +2924,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-10",
     "fechaCaptura": "2026-06-11T08:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2950,7 +2950,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-09",
     "fechaCaptura": "2026-06-11T01:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -2976,7 +2976,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-08",
     "fechaCaptura": "2026-06-09T20:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3002,7 +3002,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-08",
     "fechaCaptura": "2026-06-09T05:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3028,7 +3028,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-07",
     "fechaCaptura": "2026-06-08T22:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3054,7 +3054,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-07",
     "fechaCaptura": "2026-06-08T21:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3081,7 +3081,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-07",
     "fechaCaptura": "2026-06-08T07:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3108,7 +3108,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-07",
     "fechaCaptura": "2026-06-08T04:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3134,7 +3134,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-07",
     "fechaCaptura": "2026-06-08T02:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3160,7 +3160,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-06",
     "fechaCaptura": "2026-06-07T19:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3186,7 +3186,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-06",
     "fechaCaptura": "2026-06-07T19:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3213,7 +3213,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-06",
     "fechaCaptura": "2026-06-07T16:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3239,7 +3239,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-06",
     "fechaCaptura": "2026-06-07T12:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3265,7 +3265,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-06",
     "fechaCaptura": "2026-06-07T02:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3291,7 +3291,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-05",
     "fechaCaptura": "2026-06-06T20:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3317,7 +3317,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-06",
     "fechaCaptura": "2026-06-06T20:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3343,7 +3343,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-05",
     "fechaCaptura": "2026-06-06T16:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3369,7 +3369,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-05",
     "fechaCaptura": "2026-06-06T13:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3395,7 +3395,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-05",
     "fechaCaptura": "2026-06-06T13:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3421,7 +3421,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-05",
     "fechaCaptura": "2026-06-05T23:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3447,7 +3447,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-05",
     "fechaCaptura": "2026-06-05T23:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3473,7 +3473,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-05",
     "fechaCaptura": "2026-06-05T20:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3499,7 +3499,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-04",
     "fechaCaptura": "2026-06-05T19:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3525,7 +3525,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-04",
     "fechaCaptura": "2026-06-05T19:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3551,7 +3551,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-04",
     "fechaCaptura": "2026-06-05T16:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3577,7 +3577,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-03",
     "fechaCaptura": "2026-06-05T02:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3604,7 +3604,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-04",
     "fechaCaptura": "2026-06-04T23:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3630,7 +3630,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-04",
     "fechaCaptura": "2026-06-04T21:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3656,7 +3656,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-03",
     "fechaCaptura": "2026-06-04T21:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3682,7 +3682,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-03",
     "fechaCaptura": "2026-06-04T16:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3708,7 +3708,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-06-03",
     "fechaCaptura": "2026-06-04T05:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3734,7 +3734,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-03",
     "fechaCaptura": "2026-06-03T20:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3760,7 +3760,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-02",
     "fechaCaptura": "2026-06-03T18:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3786,7 +3786,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-03",
     "fechaCaptura": "2026-06-03T16:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3812,7 +3812,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-02",
     "fechaCaptura": "2026-06-03T15:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3840,7 +3840,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-02",
     "fechaCaptura": "2026-06-03T13:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3867,7 +3867,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-02",
     "fechaCaptura": "2026-06-03T03:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3894,7 +3894,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-03T01:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3920,7 +3920,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-02T23:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3946,7 +3946,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-02T22:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3972,7 +3972,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-02T22:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -3999,7 +3999,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-02T17:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4025,7 +4025,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-02T15:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4052,7 +4052,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-02T14:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4078,7 +4078,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-02T11:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4104,7 +4104,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-02T06:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4130,7 +4130,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-02T05:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4156,7 +4156,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-02T03:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4182,7 +4182,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-05-31",
     "fechaCaptura": "2026-06-01T21:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4208,7 +4208,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-01T18:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4234,7 +4234,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-31",
     "fechaCaptura": "2026-06-01T17:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4260,7 +4260,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-06-01",
     "fechaCaptura": "2026-06-01T17:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4286,7 +4286,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cen",
     "fechaEntrega": "2026-05-31",
     "fechaCaptura": "2026-06-01T16:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4312,7 +4312,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-31",
     "fechaCaptura": "2026-06-01T14:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4339,7 +4339,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-05-31",
     "fechaCaptura": "2026-06-01T10:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4367,7 +4367,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-31",
     "fechaCaptura": "2026-06-01T10:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4393,7 +4393,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-05-31",
     "fechaCaptura": "2026-06-01T08:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4419,7 +4419,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-06-01T02:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4445,7 +4445,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-06-01T02:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4471,7 +4471,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-06-01T01:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4497,7 +4497,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-06-01T00:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4524,7 +4524,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-31",
     "fechaCaptura": "2026-05-31T22:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4551,7 +4551,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-31",
     "fechaCaptura": "2026-05-31T14:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4577,7 +4577,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T12:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4603,7 +4603,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T11:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4629,7 +4629,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T11:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4655,7 +4655,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T09:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4681,7 +4681,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T09:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4707,7 +4707,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T08:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4733,7 +4733,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T08:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4759,7 +4759,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T07:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4785,7 +4785,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T07:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4812,7 +4812,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T06:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4838,7 +4838,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T05:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4865,7 +4865,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T05:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4891,7 +4891,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T04:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4917,7 +4917,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T02:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4943,7 +4943,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-31T01:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4969,7 +4969,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-29",
     "fechaCaptura": "2026-05-31T00:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -4995,7 +4995,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-30T22:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5021,7 +5021,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-30T22:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5047,7 +5047,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-30T21:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5074,7 +5074,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-30T21:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5100,7 +5100,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-30T19:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5126,7 +5126,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cen",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-30T19:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5152,7 +5152,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-30T18:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5179,7 +5179,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-30T16:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5205,7 +5205,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-nor",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5231,7 +5231,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-30",
     "fechaCaptura": "2026-05-30T15:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5257,7 +5257,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-28",
     "fechaCaptura": "2026-05-29T23:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5283,7 +5283,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-28",
     "fechaCaptura": "2026-05-29T04:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5310,7 +5310,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-27",
     "fechaCaptura": "2026-05-28T22:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5336,7 +5336,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-27",
     "fechaCaptura": "2026-05-28T21:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5362,7 +5362,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-27",
     "fechaCaptura": "2026-05-28T02:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5388,7 +5388,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-27",
     "fechaCaptura": "2026-05-27T18:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5415,7 +5415,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-26",
     "fechaCaptura": "2026-05-27T01:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5442,7 +5442,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-25",
     "fechaCaptura": "2026-05-26T18:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5468,7 +5468,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cch",
     "fechaEntrega": "2026-05-26",
     "fechaCaptura": "2026-05-26T16:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5494,7 +5494,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-24",
     "fechaCaptura": "2026-05-25T15:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5520,7 +5520,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-24",
     "fechaCaptura": "2026-05-24T22:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5547,7 +5547,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-23",
     "fechaCaptura": "2026-05-23T19:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5574,7 +5574,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-22",
     "fechaCaptura": "2026-05-23T12:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5601,7 +5601,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-21",
     "fechaCaptura": "2026-05-21T16:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5627,7 +5627,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-20",
     "fechaCaptura": "2026-05-21T09:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5653,7 +5653,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-19",
     "fechaCaptura": "2026-05-21T02:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5679,7 +5679,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-cgr",
     "fechaEntrega": "2026-05-17",
     "fechaCaptura": "2026-05-19T01:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   },
   {
@@ -5705,7 +5705,7 @@ const RAW: Omit<Peticion, "transcripcion">[] = [
     "eventoId": "ev-excel-aca",
     "fechaEntrega": "2026-05-18",
     "fechaCaptura": "2026-05-18T23:00:00.000-06:00",
-    "estatus": "capturada",
+    "estatus": "recibida",
     "documentoUrl": ""
   }
 ];

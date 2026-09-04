@@ -48,6 +48,7 @@ const ETIQUETA_CATEGORIA: Record<string, string> = {
   cultura: "Cultura y deporte",
   tramites: "Trámites municipales",
   otros: "Otros",
+  apoyos: "Apoyos y eventos",
 };
 
 function degradadoCategoria(rank: number, total: number) {

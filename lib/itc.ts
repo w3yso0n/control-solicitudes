@@ -1,4 +1,4 @@
-import { CATEGORIA_POR_ID } from "./catalogos";
+import { CATEGORIA_POR_ID, CATEGORIAS } from "./catalogos";
 import type { ItcScore, PeriodoFiltro, Peticion, Urgencia } from "./types";
 
 const URGENCIA_VALOR: Record<Urgencia, number> = {
@@ -68,7 +68,7 @@ function scoreDeGrupo(peticiones: Peticion[], maxVolumen: number): ItcGrupo {
   const colectividad = pesoTotal > 0 ? (pesoComunitaria / pesoTotal) * 100 : 0;
 
   const cats = new Set(peticiones.map((p) => p.categoriaId));
-  const diversidad = (cats.size / 12) * 100;
+  const diversidad = (cats.size / CATEGORIAS.length) * 100;
 
   const score =
     volumen * PESOS.volumen +

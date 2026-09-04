@@ -7,6 +7,11 @@ import {
   ALCANCES,
   CATEGORIA_POR_ID,
   COLONIA_POR_ID,
+  COMPLEJIDADES,
+  ESCENARIOS_ACUSE,
+  ESTATUS_PETICION,
+  ORIGENES_CAPTURA,
+  RELACIONES_REMITENTE,
   TIPOS_PETICION,
   URGENCIAS,
 } from "@/lib/catalogos";
@@ -98,6 +103,8 @@ export function DetallePeticion({
       : peticion.ciudadanoTelefono;
   const capturista =
     peticion.capturistaNombre?.trim() || peticion.capturistaEmail;
+  const subidaPor =
+    peticion.subidaPorNombre?.trim() || peticion.subidaPorEmail || "—";
 
   return (
     <div
@@ -195,8 +202,14 @@ export function DetallePeticion({
                   COMUNITARIA
                 </span>
               ) : null}
-              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] capitalize text-zinc-600">
-                {peticion.estatus}
+              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] text-zinc-600">
+                {etiqueta(ESTATUS_PETICION, peticion.estatus)}
+              </span>
+              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] text-zinc-600">
+                {etiqueta(COMPLEJIDADES, peticion.complejidad)}
+              </span>
+              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] text-zinc-600">
+                {etiqueta(ORIGENES_CAPTURA, peticion.origenCaptura)}
               </span>
               <span
                 className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
@@ -213,6 +226,10 @@ export function DetallePeticion({
             <div className="grid grid-cols-2 gap-3">
               <Dato label="Ciudadano" value={peticion.ciudadanoNombre} />
               <Dato label="Teléfono" value={telefono} />
+              <Dato
+                label="Domicilio"
+                value={peticion.ciudadanoDomicilio || "—"}
+              />
               <Dato
                 label="Municipio"
                 value={nombreMunicipio(peticion.cveMun)}
@@ -245,6 +262,14 @@ export function DetallePeticion({
                 value={etiqueta(ALCANCES, peticion.alcance)}
               />
               <Dato
+                label="Complejidad"
+                value={etiqueta(COMPLEJIDADES, peticion.complejidad)}
+              />
+              <Dato
+                label="Estatus"
+                value={etiqueta(ESTATUS_PETICION, peticion.estatus)}
+              />
+              <Dato
                 label="Firmantes"
                 value={
                   peticion.alcance === "colectivo"
@@ -253,13 +278,39 @@ export function DetallePeticion({
                 }
               />
               <Dato
+                label="Remitente"
+                value={
+                  peticion.remitenteRelacion &&
+                  peticion.remitenteRelacion !== "mismo"
+                    ? `${etiqueta(RELACIONES_REMITENTE, peticion.remitenteRelacion)}${
+                        peticion.remitenteNombre
+                          ? ` · ${peticion.remitenteNombre}`
+                          : ""
+                      }`
+                    : "El peticionario"
+                }
+              />
+              <Dato
+                label="WhatsApp remitente"
+                value={peticion.remitenteTelefono || "—"}
+              />
+              <Dato
+                label="Escenario acuse"
+                value={etiqueta(ESCENARIOS_ACUSE, peticion.escenarioAcuse)}
+              />
+              <Dato
+                label="Origen"
+                value={etiqueta(ORIGENES_CAPTURA, peticion.origenCaptura)}
+              />
+              <Dato
                 label="Entrega"
                 value={fechaCorta(peticion.fechaEntrega)}
               />
               <Dato label="Captura" value={fechaCorta(peticion.fechaCaptura)} />
               <Dato label="Evento" value={etiquetaEvento(peticion.eventoOrigen)} />
               <Dato label="Archivo" value={peticion.documento.nombreArchivo} />
-              <Dato label="Capturista" value={capturista} />
+              <Dato label="Capturista Cuantiva" value={capturista} />
+              <Dato label="Subida por Territorio" value={subidaPor} />
             </div>
           </div>
         </div>
