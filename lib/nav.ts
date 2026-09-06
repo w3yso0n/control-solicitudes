@@ -18,7 +18,7 @@ export const NAV_GRUPOS: { id: NavGrupoId; label: string }[] = [
 
 export const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", roles: ["operador", "candidata", "admin"], grupo: "vision" },
-  // { href: "/reportes", label: "Reportes", roles: ["candidata", "admin"], grupo: "vision" },
+  { href: "/reportes", label: "Reportes", roles: ["candidata", "admin"], grupo: "vision" },
   { href: "/territorio", label: "Captura de lotes", roles: ["territorio", "admin"], grupo: "operacion" },
   { href: "/bandeja", label: "Bandeja", roles: ["cuantiva", "admin"], grupo: "operacion" },
   {
@@ -54,7 +54,6 @@ export function puedeVer(rol: Rol, href: string): boolean {
       return rol === "operador" || rol === "candidata" || rol === "admin";
     }
     if (href.startsWith("/usuarios")) return rol === "admin";
-    // Ruta oculta del menú; descomentar el item de NAV_ITEMS para volver a mostrarla.
     if (href.startsWith("/reportes")) return rol === "candidata" || rol === "admin";
     return false;
   }

@@ -54,7 +54,43 @@ export function cargarMunicipiosGuerrero(): Promise<MunicipioFeature[]> {
 export const ANCHO_MAPA = 980;
 export const ALTO_MAPA = 560;
 
-export function construirProyeccion(features: MunicipioFeature[]) {
+export type ZonaFeature = GeoJSON.Feature<
+  GeoJSON.Geometry,
+  { clave: string; nombre: string }
+>;
+
+let cacheLocal: Promise<ZonaFeature[]> | null = null;
+let cacheFederal: Promise<ZonaFeature[]> | null = null;
+
+export function cargarDistritosMapa(
+  tipo: "local" | "federal",
+): Promise<ZonaFeature[]> {
+  const existente = tipo === "local" ? cacheLocal : cacheFederal;
+  if (existente) return existente;
+  const file =
+    tipo === "local"
+      ? "distritos-locales.geojson"
+      : "distritos-federales.geojson";
+  const carga = fetch(`/geo/${file}`)
+    .then((r) => {
+      if (!r.ok) throw new Error(`geo ${r.status}`);
+      return r.json() as Promise<GeoJSON.FeatureCollection>;
+    })
+    .then((fc) =>
+      (fc.features as ZonaFeature[]).map((f) => ({
+        ...f,
+        properties: {
+          clave: String(f.properties?.clave ?? "").padStart(2, "0"),
+          nombre: f.properties?.nombre ?? `Distrito ${f.properties?.clave}`,
+        },
+      })),
+    );
+  if (tipo === "local") cacheLocal = carga;
+  else cacheFederal = carga;
+  return carga;
+}
+
+export function construirProyeccion(features: GeoJSON.Feature[]) {
   const fc: GeoJSON.FeatureCollection = {
     type: "FeatureCollection",
     features,
@@ -88,18 +124,23 @@ export function mulberry32(a: number) {
   };
 }
 
-/** Un punto por elemento, por muestreo de rechazo dentro del polígono del municipio. */
-export function muestrearPuntos<T>(
-  items: { cveMun: string; item: T }[],
-  byMun: Map<string, MunicipioFeature>,
+/** Un punto por elemento: coords reales si existen, si no muestreo en el polígono. */
+export function muestrearPuntos<T extends { lat?: number | null; lng?: number | null }>(
+  items: { clave: string; item: T }[],
+  byZona: Map<string, GeoJSON.Feature>,
   proyeccion: (coords: [number, number]) => [number, number] | null,
   semilla = 7,
   maxItems = 460,
 ) {
   const rnd = mulberry32(semilla);
   const puntos: { x: number; y: number; item: T }[] = [];
-  for (const { cveMun, item } of items.slice(0, maxItems)) {
-    const f = byMun.get(cveMun);
+  for (const { clave, item } of items.slice(0, maxItems)) {
+    if (item.lat != null && item.lng != null) {
+      const p = proyeccion([item.lng, item.lat]);
+      if (p) puntos.push({ x: p[0], y: p[1], item });
+      continue;
+    }
+    const f = byZona.get(clave);
     if (!f) continue;
     const [[x0, y0], [x1, y1]] = geoBounds(f);
     for (let k = 0; k < 25; k++) {

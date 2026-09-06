@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = (await request.json()) as Record<string, unknown>;
-    const result = await createUsuario({
+    const result = await createUsuario(authz.user, {
       email: body.email,
       password: body.password,
       displayName: body.displayName,

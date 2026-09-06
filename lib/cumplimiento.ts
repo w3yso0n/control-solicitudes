@@ -75,16 +75,19 @@ export type ScoreZonaCumplimiento = {
   mediasPendientes: number;
 };
 
-export function scoresCumplimientoPorMunicipio(
+export function scoresCumplimientoPorClave(
   peticiones: Peticion[],
   claves: string[],
+  claveDe: (p: Peticion) => string | null,
 ): ScoreZonaCumplimiento[] {
   const por = new Map<string, Peticion[]>();
   for (const c of claves) por.set(c, []);
   for (const p of peticiones) {
-    const lista = por.get(p.cveMun);
+    const clave = claveDe(p);
+    if (!clave) continue;
+    const lista = por.get(clave);
     if (lista) lista.push(p);
-    else por.set(p.cveMun, [p]);
+    else por.set(clave, [p]);
   }
   return [...por.entries()].map(([clave, grupo]) => {
     const gestionables = grupo.filter((p) => esGestionable(p));
@@ -110,6 +113,13 @@ export function scoresCumplimientoPorMunicipio(
       ).length,
     };
   });
+}
+
+export function scoresCumplimientoPorMunicipio(
+  peticiones: Peticion[],
+  claves: string[],
+): ScoreZonaCumplimiento[] {
+  return scoresCumplimientoPorClave(peticiones, claves, (p) => p.cveMun);
 }
 
 export function escalaCumplimiento(pct: number | null): string {

@@ -1,3 +1,4 @@
+import { parseCoord } from "@/lib/geo";
 import type { Peticion, PeticionConsultaDto } from "@/lib/types";
 
 export function peticionDesdeConsulta(dto: PeticionConsultaDto): Peticion {
@@ -24,6 +25,13 @@ export function peticionDesdeConsulta(dto: PeticionConsultaDto): Peticion {
     firmantes: dto.firmantes ?? undefined,
     cveMun: dto.cveMun,
     coloniaId: dto.coloniaId ?? undefined,
+    lat: parseCoord(dto.lat),
+    lng: parseCoord(dto.lng),
+    distritoLocal: dto.distritoLocal,
+    distritoFederal: dto.distritoFederal,
+    metodoUbicacion: dto.metodoUbicacion,
+    localidadInegi: dto.localidadInegi,
+    ubicacionLabel: dto.ubicacionLabel,
     fechaEntrega: dto.fechaEntrega,
     fechaCaptura: dto.fechaCaptura,
     fechaCumplimiento: dto.fechaCumplimiento ?? undefined,

@@ -28,7 +28,7 @@ export async function POST(
       return NextResponse.json({ error: saved.error }, { status: 400 });
     }
 
-    const result = await agregarEvidencia(id, saved.storageKey);
+    const result = await agregarEvidencia(authz.user.id, id, saved.storageKey);
     if ("error" in result) {
       return NextResponse.json({ error: result.error }, { status: result.status });
     }

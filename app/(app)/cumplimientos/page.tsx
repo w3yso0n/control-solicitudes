@@ -3,6 +3,7 @@
 import { AccionCumplimiento } from "@/components/cumplimientos/AccionCumplimiento";
 import { BalanceBar } from "@/components/cumplimientos/BalanceBar";
 import { FilterCombobox } from "@/components/FilterCombobox";
+import { NivelGeografiaToggle } from "@/components/geo/NivelGeografiaToggle";
 import GuerreroMapLoader from "@/components/map/GuerreroMapLoader";
 import { DetallePeticion } from "@/components/peticiones/DetallePeticion";
 import { Button, Card, Select } from "@/components/ui";
@@ -16,8 +17,17 @@ import {
 import {
   balanceDe,
   esPendientePipeline,
-  scoresCumplimientoPorMunicipio,
+  scoresCumplimientoPorClave,
 } from "@/lib/cumplimiento";
+import {
+  DISTRITOS_FEDERALES,
+  DISTRITOS_LOCALES,
+  NIVEL_LABEL,
+  claveDePeticion,
+  clavesDeNivel,
+  nombreZona,
+  type NivelGeografia,
+} from "@/lib/geo";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { nombreMunicipio } from "@/lib/lote-titulo";
 import { peticionDesdeConsulta } from "@/lib/peticion-from-consulta";
@@ -58,6 +68,13 @@ function CumplimientosContent() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
   const [cveMun, setCveMun] = useState(() => searchParams.get("municipio") ?? "");
+  const [distLocal, setDistLocal] = useState(
+    () => searchParams.get("distLocal") ?? "",
+  );
+  const [distFederal, setDistFederal] = useState(
+    () => searchParams.get("distFederal") ?? "",
+  );
+  const [nivel, setNivel] = useState<NivelGeografia>("municipio");
   const [categoriaId, setCategoriaId] = useState(
     () => searchParams.get("categoria") ?? "",
   );
@@ -120,6 +137,8 @@ function CumplimientosContent() {
   const filtradasBase = useMemo(() => {
     return peticiones.filter((p) => {
       if (cveMun && p.cveMun !== cveMun) return false;
+      if (distLocal && p.distritoLocal !== distLocal) return false;
+      if (distFederal && p.distritoFederal !== distFederal) return false;
       if (categoriaId && p.categoriaId !== categoriaId) return false;
       if (urgencia && p.urgencia !== urgencia) return false;
       if (complejidad && p.complejidad !== complejidad) return false;
@@ -127,7 +146,7 @@ function CumplimientosContent() {
       if (evento && etiquetaEvento(p.eventoOrigen) !== evento) return false;
       return true;
     });
-  }, [peticiones, cveMun, categoriaId, urgencia, complejidad, estatus, evento]);
+  }, [peticiones, cveMun, distLocal, distFederal, categoriaId, urgencia, complejidad, estatus, evento]);
 
   const pendientes = filtradasBase.filter((p) => esPendientePipeline(p));
   const cumplidas = filtradasBase.filter((p) => p.estatus === "cumplida");
@@ -136,12 +155,16 @@ function CumplimientosContent() {
     [filtradasBase],
   );
   const scoresCump = useMemo(() => {
-    const claves = MUNICIPIOS_GUERRERO.map((m) => m.cveMun);
-    return scoresCumplimientoPorMunicipio(
+    const claves = clavesDeNivel(
+      nivel,
+      MUNICIPIOS_GUERRERO.map((m) => m.cveMun),
+    );
+    return scoresCumplimientoPorClave(
       filtradasBase.map(peticionDesdeConsulta),
       claves,
+      (p) => claveDePeticion(p, nivel),
     );
-  }, [filtradasBase]);
+  }, [filtradasBase, nivel]);
 
   const municipiosOpciones = useMemo(() => {
     const claves = new Set(peticiones.map((p) => p.cveMun));
@@ -236,6 +259,7 @@ function CumplimientosContent() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
+        <NivelGeografiaToggle value={nivel} onChange={setNivel} />
         <div className="w-full sm:w-48">
           <FilterCombobox
             value={cveMun}
@@ -243,6 +267,30 @@ function CumplimientosContent() {
             options={municipiosOpciones}
             placeholder="Todos los municipios"
             emptyLabel="Todos los municipios"
+          />
+        </div>
+        <div className="w-full sm:w-48">
+          <FilterCombobox
+            value={distLocal}
+            onChange={setDistLocal}
+            options={DISTRITOS_LOCALES.map((d) => ({
+              id: d.clave,
+              label: d.nombre,
+            }))}
+            placeholder="Todo dist. local"
+            emptyLabel="Todo dist. local"
+          />
+        </div>
+        <div className="w-full sm:w-48">
+          <FilterCombobox
+            value={distFederal}
+            onChange={setDistFederal}
+            options={DISTRITOS_FEDERALES.map((d) => ({
+              id: d.clave,
+              label: d.nombre,
+            }))}
+            placeholder="Todo dist. federal"
+            emptyLabel="Todo dist. federal"
           />
         </div>
         <div className="w-full sm:w-48">
@@ -312,7 +360,9 @@ function CumplimientosContent() {
           <BalanceBar balance={balance} titulo="Panel de balance" />
           <div className="grid gap-3 lg:grid-cols-2">
             <Card className="p-4">
-              <p className="text-sm font-semibold">Municipios con más avance</p>
+              <p className="text-sm font-semibold">
+                {NIVEL_LABEL[nivel]}s con más avance
+              </p>
               <ul className="mt-3 space-y-1">
                 {ranking.length === 0 ? (
                   <li className="text-sm text-zinc-500">Sin gestionables.</li>
@@ -326,7 +376,7 @@ function CumplimientosContent() {
                         {String(i + 1).padStart(2, "0")}
                       </span>
                       <span className="min-w-0 flex-1 truncate">
-                        {nombreMunicipio(s.clave)}
+                        {nombreZona(s.clave, nivel)}
                       </span>
                       <span className="text-xs text-zinc-400">
                         {s.cumplidas}/{s.gestionables}
@@ -403,13 +453,22 @@ function CumplimientosContent() {
           </div>
           {sub === "mapa" ? (
             <Card className="overflow-hidden">
+              <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-2">
+                <p className="text-sm font-medium">Cumplidas en el mapa</p>
+                <NivelGeografiaToggle value={nivel} onChange={setNivel} />
+              </div>
               <div className="aspect-[980/540] w-full">
                 <GuerreroMapLoader
                   scores={[]}
                   peticiones={cumplidas.map(peticionDesdeConsulta)}
                   scoresCumplimiento={scoresCump}
                   modo="cumplidas"
-                  onMunicipioClick={(clave) => setCveMun(clave)}
+                  nivelGeografia={nivel}
+                  onZonaClick={(clave) => {
+                    if (nivel === "local") setDistLocal(clave);
+                    else if (nivel === "federal") setDistFederal(clave);
+                    else setCveMun(clave);
+                  }}
                 />
               </div>
             </Card>
@@ -566,7 +625,14 @@ function CumplimientosContent() {
                       </button>
                     </td>
                     <td className="px-3 py-2">{p.ciudadanoNombre}</td>
-                    <td className="px-3 py-2">{nombreMunicipio(p.cveMun)}</td>
+                    <td className="px-3 py-2">
+                      {nombreMunicipio(p.cveMun)}
+                      {p.distritoLocal ? (
+                        <span className="block text-[11px] text-zinc-400">
+                          {nombreZona(p.distritoLocal, "local")}
+                        </span>
+                      ) : null}
+                    </td>
                     <td className="px-3 py-2">
                       {CATEGORIA_POR_ID[p.categoriaId]?.nombre}
                     </td>

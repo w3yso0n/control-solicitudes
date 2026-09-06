@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { peticiones, users } from "@/lib/db/schema";
+import { registrarAuditoria } from "@/lib/services/auditoria";
 import { getPeticionConsultaById } from "@/lib/services/peticiones";
 import type { Complejidad, EstatusPeticion, PeticionConsultaDto } from "@/lib/types";
 import { publicUploadUrl } from "@/lib/uploads";
@@ -84,8 +85,21 @@ export async function marcarCumplida(
   });
 }
 
+async function actorDe(userId: string) {
+  const rows = await db
+    .select({ email: users.email, displayName: users.displayName })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+  return {
+    id: userId,
+    email: rows[0]?.email ?? null,
+    displayName: rows[0]?.displayName ?? null,
+  };
+}
+
 async function cambiarEstatus(
-  _userId: string,
+  userId: string,
   peticionId: string,
   hacia: EstatusPeticion,
   extra: {
@@ -143,10 +157,21 @@ async function cambiarEstatus(
 
   const actualizada = await getPeticionConsultaById(peticionId);
   if (!actualizada) return { error: "Petición no encontrada", status: 404 as const };
+  await registrarAuditoria({
+    actor: await actorDe(userId),
+    accion: "estatus",
+    entidad: "peticion",
+    entidadId: peticionId,
+    folio: actualizada.folio,
+    detalle: `Cambió estatus de ${row.estatus} a ${hacia}`,
+    antes: { estatus: row.estatus },
+    despues: { estatus: hacia },
+  });
   return { peticion: actualizada };
 }
 
 export async function agregarEvidencia(
+  userId: string,
   peticionId: string,
   storageKey: string,
 ): Promise<{ error: string; status: 400 | 404 } | { urls: string[] }> {
@@ -167,10 +192,19 @@ export async function agregarEvidencia(
     .update(peticiones)
     .set({ evidenciaUrls: siguiente, updatedAt: new Date() })
     .where(eq(peticiones.id, peticionId));
+  await registrarAuditoria({
+    actor: await actorDe(userId),
+    accion: "evidencia",
+    entidad: "peticion",
+    entidadId: peticionId,
+    folio: row.folio,
+    detalle: `Adjuntó evidencia (${siguiente.length})`,
+  });
   return { urls: siguiente.map(publicUploadUrl) };
 }
 
 export async function asignarOperador(
+  actorId: string,
   peticionIds: string[],
   operadorId: string,
 ): Promise<{ error: string; status: 400 } | { actualizadas: number }> {
@@ -192,10 +226,18 @@ export async function asignarOperador(
         inArray(peticiones.complejidad, ["simple", "media"]),
       ),
     );
+  await registrarAuditoria({
+    actor: await actorDe(actorId),
+    accion: "asignacion",
+    entidad: "peticion",
+    detalle: `Asignó ${ids.length} petición(es) al operador ${operadorId}`,
+    despues: { peticionIds: ids, operadorId },
+  });
   return { actualizadas: ids.length };
 }
 
 export async function reclasificarComplejidad(
+  userId: string,
   peticionId: string,
   complejidad: Complejidad,
 ): Promise<{ error: string; status: 400 | 404 } | { peticion: PeticionConsultaDto }> {
@@ -221,5 +263,15 @@ export async function reclasificarComplejidad(
 
   const actualizada = await getPeticionConsultaById(peticionId);
   if (!actualizada) return { error: "Petición no encontrada", status: 404 };
+  await registrarAuditoria({
+    actor: await actorDe(userId),
+    accion: "complejidad",
+    entidad: "peticion",
+    entidadId: peticionId,
+    folio: actualizada.folio,
+    detalle: `Reclasificó de ${row.complejidad} a ${complejidad}`,
+    antes: { complejidad: row.complejidad, estatus: row.estatus },
+    despues: { complejidad, estatus },
+  });
   return { peticion: actualizada };
 }

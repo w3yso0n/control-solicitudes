@@ -2,12 +2,15 @@
 
 import { DocumentoPreview } from "@/components/cuantiva/DocumentoPreview";
 import { ModalDocumento } from "@/components/cuantiva/ModalDocumento";
-import { MunicipioSelect } from "@/components/MunicipioSelect";
+import {
+  UbicacionCaptura,
+  type UbicacionCapturaValue,
+} from "@/components/cuantiva/UbicacionCaptura";
 import { Button, Card, Field, Input, Select, Textarea } from "@/components/ui";
 import {
   ALCANCES,
   CATEGORIAS,
-  COLONIAS_ACAPULCO,
+  categoriasConExtras,
   COMPLEJIDADES,
   ESCENARIOS_ACUSE,
   RELACIONES_REMITENTE,
@@ -15,6 +18,7 @@ import {
   URGENCIAS,
 } from "@/lib/catalogos";
 import { derivarEscenarioAcuse } from "@/lib/acuse";
+import { parseCoord } from "@/lib/geo";
 import { tituloLote } from "@/lib/lote-titulo";
 import type {
   Alcance,
@@ -65,8 +69,16 @@ export default function CapturaPage() {
   const [alcance, setAlcance] = useState<Alcance>("individual");
   const [complejidad, setComplejidad] = useState<Complejidad | "">("");
   const [firmantes, setFirmantes] = useState("1");
-  const [cveMun, setCveMun] = useState("001");
-  const [coloniaId, setColoniaId] = useState(COLONIAS_ACAPULCO[0].id);
+  const [ubicacion, setUbicacion] = useState<UbicacionCapturaValue>({
+    metodo: "inegi",
+    lat: null,
+    lng: null,
+    cveMun: "001",
+    distritoLocal: null,
+    distritoFederal: null,
+    localidadInegi: null,
+    label: "",
+  });
   const [folio, setFolio] = useState<string | null>(null);
   const [peticionId, setPeticionId] = useState<string | null>(null);
   const [guardado, setGuardado] = useState(false);
@@ -75,12 +87,30 @@ export default function CapturaPage() {
     [],
   );
   const [avisarAgrupar, setAvisarAgrupar] = useState(false);
+  const [categorias, setCategorias] = useState(CATEGORIAS);
+
+  useEffect(() => {
+    let vivo = true;
+    fetch("/api/config")
+      .then((r) => r.json())
+      .then((d: { subsExtra?: Record<string, string[]>; categorias?: typeof CATEGORIAS }) => {
+        if (!vivo) return;
+        if (Array.isArray(d.categorias) && d.categorias.length > 0) {
+          setCategorias(d.categorias);
+        } else if (d.subsExtra) {
+          setCategorias(categoriasConExtras(d.subsExtra));
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      vivo = false;
+    };
+  }, []);
 
   const categoria = useMemo(
-    () => CATEGORIAS.find((c) => c.id === categoriaId) ?? CATEGORIAS[0],
-    [categoriaId],
+    () => categorias.find((c) => c.id === categoriaId) ?? categorias[0],
+    [categoriaId, categorias],
   );
-  const colonias = cveMun === "001" ? COLONIAS_ACAPULCO : [];
   const esIntermediario = relacion !== "mismo";
 
   useEffect(() => {
@@ -132,8 +162,16 @@ export default function CapturaPage() {
         setAlcance(pet.alcance);
         setComplejidad(pet.complejidad);
         setFirmantes(String(pet.firmantes ?? 1));
-        setCveMun(pet.cveMun);
-        setColoniaId(pet.coloniaId ?? COLONIAS_ACAPULCO[0].id);
+        setUbicacion({
+          metodo: pet.metodoUbicacion ?? "inegi",
+          lat: parseCoord(pet.lat),
+          lng: parseCoord(pet.lng),
+          cveMun: pet.cveMun,
+          distritoLocal: pet.distritoLocal,
+          distritoFederal: pet.distritoFederal,
+          localidadInegi: pet.localidadInegi,
+          label: pet.ubicacionLabel ?? "",
+        });
       } else {
         setNombre("");
         setDomicilio("");
@@ -152,8 +190,16 @@ export default function CapturaPage() {
         setAlcance("individual");
         setComplejidad("");
         setFirmantes("1");
-        setCveMun(data.cveMun);
-        setColoniaId(COLONIAS_ACAPULCO[0].id);
+        setUbicacion({
+          metodo: "inegi",
+          lat: null,
+          lng: null,
+          cveMun: data.cveMun,
+          distritoLocal: null,
+          distritoFederal: null,
+          localidadInegi: null,
+          label: "",
+        });
       }
     } catch {
       setErrorCarga("No se pudo cargar el documento");
@@ -206,6 +252,10 @@ export default function CapturaPage() {
       setErrorEnvio("Asigna la complejidad antes de confirmar.");
       return;
     }
+    if (ubicacion.lat == null || ubicacion.lng == null) {
+      setErrorEnvio("Elige una ubicación (INEGI, Google o pin en el mapa).");
+      return;
+    }
     setErrorEnvio("");
     setEnviando(true);
     try {
@@ -229,8 +279,12 @@ export default function CapturaPage() {
           alcance,
           complejidad,
           firmantes: alcance === "colectivo" ? Number(firmantes) || 1 : null,
-          cveMun,
-          coloniaId: cveMun === "001" ? coloniaId : null,
+          cveMun: ubicacion.cveMun,
+          lat: ubicacion.lat,
+          lng: ubicacion.lng,
+          metodoUbicacion: ubicacion.metodo,
+          localidadInegi: ubicacion.localidadInegi,
+          ubicacionLabel: ubicacion.label,
           escenarioAcuse: escenario,
           confirmarDuplicado: forzar,
         }),
@@ -511,25 +565,7 @@ export default function CapturaPage() {
                 placeholder="Texto del oficio, tal como se lee en el documento…"
               />
             </Field>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field label="Municipio">
-                <MunicipioSelect value={cveMun} onChange={setCveMun} />
-              </Field>
-              {colonias.length > 0 ? (
-                <Field label="Colonia (Acapulco)">
-                  <Select
-                    value={coloniaId}
-                    onChange={(e) => setColoniaId(e.target.value)}
-                  >
-                    {colonias.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.nombre}
-                      </option>
-                    ))}
-                  </Select>
-                </Field>
-              ) : null}
-            </div>
+            <UbicacionCaptura value={ubicacion} onChange={setUbicacion} />
             <Field label="Complejidad">
               <Select
                 value={complejidad}
@@ -552,12 +588,12 @@ export default function CapturaPage() {
                 onChange={(e) => {
                   const id = e.target.value;
                   setCategoriaId(id);
-                  const cat = CATEGORIAS.find((c) => c.id === id);
+                  const cat = categorias.find((c) => c.id === id);
                   setSubcategoria(cat?.subcategorias[0] ?? "");
                   setSubcategoria2("");
                 }}
               >
-                {CATEGORIAS.map((c) => (
+                {categorias.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.nombre}
                   </option>

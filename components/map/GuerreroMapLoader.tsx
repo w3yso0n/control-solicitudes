@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import type { ScoreZonaCumplimiento } from "@/lib/cumplimiento";
+import type { NivelGeografia } from "@/lib/geo";
 import type { ItcScore, Peticion } from "@/lib/types";
 import type { ModoMapa } from "./GuerreroMap";
 
@@ -19,8 +20,10 @@ export default function GuerreroMapLoader(props: {
   peticiones: Peticion[];
   scoresCumplimiento?: ScoreZonaCumplimiento[];
   onMunicipioClick?: (cveMun: string, nombre: string) => void;
+  onZonaClick?: (clave: string, nombre: string) => void;
   regionResaltada?: string | null;
   modo?: ModoMapa;
+  nivelGeografia?: NivelGeografia;
 }) {
   return <GuerreroMap {...props} />;
 }

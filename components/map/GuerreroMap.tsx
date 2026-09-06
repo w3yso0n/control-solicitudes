@@ -7,15 +7,17 @@ import {
   type ScoreZonaCumplimiento,
 } from "@/lib/cumplimiento";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
+import { claveDePeticion, type NivelGeografia } from "@/lib/geo";
 import {
   ALTO_MAPA,
   ANCHO_MAPA,
   COLOR_SIN_DATOS,
+  cargarDistritosMapa,
   cargarMunicipiosGuerrero,
   construirProyeccion,
   escalaTemperatura,
   muestrearPuntos,
-  type MunicipioFeature,
+  type ZonaFeature,
 } from "@/lib/mapa-guerrero";
 import type { ItcScore, Peticion } from "@/lib/types";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -63,17 +65,21 @@ export default function GuerreroMap({
   peticiones,
   scoresCumplimiento = [],
   onMunicipioClick,
+  onZonaClick,
   regionResaltada = null,
   modo = "escucha",
+  nivelGeografia = "municipio",
 }: {
   scores: ItcScore[];
   peticiones: Peticion[];
   scoresCumplimiento?: ScoreZonaCumplimiento[];
   onMunicipioClick?: (cveMun: string, nombre: string) => void;
+  onZonaClick?: (clave: string, nombre: string) => void;
   regionResaltada?: string | null;
   modo?: ModoMapa;
+  nivelGeografia?: NivelGeografia;
 }) {
-  const [features, setFeatures] = useState<MunicipioFeature[] | null>(null);
+  const [features, setFeatures] = useState<ZonaFeature[] | null>(null);
   const [error, setError] = useState(false);
   const [capa, setCapa] = useState<CapaMapa>("temp");
   const [tooltip, setTooltip] = useState<Tooltip | null>(null);
@@ -81,10 +87,27 @@ export default function GuerreroMap({
 
   const capaActiva: CapaMapa = modo === "cumplidas" ? "temp" : capa;
   const mostrarSwitch = modo === "escucha";
+  const nivel = nivelGeografia;
+  const alClick = onZonaClick ?? onMunicipioClick;
 
   useEffect(() => {
     let vivo = true;
-    cargarMunicipiosGuerrero()
+    setFeatures(null);
+    setError(false);
+    const carga: Promise<ZonaFeature[]> =
+      nivel === "municipio"
+        ? cargarMunicipiosGuerrero().then((fs) =>
+            fs.map((f) => ({
+              type: "Feature" as const,
+              geometry: f.geometry,
+              properties: {
+                clave: f.properties.cveMun,
+                nombre: f.properties.mun_name,
+              },
+            })),
+          )
+        : cargarDistritosMapa(nivel === "local" ? "local" : "federal");
+    carga
       .then((f) => {
         if (vivo) setFeatures(f);
       })
@@ -94,7 +117,7 @@ export default function GuerreroMap({
     return () => {
       vivo = false;
     };
-  }, []);
+  }, [nivel]);
 
   const byMun = useMemo(() => new Map(scores.map((s) => [s.clave, s])), [scores]);
   const byCump = useMemo(
@@ -115,23 +138,24 @@ export default function GuerreroMap({
 
     const paths = features.map((f) => ({
       d: path(f) ?? "",
-      cveMun: f.properties.cveMun,
-      nombre: f.properties.mun_name,
+      clave: f.properties.clave,
+      nombre: f.properties.nombre,
     }));
 
-    const byMunFeature = new Map(
-      features.map((f) => [f.properties.cveMun, f]),
-    );
+    const byZona = new Map(features.map((f) => [f.properties.clave, f]));
     const items = peticiones
-      .filter(
-        (p) =>
-          !regionResaltada || REGION_POR_CVE[p.cveMun] === regionResaltada,
-      )
-      .map((p) => ({ cveMun: p.cveMun, item: p }));
-    const puntos = muestrearPuntos(items, byMunFeature, proyeccion);
+      .filter((p) => {
+        if (nivel !== "municipio" || !regionResaltada) return true;
+        return REGION_POR_CVE[p.cveMun] === regionResaltada;
+      })
+      .map((p) => ({
+        clave: claveDePeticion(p, nivel) ?? p.cveMun,
+        item: p,
+      }));
+    const puntos = muestrearPuntos(items, byZona, proyeccion);
 
     return { proyeccion, path, paths, puntos };
-  }, [features, peticiones, regionResaltada]);
+  }, [features, peticiones, regionResaltada, nivel]);
 
   if (error) {
     return (
@@ -149,25 +173,27 @@ export default function GuerreroMap({
     );
   }
 
-  const hayResalte = Boolean(regionResaltada);
+  const hayResalte = nivel === "municipio" && Boolean(regionResaltada);
   const mostrarPuntos = modo === "cumplidas";
 
-  function fillDe(cveMun: string) {
+  function fillDe(clave: string) {
     if (modo === "cumplidas") {
-      const n = peticiones.filter((p) => p.cveMun === cveMun).length;
+      const n = peticiones.filter(
+        (p) => (claveDePeticion(p, nivel) ?? p.cveMun) === clave,
+      ).length;
       if (n <= 0) return COLOR_SIN_DATOS;
       return escalaCumplimiento(Math.min(100, 40 + n * 12));
     }
     if (capaActiva === "cumplimiento") {
-      return escalaCumplimiento(byCump.get(cveMun)?.pct ?? null);
+      return escalaCumplimiento(byCump.get(clave)?.pct ?? null);
     }
     if (capaActiva === "oportunidad") {
       return escalaOportunidad(
-        byCump.get(cveMun)?.simplesPendientes ?? 0,
+        byCump.get(clave)?.simplesPendientes ?? 0,
         maxSimples,
       );
     }
-    const itc = byMun.get(cveMun);
+    const itc = byMun.get(clave);
     return itc?.score != null ? escalaTemperatura(itc.score) : COLOR_SIN_DATOS;
   }
 
@@ -213,13 +239,14 @@ export default function GuerreroMap({
           style={{ background: "#eae9e9" }}
         >
           {paths.map((p) => {
+            const cveMun = p.clave;
             const enRegion =
-              !hayResalte || REGION_POR_CVE[p.cveMun] === regionResaltada;
+              !hayResalte || REGION_POR_CVE[cveMun] === regionResaltada;
             return (
               <path
-                key={p.cveMun}
+                key={p.clave}
                 d={p.d}
-                fill={fillDe(p.cveMun)}
+                fill={fillDe(p.clave)}
                 fillOpacity={hayResalte ? (enRegion ? 1 : 0.18) : 1}
                 stroke={enRegion && hayResalte ? "#7A1233" : "#f3f2f2"}
                 strokeWidth={enRegion && hayResalte ? 1.5 : 0.7}
@@ -234,8 +261,8 @@ export default function GuerreroMap({
                     x,
                     y,
                     nombre: p.nombre,
-                    itc: byMun.get(p.cveMun),
-                    scoreCump: byCump.get(p.cveMun),
+                    itc: byMun.get(p.clave),
+                    scoreCump: byCump.get(p.clave),
                   });
                 }}
                 onMouseLeave={() => setTooltip(null)}
@@ -253,7 +280,7 @@ export default function GuerreroMap({
                     enRegion && hayResalte ? "1.5" : "0.7",
                   );
                 }}
-                onClick={() => onMunicipioClick?.(p.cveMun, p.nombre)}
+                onClick={() => alClick?.(p.clave, p.nombre)}
               />
             );
           })}

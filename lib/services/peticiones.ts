@@ -1,3 +1,4 @@
+import { derivarEscenarioAcuse } from "@/lib/acuse";
 import {
   ALCANCES,
   CATEGORIAS,
@@ -11,9 +12,12 @@ import {
 import { db } from "@/lib/db";
 import { loteDocumentos, lotes, peticiones, users } from "@/lib/db/schema";
 import { generarFolio, siguienteSecuencia } from "@/lib/folio";
+import type { MetodoUbicacion } from "@/lib/geo";
+import { resolverUbicacion } from "@/lib/geo-server";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { hashIdentidad } from "@/lib/identidad";
-import { derivarEscenarioAcuse } from "@/lib/acuse";
+import { registrarAuditoria } from "@/lib/services/auditoria";
+import { getSubsExtra } from "@/lib/services/config";
 import type {
   Alcance,
   CapturaPeticionDto,
@@ -27,7 +31,7 @@ import type {
   Urgencia,
 } from "@/lib/types";
 import { publicUploadUrl } from "@/lib/uploads";
-import { and, desc, eq, like, ne, or } from "drizzle-orm";
+import { and, desc, eq, inArray, like, ne, or } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 
 const CVE_MUN_VALIDOS = new Set(MUNICIPIOS_GUERRERO.map((m) => m.cveMun));
@@ -62,6 +66,11 @@ export type CapturarDocumentoInput = {
   firmantes?: number | null;
   cveMun?: string;
   coloniaId?: string | null;
+  lat?: number | null;
+  lng?: number | null;
+  metodoUbicacion?: string | null;
+  localidadInegi?: string | null;
+  ubicacionLabel?: string | null;
   escenarioAcuse?: string;
   confirmarDuplicado?: boolean;
 };
@@ -111,6 +120,13 @@ export function toCapturaDto(
     firmantes: row.firmantes,
     cveMun: row.cveMun,
     coloniaId: row.coloniaId,
+    lat: row.lat,
+    lng: row.lng,
+    distritoLocal: row.distritoLocal,
+    distritoFederal: row.distritoFederal,
+    metodoUbicacion: row.metodoUbicacion,
+    localidadInegi: row.localidadInegi,
+    ubicacionLabel: row.ubicacionLabel,
     origenCaptura: row.origenCaptura,
     escenarioAcuse: row.escenarioAcuse,
     estatus: row.estatus,
@@ -139,8 +155,55 @@ type CamposValidados = {
   identidadHash: string;
 };
 
+type UbicacionValidada = {
+  cveMun: string;
+  lat: string;
+  lng: string;
+  distritoLocal: string | null;
+  distritoFederal: string | null;
+  metodoUbicacion: MetodoUbicacion;
+  localidadInegi: string | null;
+  ubicacionLabel: string | null;
+};
+
+async function resolverUbicacionCaptura(
+  input: CapturarDocumentoInput,
+): Promise<{ error: string; status: 400 } | UbicacionValidada> {
+  const metodo = asString(input.metodoUbicacion);
+  if (metodo !== "inegi" && metodo !== "google" && metodo !== "mapa") {
+    return { error: "Elige una vía de ubicación", status: 400 };
+  }
+  const lat = typeof input.lat === "number" ? input.lat : Number(input.lat);
+  const lng = typeof input.lng === "number" ? input.lng : Number(input.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    return {
+      error: "Elige una ubicación (localidad INEGI, Google o pin en el mapa)",
+      status: 400,
+    };
+  }
+  const resuelto = await resolverUbicacion(lat, lng);
+  if (!resuelto.cveMun || !CVE_MUN_VALIDOS.has(resuelto.cveMun)) {
+    return {
+      error: "Ese punto no cae en un municipio de Guerrero",
+      status: 400,
+    };
+  }
+  return {
+    cveMun: resuelto.cveMun,
+    lat: String(lat),
+    lng: String(lng),
+    distritoLocal: resuelto.distritoLocal,
+    distritoFederal: resuelto.distritoFederal,
+    metodoUbicacion: metodo,
+    localidadInegi:
+      metodo === "inegi" ? asString(input.localidadInegi) || null : null,
+    ubicacionLabel: asString(input.ubicacionLabel) || null,
+  };
+}
+
 function validarCampos(
   input: CapturarDocumentoInput,
+  extrasCatalogo: string[] = [],
 ): { error: string; status: 400 } | CamposValidados {
   const cveMun = asString(input.cveMun);
   if (!CVE_MUN_VALIDOS.has(cveMun)) {
@@ -179,6 +242,7 @@ function validarCampos(
   }
   const subSet = new Set([
     ...categoria.subcategorias,
+    ...extrasCatalogo,
     ...(input.subcategoriasPermitidas ?? []),
   ]);
   if (subcategorias.some((s) => !subSet.has(s))) {
@@ -197,11 +261,7 @@ function validarCampos(
   }
 
   let coloniaId = asString(input.coloniaId) || null;
-  if (cveMun === "001") {
-    if (coloniaId && !COLONIA_IDS.has(coloniaId)) {
-      return { error: "Colonia inválida", status: 400 };
-    }
-  } else {
+  if (coloniaId && !COLONIA_IDS.has(coloniaId)) {
     coloniaId = null;
   }
 
@@ -338,6 +398,12 @@ export async function capturarDocumento(
     return { error: "ID inválido", status: 400 };
   }
 
+  const ubi = await resolverUbicacionCaptura(input);
+  if ("error" in ubi) return ubi;
+
+  const extrasConfig = await getSubsExtra();
+  const extrasCatalogo = extrasConfig[asString(input.categoriaId)] ?? [];
+
   try {
     const result = await db.transaction(async (tx) => {
       const docs = await tx
@@ -367,10 +433,14 @@ export async function capturarDocumento(
         ? existente.subcategorias.filter((s): s is string => typeof s === "string")
         : [];
 
-      const campos = validarCampos({
-        ...input,
-        subcategoriasPermitidas: extras,
-      });
+      const campos = validarCampos(
+        {
+          ...input,
+          cveMun: ubi.cveMun,
+          subcategoriasPermitidas: extras,
+        },
+        extrasCatalogo,
+      );
       if ("error" in campos) return campos;
 
       const coincidencias = await buscarCoincidenciasIdentidad({
@@ -424,6 +494,13 @@ export async function capturarDocumento(
         firmantes: campos.firmantes,
         cveMun: campos.cveMun,
         coloniaId: campos.coloniaId,
+        lat: ubi.lat,
+        lng: ubi.lng,
+        distritoLocal: ubi.distritoLocal,
+        distritoFederal: ubi.distritoFederal,
+        metodoUbicacion: ubi.metodoUbicacion,
+        localidadInegi: ubi.localidadInegi,
+        ubicacionLabel: ubi.ubicacionLabel,
         origenCaptura: "escaneado_territorio" as const,
         escenarioAcuse: campos.escenarioAcuse,
         estatus:
@@ -489,6 +566,35 @@ export async function capturarDocumento(
       return { peticion: toCapturaDto(peticion, doc.loteId) };
     });
 
+    if ("peticion" in result && result.peticion) {
+      const actorRows = await db
+        .select({
+          email: users.email,
+          displayName: users.displayName,
+        })
+        .from(users)
+        .where(eq(users.id, userId))
+        .limit(1);
+      await registrarAuditoria({
+        actor: {
+          id: userId,
+          email: actorRows[0]?.email ?? null,
+          displayName: actorRows[0]?.displayName ?? null,
+        },
+        accion: "captura",
+        entidad: "peticion",
+        entidadId: result.peticion.id,
+        folio: result.peticion.folio,
+        detalle: `Capturó ${result.peticion.folio} · ${result.peticion.ciudadanoNombre}`,
+        despues: {
+          folio: result.peticion.folio,
+          cveMun: result.peticion.cveMun,
+          complejidad: result.peticion.complejidad,
+          categoriaId: result.peticion.categoriaId,
+        },
+      });
+    }
+
     return result;
   } catch (err) {
     const code =
@@ -525,6 +631,7 @@ function toConsultaDto(
   lote: typeof lotes.$inferSelect,
   capturista: { displayName: string | null; email: string },
   territorio: { displayName: string | null; email: string } | null,
+  responsableNombre: string | null = null,
 ): PeticionConsultaDto {
   const dto = toCapturaDto(row, lote.id);
   return {
@@ -544,6 +651,7 @@ function toConsultaDto(
       : [],
     motivoNoProcede: row.motivoNoProcede,
     responsableAsignado: row.responsableAsignado,
+    responsableNombre,
     cerradoPor: row.cerradoPor,
     capturistaNombre: capturista.displayName,
     capturistaEmail: capturista.email,
@@ -582,8 +690,39 @@ export async function listPeticiones(): Promise<PeticionConsultaDto[]> {
     .leftJoin(territorioUsers, eq(lotes.userId, territorioUsers.id))
     .orderBy(desc(peticiones.fechaCaptura));
 
+  const opIds = [
+    ...new Set(
+      rows
+        .map((r) => r.peticion.responsableAsignado)
+        .filter((id): id is string => typeof id === "string" && UUID_RE.test(id)),
+    ),
+  ];
+  const opMap = new Map<string, string>();
+  if (opIds.length > 0) {
+    const ops = await db
+      .select({
+        id: users.id,
+        displayName: users.displayName,
+        email: users.email,
+      })
+      .from(users)
+      .where(inArray(users.id, opIds));
+    for (const op of ops) {
+      opMap.set(op.id, op.displayName?.trim() || op.email);
+    }
+  }
+
   return rows.map((r) =>
-    toConsultaDto(r.peticion, r.doc, r.lote, r.capturista, r.territorio),
+    toConsultaDto(
+      r.peticion,
+      r.doc,
+      r.lote,
+      r.capturista,
+      r.territorio,
+      r.peticion.responsableAsignado
+        ? (opMap.get(r.peticion.responsableAsignado) ?? null)
+        : null,
+    ),
   );
 }
 
@@ -612,11 +751,22 @@ export async function getPeticionConsultaById(id: string) {
     .limit(1);
   const row = rows[0];
   if (!row) return null;
+  let responsableNombre: string | null = null;
+  const rid = row.peticion.responsableAsignado;
+  if (rid && UUID_RE.test(rid)) {
+    const op = await db
+      .select({ displayName: users.displayName, email: users.email })
+      .from(users)
+      .where(eq(users.id, rid))
+      .limit(1);
+    if (op[0]) responsableNombre = op[0].displayName?.trim() || op[0].email;
+  }
   return toConsultaDto(
     row.peticion,
     row.doc,
     row.lote,
     row.capturista,
     row.territorio,
+    responsableNombre,
   );
 }

@@ -315,6 +315,17 @@ export const CATEGORIA_POR_ID = Object.fromEntries(
   CATEGORIAS.map((c) => [c.id, c]),
 ) as Record<string, Categoria>;
 
+export function categoriasConExtras(
+  extras: Record<string, string[]>,
+): Categoria[] {
+  return CATEGORIAS.map((c) => {
+    const extra = extras[c.id] ?? [];
+    const nuevas = extra.filter((s) => !c.subcategorias.includes(s));
+    if (nuevas.length === 0) return c;
+    return { ...c, subcategorias: [...c.subcategorias, ...nuevas] };
+  });
+}
+
 export const TIPOS_PETICION = [
   { id: "queja", nombre: "Queja" },
   { id: "peticion", nombre: "Petición" },

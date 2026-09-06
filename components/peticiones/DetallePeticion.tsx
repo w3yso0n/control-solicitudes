@@ -235,6 +235,43 @@ export function DetallePeticion({
                 value={nombreMunicipio(peticion.cveMun)}
               />
               <Dato
+                label="Distrito local"
+                value={
+                  peticion.distritoLocal
+                    ? `Distrito local ${Number(peticion.distritoLocal)}`
+                    : "—"
+                }
+              />
+              <Dato
+                label="Distrito federal"
+                value={
+                  peticion.distritoFederal
+                    ? `Distrito federal ${Number(peticion.distritoFederal)}`
+                    : "—"
+                }
+              />
+              <Dato
+                label="Ubicación"
+                value={
+                  peticion.lat && peticion.lng
+                    ? `${Number(peticion.lat).toFixed(5)}, ${Number(peticion.lng).toFixed(5)}`
+                    : "Sin punto"
+                }
+              />
+              <Dato
+                label="Origen del punto"
+                value={
+                  peticion.ubicacionLabel ||
+                  (peticion.metodoUbicacion === "inegi"
+                    ? "Localidad INEGI"
+                    : peticion.metodoUbicacion === "google"
+                      ? "Google Maps"
+                      : peticion.metodoUbicacion === "mapa"
+                        ? "Pin en el mapa"
+                        : "—")
+                }
+              />
+              <Dato
                 label="Colonia"
                 value={etiquetaColonia(peticion.coloniaId)}
               />

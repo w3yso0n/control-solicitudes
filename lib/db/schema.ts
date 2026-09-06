@@ -127,6 +127,15 @@ export const peticiones = pgTable(
     firmantes: integer("firmantes"),
     cveMun: text("cve_mun").notNull(),
     coloniaId: text("colonia_id"),
+    lat: text("lat"),
+    lng: text("lng"),
+    distritoLocal: text("distrito_local"),
+    distritoFederal: text("distrito_federal"),
+    metodoUbicacion: text("metodo_ubicacion", {
+      enum: ["inegi", "google", "mapa"],
+    }),
+    localidadInegi: text("localidad_inegi"),
+    ubicacionLabel: text("ubicacion_label"),
     eventoOrigen: text("evento_origen").notNull(),
     fechaEntrega: text("fecha_entrega").notNull(),
     fechaCaptura: timestamp("fecha_captura").defaultNow().notNull(),
@@ -172,10 +181,64 @@ export const peticiones = pgTable(
   (table) => [
     index("peticiones_documento_id_idx").on(table.documentoId),
     index("peticiones_capturado_por_idx").on(table.capturadoPor),
-    index("peticiones_cve_mun_idx").on(table.cveMun),
+    index("peticiones_distrito_local_idx").on(table.distritoLocal),
+    index("peticiones_distrito_federal_idx").on(table.distritoFederal),
     index("peticiones_identidad_hash_idx").on(table.identidadHash),
     index("peticiones_estatus_idx").on(table.estatus),
     index("peticiones_complejidad_idx").on(table.complejidad),
+  ],
+);
+
+export const eventos = pgTable(
+  "eventos",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    nombre: text("nombre").notNull(),
+    fecha: text("fecha"),
+    cveMun: text("cve_mun"),
+    lugar: text("lugar"),
+    activo: boolean("activo").notNull().default(true),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("eventos_nombre_uidx").on(table.nombre),
+    index("eventos_activo_idx").on(table.activo),
+  ],
+);
+
+export const configApp = pgTable("config_app", {
+  clave: text("clave").primaryKey(),
+  valor: jsonb("valor").$type<unknown>().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  updatedBy: uuid("updated_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
+});
+
+export const auditoria = pgTable(
+  "auditoria",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    actorId: uuid("actor_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    actorEmail: text("actor_email"),
+    actorNombre: text("actor_nombre"),
+    accion: text("accion").notNull(),
+    entidad: text("entidad").notNull(),
+    entidadId: text("entidad_id"),
+    folio: text("folio"),
+    detalle: text("detalle").notNull(),
+    antes: jsonb("antes").$type<unknown>(),
+    despues: jsonb("despues").$type<unknown>(),
+  },
+  (table) => [
+    index("auditoria_created_at_idx").on(table.createdAt),
+    index("auditoria_actor_id_idx").on(table.actorId),
+    index("auditoria_accion_idx").on(table.accion),
+    index("auditoria_folio_idx").on(table.folio),
   ],
 );
 
@@ -227,3 +290,5 @@ export type LoteDocumento = InferSelectModel<typeof loteDocumentos>;
 export type NewLoteDocumento = InferInsertModel<typeof loteDocumentos>;
 export type PeticionRow = InferSelectModel<typeof peticiones>;
 export type NewPeticion = InferInsertModel<typeof peticiones>;
+export type EventoRow = InferSelectModel<typeof eventos>;
+export type AuditoriaRow = InferSelectModel<typeof auditoria>;

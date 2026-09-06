@@ -5,7 +5,7 @@ import { navPorGrupos, puedeVer } from "@/lib/nav";
 import { useSession } from "@/lib/session";
 import type { Rol } from "@/lib/types";
 import {
-  // BarChart3,
+  BarChart3,
   BadgeCheck,
   ClipboardList,
   FolderOpen,
@@ -25,11 +25,11 @@ import { useEffect, useState, type ReactNode } from "react";
 
 const ICONS: Record<string, typeof LayoutDashboard> = {
   "/dashboard": LayoutDashboard,
+  "/reportes": BarChart3,
   "/territorio": FolderOpen,
   "/bandeja": Inbox,
   "/cumplimientos": BadgeCheck,
   "/peticiones": ClipboardList,
-  // "/reportes": BarChart3,
   "/usuarios": Users,
   "/configuracion": Settings,
   "/auditoria": Shield,

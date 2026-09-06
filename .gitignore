@@ -36,6 +36,9 @@ yarn-error.log*
 # uploads persistidos en disco (volumen en VPS)
 /uploads
 
+# cartografía cruda del INE (shapefiles)
+/tmp-geo
+
 # vercel
 .vercel
 

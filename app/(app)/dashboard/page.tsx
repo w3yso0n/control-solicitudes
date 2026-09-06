@@ -1,13 +1,13 @@
 "use client";
 
 import { BalanceBar } from "@/components/cumplimientos/BalanceBar";
-import GuerreroMapLoader from "@/components/map/GuerreroMapLoader";
 import { ZonasEnBlanco } from "@/components/dashboard/ZonasEnBlanco";
+import { NivelGeografiaToggle } from "@/components/geo/NivelGeografiaToggle";
+import GuerreroMapLoader from "@/components/map/GuerreroMapLoader";
 import { Card } from "@/components/ui";
 import {
   CATEGORIAS,
   CATEGORIA_POR_ID,
-  MUNICIPIO_POR_CVE,
   MUNICIPIOS_FOCO,
 } from "@/lib/catalogos";
 import {
@@ -15,11 +15,18 @@ import {
   diasEntre,
   esPendientePipeline,
   filtrarPorPeriodoCumplimiento,
-  scoresCumplimientoPorMunicipio,
+  scoresCumplimientoPorClave,
 } from "@/lib/cumplimiento";
 import { MUNICIPIOS_GUERRERO, type RegionGuerrero } from "@/lib/geografia-guerrero";
 import {
-  calcularItcPorMunicipio,
+  claveDePeticion,
+  clavesDeNivel,
+  NIVEL_LABEL,
+  nombreZona,
+  type NivelGeografia,
+} from "@/lib/geo";
+import {
+  calcularItcPorClave,
   filtrarPorPeriodo,
   itcFill,
 } from "@/lib/itc";
@@ -38,14 +45,6 @@ const PERIODOS: { id: PeriodoFiltro; label: string }[] = [
 ];
 
 type VistaDashboard = "escucha" | "cumplidas";
-
-function nombreMunicipio(cveMun: string) {
-  return (
-    MUNICIPIO_POR_CVE[cveMun]?.nombre ??
-    MUNICIPIOS_GUERRERO.find((m) => m.cveMun === cveMun)?.nombre ??
-    cveMun
-  );
-}
 
 const ETIQUETA_CATEGORIA: Record<string, string> = {
   servicios: "Servicios públicos",
@@ -111,6 +110,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [periodo, setPeriodo] = useState<PeriodoFiltro>("acumulado");
   const [vista, setVista] = useState<VistaDashboard>("escucha");
+  const [nivel, setNivel] = useState<NivelGeografia>("municipio");
   const [regionResaltada, setRegionResaltada] =
     useState<RegionGuerrero | null>(null);
   const mapaRef = useRef<HTMLDivElement>(null);
@@ -168,20 +168,30 @@ export default function DashboardPage() {
     ]);
     return [...set];
   }, []);
+  const clavesZona = useMemo(
+    () => clavesDeNivel(nivel, clavesMun),
+    [nivel, clavesMun],
+  );
+  const claveDe = useMemo(
+    () => (p: Peticion) => claveDePeticion(p, nivel),
+    [nivel],
+  );
 
   const scores = useMemo(
-    () => calcularItcPorMunicipio(filtradas, clavesMun),
-    [filtradas, clavesMun],
+    () => calcularItcPorClave(filtradas, clavesZona, claveDe),
+    [filtradas, clavesZona, claveDe],
   );
   const scoresCump = useMemo(
-    () => scoresCumplimientoPorMunicipio(porCaptura, clavesMun),
-    [porCaptura, clavesMun],
+    () => scoresCumplimientoPorClave(porCaptura, clavesZona, claveDe),
+    [porCaptura, clavesZona, claveDe],
   );
   const balance = useMemo(() => balanceDe(porCaptura, ahora), [porCaptura, ahora]);
 
-  const totalMunicipios = MUNICIPIOS_GUERRERO.length;
-  const municipiosActivos = new Set(filtradas.map((p) => p.cveMun)).size;
-  const zonasBlanco = totalMunicipios - municipiosActivos;
+  const totalZonas = clavesZona.length;
+  const zonasActivas = new Set(
+    filtradas.map((p) => claveDe(p)).filter((c): c is string => Boolean(c)),
+  ).size;
+  const zonasBlanco = totalZonas - zonasActivas;
 
   const comunitarias = filtradas.filter((p) => p.comunitaria).length;
 
@@ -275,7 +285,7 @@ export default function DashboardPage() {
     ? [...scoresCump]
         .map((s) => ({
           ...s,
-          enPeriodo: filtradas.filter((p) => p.cveMun === s.clave).length,
+          enPeriodo: filtradas.filter((p) => claveDe(p) === s.clave).length,
         }))
         .filter((s) => s.enPeriodo > 0)
         .sort((a, b) => b.enPeriodo - a.enPeriodo)
@@ -285,12 +295,18 @@ export default function DashboardPage() {
         .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
         .slice(0, 6);
 
-  function verPeticionesDe(cveMun: string) {
+  function verPeticionesDe(clave: string) {
+    const param =
+      nivel === "local"
+        ? `distLocal=${clave}`
+        : nivel === "federal"
+          ? `distFederal=${clave}`
+          : `municipio=${clave}`;
     if (modoCumplidas) {
-      router.push(`/peticiones?municipio=${cveMun}&estatus=cumplida`);
+      router.push(`/peticiones?${param}&estatus=cumplida`);
       return;
     }
-    router.push(`/peticiones?municipio=${cveMun}`);
+    router.push(`/peticiones?${param}`);
   }
 
   function verPeticionesPorCategoria(categoriaId: string) {
@@ -312,7 +328,7 @@ export default function DashboardPage() {
       value: String(filtradas.length),
       hint:
         periodo === "acumulado"
-          ? `${municipiosActivos} municipios con datos`
+          ? `${zonasActivas} ${NIVEL_LABEL[nivel].toLowerCase()}s con datos`
           : "Capturadas y con folio",
       tone: "default" as const,
     },
@@ -347,9 +363,9 @@ export default function DashboardPage() {
       tone: "magenta" as const,
     },
     {
-      label: "Regiones en blanco",
+      label: nivel === "municipio" ? "Regiones en blanco" : "Zonas en blanco",
       value: String(zonasBlanco),
-      hint: `${municipiosActivos} de ${totalMunicipios} municipios activos`,
+      hint: `${zonasActivas} de ${totalZonas} ${NIVEL_LABEL[nivel].toLowerCase()}s activos`,
       tone: "default" as const,
     },
   ];
@@ -358,7 +374,7 @@ export default function DashboardPage() {
     {
       label: "Cumplidas en el periodo",
       value: String(porCumplimiento.length),
-      hint: `${municipiosActivos} municipios con evidencia`,
+          hint: `${zonasActivas} zonas con evidencia`,
       tone: "ok" as const,
     },
     {
@@ -471,6 +487,13 @@ export default function DashboardPage() {
               </button>
             ))}
           </div>
+          <NivelGeografiaToggle
+            value={nivel}
+            onChange={(n) => {
+              setNivel(n);
+              setRegionResaltada(null);
+            }}
+          />
           <div className="flex flex-wrap gap-1 rounded-full bg-white p-1 shadow-[0_1px_2px_rgba(28,10,18,0.04),0_10px_24px_-18px_rgba(28,10,18,0.4)]">
             {PERIODOS.map((p) => (
               <button
@@ -518,7 +541,7 @@ export default function DashboardPage() {
             </p>
             <p className="text-[11px] text-zinc-400">
               {modoCumplidas
-                ? "Puntos y municipios con evidencia de cierre — clic para ver las cumplidas"
+                ? `Puntos y ${NIVEL_LABEL[nivel].toLowerCase()}s con evidencia de cierre — clic para ver las cumplidas`
                 : "Vol ·40 / Urg ·25 / Col ·20 / Div ·15 — Temperatura / Cumplimiento / Oportunidad"}
               {regionResaltada
                 ? ` · resaltando ${regionResaltada} (clic de nuevo en la región para quitar)`
@@ -531,8 +554,9 @@ export default function DashboardPage() {
               peticiones={filtradas}
               scoresCumplimiento={scoresCump}
               modo={modoCumplidas ? "cumplidas" : "escucha"}
-              regionResaltada={regionResaltada}
-              onMunicipioClick={(cveMun) => verPeticionesDe(cveMun)}
+              nivelGeografia={nivel}
+              regionResaltada={nivel === "municipio" ? regionResaltada : null}
+              onZonaClick={(clave) => verPeticionesDe(clave)}
             />
           </div>
         </Card>
@@ -631,8 +655,8 @@ export default function DashboardPage() {
             </p>
             <p className="mt-0.5 text-sm font-semibold text-zinc-900">
               {modoCumplidas
-                ? "Municipios con más cumplidas"
-                : "Municipios más calientes"}
+                ? `${NIVEL_LABEL[nivel]}s con más cumplidas`
+                : `${NIVEL_LABEL[nivel]}s más calientes`}
             </p>
             <ul className="mt-3 space-y-0.5">
               {topMunicipios.length === 0 ? (
@@ -654,7 +678,7 @@ export default function DashboardPage() {
                         {String(i + 1).padStart(2, "0")}
                       </span>
                       <span className="min-w-0 flex-1 truncate text-zinc-700">
-                        {nombreMunicipio(row.clave)}
+                        {nombreZona(row.clave, nivel)}
                       </span>
                       <span className="shrink-0 text-xs text-zinc-400">
                         {row.enPeriodo} cump.
@@ -678,7 +702,7 @@ export default function DashboardPage() {
                         {String(i + 1).padStart(2, "0")}
                       </span>
                       <span className="min-w-0 flex-1 truncate text-zinc-700">
-                        {nombreMunicipio(row.clave)}
+                        {nombreZona(row.clave, nivel)}
                       </span>
                       <span className="shrink-0 text-xs text-zinc-400">
                         {row.peticiones} pet.
@@ -751,12 +775,33 @@ export default function DashboardPage() {
             )}
           </ul>
         </Card>
-      ) : (
+      ) : nivel === "municipio" ? (
         <ZonasEnBlanco
           cvesActivos={new Set(filtradas.map((p) => p.cveMun))}
           regionResaltada={regionResaltada}
           onRegionClick={resaltarRegion}
         />
+      ) : (
+        <Card className="p-4">
+          <p className="text-sm font-semibold text-zinc-900">
+            {NIVEL_LABEL[nivel]}s en blanco
+          </p>
+          <p className="mt-0.5 text-xs text-zinc-500">
+            {zonasBlanco} de {totalZonas} sin peticiones en el periodo.
+          </p>
+          <ul className="mt-3 flex flex-wrap gap-2">
+            {scores
+              .filter((s) => s.peticiones === 0)
+              .map((s) => (
+                <li
+                  key={s.clave}
+                  className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-600"
+                >
+                  {nombreZona(s.clave, nivel)}
+                </li>
+              ))}
+          </ul>
+        </Card>
       )}
         </div>
       )}

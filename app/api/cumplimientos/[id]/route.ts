@@ -47,6 +47,7 @@ export async function POST(
       });
     } else if (accion === "reclasificar") {
       result = await reclasificarComplejidad(
+        authz.user.id,
         id,
         (typeof body.complejidad === "string"
           ? body.complejidad

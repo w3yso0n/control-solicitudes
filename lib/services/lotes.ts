@@ -2,6 +2,7 @@ import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { db } from "@/lib/db";
 import { loteDocumentos, lotes, peticiones, users } from "@/lib/db/schema";
 import { toCapturaDto } from "@/lib/services/peticiones";
+import { nombresEventosSugeridos } from "@/lib/services/config";
 import type {
   CapturaPeticionDto,
   LoteDocumentoDto,
@@ -278,6 +279,7 @@ export async function createLote(userId: string, input: CreateLoteInput) {
 }
 
 export async function getEventosRecientes(limit = 8): Promise<string[]> {
+  const catalogo = await nombresEventosSugeridos(20);
   const rows = await db
     .select({
       eventoOrigen: lotes.eventoOrigen,
@@ -287,8 +289,8 @@ export async function getEventosRecientes(limit = 8): Promise<string[]> {
     .orderBy(desc(lotes.createdAt))
     .limit(200);
 
-  const vistos = new Set<string>();
-  const recientes: string[] = [];
+  const vistos = new Set(catalogo.map((n) => n.toLowerCase()));
+  const recientes: string[] = [...catalogo];
   for (const row of rows) {
     const nombre = row.eventoOrigen.trim();
     if (!nombre) continue;
@@ -297,7 +299,7 @@ export async function getEventosRecientes(limit = 8): Promise<string[]> {
     if (vistos.has(clave)) continue;
     vistos.add(clave);
     recientes.push(nombre);
-    if (recientes.length >= limit) break;
+    if (recientes.length >= catalogo.length + limit) break;
   }
   return recientes;
 }

@@ -1,3 +1,7 @@
+import type { MetodoUbicacion } from "@/lib/geo";
+
+export type { MetodoUbicacion };
+
 export type Rol = "territorio" | "cuantiva" | "operador" | "candidata" | "admin";
 
 export type TipoPeticion =
@@ -112,6 +116,13 @@ export type Peticion = {
   firmantes?: number;
   cveMun: string;
   coloniaId?: string;
+  lat?: number | null;
+  lng?: number | null;
+  distritoLocal?: string | null;
+  distritoFederal?: string | null;
+  metodoUbicacion?: MetodoUbicacion | null;
+  localidadInegi?: string | null;
+  ubicacionLabel?: string | null;
   eventoId?: string;
   fechaEntrega: string;
   fechaCaptura: string;
@@ -160,6 +171,13 @@ export type CapturaPeticionDto = {
   firmantes: number | null;
   cveMun: string;
   coloniaId: string | null;
+  lat: string | null;
+  lng: string | null;
+  distritoLocal: string | null;
+  distritoFederal: string | null;
+  metodoUbicacion: MetodoUbicacion | null;
+  localidadInegi: string | null;
+  ubicacionLabel: string | null;
   origenCaptura: OrigenCaptura;
   escenarioAcuse: EscenarioAcuse;
   estatus: EstatusPeticion;
@@ -224,6 +242,13 @@ export type PeticionConsultaDto = {
   firmantes: number | null;
   cveMun: string;
   coloniaId: string | null;
+  lat: string | null;
+  lng: string | null;
+  distritoLocal: string | null;
+  distritoFederal: string | null;
+  metodoUbicacion: MetodoUbicacion | null;
+  localidadInegi: string | null;
+  ubicacionLabel: string | null;
   fechaEntrega: string;
   fechaCaptura: string;
   origenCaptura: OrigenCaptura;
@@ -234,6 +259,7 @@ export type PeticionConsultaDto = {
   evidenciaUrls: string[];
   motivoNoProcede: string | null;
   responsableAsignado: string | null;
+  responsableNombre: string | null;
   cerradoPor: string | null;
   capturistaNombre: string | null;
   capturistaEmail: string;

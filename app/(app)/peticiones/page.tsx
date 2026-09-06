@@ -4,6 +4,11 @@ import { FilterCombobox } from "@/components/FilterCombobox";
 import { DetallePeticion } from "@/components/peticiones/DetallePeticion";
 import { Card, Input } from "@/components/ui";
 import { CATEGORIA_POR_ID, CATEGORIAS, COLONIA_POR_ID, COMPLEJIDADES, ESTATUS_PETICION, ORIGENES_CAPTURA } from "@/lib/catalogos";
+import {
+  DISTRITOS_FEDERALES,
+  DISTRITOS_LOCALES,
+  nombreZona,
+} from "@/lib/geo";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { nombreMunicipio } from "@/lib/lote-titulo";
 import { useSession } from "@/lib/session";
@@ -43,6 +48,12 @@ function PeticionesContent() {
     () => searchParams.get("categoria") ?? "",
   );
   const [cveMun, setCveMun] = useState(() => searchParams.get("municipio") ?? "");
+  const [distLocal, setDistLocal] = useState(
+    () => searchParams.get("distLocal") ?? "",
+  );
+  const [distFederal, setDistFederal] = useState(
+    () => searchParams.get("distFederal") ?? "",
+  );
   const [complejidad, setComplejidad] = useState(
     () => searchParams.get("complejidad") ?? "",
   );
@@ -109,6 +120,8 @@ function PeticionesContent() {
     return peticiones.filter((p) => {
       if (categoriaId && p.categoriaId !== categoriaId) return false;
       if (cveMun && p.cveMun !== cveMun) return false;
+      if (distLocal && p.distritoLocal !== distLocal) return false;
+      if (distFederal && p.distritoFederal !== distFederal) return false;
       if (complejidad && p.complejidad !== complejidad) return false;
       if (estatus && p.estatus !== estatus) return false;
       if (origen && p.origenCaptura !== origen) return false;
@@ -127,12 +140,14 @@ function PeticionesContent() {
         p.subcategorias.some((s) => s.toLowerCase().includes(q))
       );
     });
-  }, [peticiones, busqueda, categoriaId, cveMun, complejidad, estatus, origen]);
+  }, [peticiones, busqueda, categoriaId, cveMun, distLocal, distFederal, complejidad, estatus, origen]);
 
   const hayFiltros =
     busqueda.trim() !== "" ||
     categoriaId !== "" ||
     cveMun !== "" ||
+    distLocal !== "" ||
+    distFederal !== "" ||
     complejidad !== "" ||
     estatus !== "" ||
     origen !== "";
@@ -178,6 +193,32 @@ function PeticionesContent() {
               searchPlaceholder="Buscar municipio…"
             />
           </div>
+          <div className="w-full sm:w-48">
+            <FilterCombobox
+              value={distLocal}
+              onChange={setDistLocal}
+              options={DISTRITOS_LOCALES.map((d) => ({
+                id: d.clave,
+                label: d.nombre,
+              }))}
+              placeholder="Todo dist. local"
+              emptyLabel="Todo dist. local"
+              searchPlaceholder="Buscar distrito…"
+            />
+          </div>
+          <div className="w-full sm:w-48">
+            <FilterCombobox
+              value={distFederal}
+              onChange={setDistFederal}
+              options={DISTRITOS_FEDERALES.map((d) => ({
+                id: d.clave,
+                label: d.nombre,
+              }))}
+              placeholder="Todo dist. federal"
+              emptyLabel="Todo dist. federal"
+              searchPlaceholder="Buscar distrito…"
+            />
+          </div>
           <div className="w-full sm:w-44">
             <FilterCombobox
               value={complejidad}
@@ -215,6 +256,8 @@ function PeticionesContent() {
                 setBusqueda("");
                 setCategoriaId("");
                 setCveMun("");
+                setDistLocal("");
+                setDistFederal("");
                 setComplejidad("");
                 setEstatus("");
                 setOrigen("");
@@ -256,7 +299,6 @@ function PeticionesContent() {
               const activa = p.id === seleccionadaId;
               const comunitaria = p.alcance === "colectivo";
               const tel = telefonoLabel(p.ciudadanoTelefono);
-              const colonia = etiquetaColonia(p.coloniaId);
               const descripcion = p.descripcion.trim() || "N/A";
               return (
                 <tr
@@ -285,13 +327,11 @@ function PeticionesContent() {
                   <td className="px-3 py-2">{p.ciudadanoNombre}</td>
                   <td className="px-3 py-2">
                     <span>{nombreMunicipio(p.cveMun)}</span>
-                    <span
-                      className={
-                        colonia === "N/A" ? "text-zinc-400" : "text-zinc-600"
-                      }
-                    >
-                      {" · "}
-                      {colonia}
+                    <span className="block text-[11px] text-zinc-400">
+                      {p.distritoLocal
+                        ? nombreZona(p.distritoLocal, "local")
+                        : "Sin dist. local"}
+                      {p.ubicacionLabel ? ` · ${p.ubicacionLabel}` : ""}
                     </span>
                   </td>
                   <td className="max-w-xs px-3 py-2 text-zinc-700">

@@ -103,23 +103,33 @@ function scoreDeGrupo(peticiones: Peticion[], maxVolumen: number): ItcGrupo {
   };
 }
 
+export function calcularItcPorClave(
+  peticiones: Peticion[],
+  claves: string[],
+  claveDe: (p: Peticion) => string | null,
+): ItcScore[] {
+  const por = new Map<string, Peticion[]>();
+  for (const clave of claves) por.set(clave, []);
+  for (const p of peticiones) {
+    const clave = claveDe(p);
+    if (!clave) continue;
+    const lista = por.get(clave);
+    if (lista) lista.push(p);
+    else por.set(clave, [p]);
+  }
+  const maxVolumen = Math.max(0, ...[...por.values()].map((g) => g.length));
+
+  return [...por.entries()].map(([clave, grupo]) => ({
+    clave,
+    ...scoreDeGrupo(grupo, maxVolumen),
+  }));
+}
+
 export function calcularItcPorMunicipio(
   peticiones: Peticion[],
   claves: string[],
 ): ItcScore[] {
-  const porMun = new Map<string, Peticion[]>();
-  for (const clave of claves) porMun.set(clave, []);
-  for (const p of peticiones) {
-    const lista = porMun.get(p.cveMun);
-    if (lista) lista.push(p);
-    else porMun.set(p.cveMun, [p]);
-  }
-  const maxVolumen = Math.max(0, ...[...porMun.values()].map((g) => g.length));
-
-  return [...porMun.entries()].map(([clave, grupo]) => ({
-    clave,
-    ...scoreDeGrupo(grupo, maxVolumen),
-  }));
+  return calcularItcPorClave(peticiones, claves, (p) => p.cveMun);
 }
 
 export function calcularItcPorColonia(

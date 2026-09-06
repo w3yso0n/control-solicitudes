@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     const operadorId =
       typeof body.operadorId === "string" ? body.operadorId : "";
 
-    const result = await asignarOperador(peticionIds, operadorId);
+    const result = await asignarOperador(authz.user.id, peticionIds, operadorId);
     if ("error" in result) {
       return NextResponse.json({ error: result.error }, { status: result.status });
     }

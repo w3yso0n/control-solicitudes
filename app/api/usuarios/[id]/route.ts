@@ -64,7 +64,7 @@ export async function PATCH(
     }
 
     const body = (await request.json()) as Record<string, unknown>;
-    const result = await updateUsuario(id, authz.user.id, {
+    const result = await updateUsuario(id, authz.user, {
       email: body.email,
       password: body.password,
       displayName: body.displayName,
@@ -103,7 +103,7 @@ export async function DELETE(
       return NextResponse.json({ error: authz.error }, { status: authz.status });
     }
 
-    const result = await deleteUsuario(id, authz.user.id);
+    const result = await deleteUsuario(id, authz.user);
     if ("error" in result) {
       return NextResponse.json(
         { error: result.error },

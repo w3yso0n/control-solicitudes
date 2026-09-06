@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
+import { registrarAuditoria, type ActorAudit } from "@/lib/services/auditoria";
 import type { Rol, UsuarioPublico } from "@/lib/types";
 import { hash } from "bcryptjs";
 import { desc, eq } from "drizzle-orm";
@@ -122,6 +123,7 @@ export async function getUsuario(id: string): Promise<UsuarioPublico | null> {
 }
 
 export async function createUsuario(
+  actor: ActorAudit,
   input: CreateUsuarioInput,
 ): Promise<{ error: string } | { success: true; usuario: UsuarioPublico }> {
   const email = parseEmail(input.email);
@@ -153,12 +155,21 @@ export async function createUsuario(
 
   const row = inserted[0];
   if (!row) return { error: "No se pudo crear el usuario" };
-  return { success: true, usuario: toPublico(row) };
+  const usuario = toPublico(row);
+  await registrarAuditoria({
+    actor,
+    accion: "usuario",
+    entidad: "usuario",
+    entidadId: usuario.id,
+    detalle: `Creó usuario ${usuario.email} (${usuario.role})`,
+    despues: { email: usuario.email, role: usuario.role },
+  });
+  return { success: true, usuario };
 }
 
 export async function updateUsuario(
   id: string,
-  actorId: string,
+  actor: ActorAudit,
   input: UpdateUsuarioInput,
 ): Promise<{ error: string } | { success: true; usuario: UsuarioPublico }> {
   const actual = await getUsuario(id);
@@ -188,7 +199,7 @@ export async function updateUsuario(
   if (input.role !== undefined) {
     const role = parseRole(input.role);
     if (typeof role !== "string") return role;
-    if (id === actorId && role !== actual.role) {
+    if (id === actor.id && role !== actual.role) {
       return { error: "No puedes cambiar tu propio rol" };
     }
     if (actual.role === "admin" && role !== "admin") {
@@ -216,14 +227,24 @@ export async function updateUsuario(
 
   const row = updated[0];
   if (!row) return { error: "Usuario no encontrado" };
-  return { success: true, usuario: toPublico(row) };
+  const usuario = toPublico(row);
+  await registrarAuditoria({
+    actor,
+    accion: "usuario",
+    entidad: "usuario",
+    entidadId: usuario.id,
+    detalle: `Actualizó usuario ${usuario.email}`,
+    antes: { email: actual.email, role: actual.role, displayName: actual.displayName },
+    despues: { email: usuario.email, role: usuario.role, displayName: usuario.displayName },
+  });
+  return { success: true, usuario };
 }
 
 export async function deleteUsuario(
   id: string,
-  actorId: string,
+  actor: ActorAudit,
 ): Promise<{ error: string } | { success: true }> {
-  if (id === actorId) {
+  if (id === actor.id) {
     return { error: "No puedes eliminar tu propio usuario" };
   }
 
@@ -238,5 +259,13 @@ export async function deleteUsuario(
   }
 
   await db.delete(users).where(eq(users.id, id));
+  await registrarAuditoria({
+    actor,
+    accion: "usuario",
+    entidad: "usuario",
+    entidadId: id,
+    detalle: `Eliminó usuario ${actual.email}`,
+    antes: { email: actual.email, role: actual.role },
+  });
   return { success: true };
 }

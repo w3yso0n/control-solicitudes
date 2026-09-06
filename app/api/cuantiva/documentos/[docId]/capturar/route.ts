@@ -48,6 +48,21 @@ export async function POST(
         firmantes != null && Number.isFinite(firmantes) ? firmantes : null,
       cveMun: asString(body.cveMun),
       coloniaId: typeof body.coloniaId === "string" ? body.coloniaId : null,
+      lat:
+        typeof body.lat === "number"
+          ? body.lat
+          : typeof body.lat === "string" && body.lat.trim()
+            ? Number(body.lat)
+            : null,
+      lng:
+        typeof body.lng === "number"
+          ? body.lng
+          : typeof body.lng === "string" && body.lng.trim()
+            ? Number(body.lng)
+            : null,
+      metodoUbicacion: asString(body.metodoUbicacion) || null,
+      localidadInegi: asString(body.localidadInegi) || null,
+      ubicacionLabel: asString(body.ubicacionLabel) || null,
       escenarioAcuse: asString(body.escenarioAcuse),
       confirmarDuplicado: body.confirmarDuplicado === true,
     });
