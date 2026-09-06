@@ -12,7 +12,7 @@ import type { Rol } from "../lib/types";
 
 config({ path: ".env.local", override: false, quiet: true });
 
-const ROLES: Rol[] = ["territorio", "cuantiva", "candidata", "admin"];
+const ROLES: Rol[] = ["territorio", "cuantiva", "operador", "candidata", "admin"];
 
 function asRol(value: string | undefined): Rol {
   if (value && ROLES.includes(value as Rol)) return value as Rol;

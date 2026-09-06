@@ -312,6 +312,48 @@ export function DetallePeticion({
               <Dato label="Capturista Cuantiva" value={capturista} />
               <Dato label="Subida por Territorio" value={subidaPor} />
             </div>
+            {peticion.estatus === "cumplida" ||
+            peticion.estatus === "no_procede" ||
+            peticion.evidenciaUrls.length > 0 ? (
+              <div className="space-y-3 rounded-xl border border-zinc-100 bg-zinc-50 px-3 py-3">
+                <p className="text-[11px] uppercase tracking-wide text-zinc-400">
+                  Cumplimiento
+                </p>
+                {peticion.fechaCumplimiento ? (
+                  <Dato
+                    label="Fecha de cierre"
+                    value={fechaCorta(peticion.fechaCumplimiento)}
+                  />
+                ) : null}
+                {peticion.descripcionCumplimiento ? (
+                  <p className="text-sm leading-6 text-zinc-700">
+                    {peticion.descripcionCumplimiento}
+                  </p>
+                ) : null}
+                {peticion.motivoNoProcede ? (
+                  <Dato label="Motivo" value={peticion.motivoNoProcede} />
+                ) : null}
+                {peticion.evidenciaUrls.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {peticion.evidenciaUrls.map((url) => (
+                      <a
+                        key={url}
+                        href={url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="block"
+                      >
+                        <img
+                          src={url}
+                          alt="Evidencia"
+                          className="h-20 w-20 rounded-lg object-cover"
+                        />
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </div>
         {puedeBandeja ? (

@@ -41,6 +41,11 @@ function extensionOf(filename: string): string {
   return ext;
 }
 
+export function mimeFromStorageKey(storageKey: string): string {
+  const ext = extensionOf(storageKey);
+  return MIME_BY_EXT[ext] ?? "application/octet-stream";
+}
+
 export function resolveMimeType(file: File): string | null {
   if (file.type === "image/svg+xml") return null;
   if (ALLOWED_MIME.has(file.type)) return file.type;
@@ -115,6 +120,43 @@ export function absolutePathForStorageKey(storageKey: string): string | null {
   const rootWithSep = root.endsWith(path.sep) ? root : root + path.sep;
   if (absolute !== root && !absolute.startsWith(rootWithSep)) return null;
   return absolute;
+}
+
+export async function saveEvidenciaFile(
+  peticionId: string,
+  file: File,
+): Promise<{ error: string } | SavedUpload> {
+  if (file.size <= 0) {
+    return { error: `El archivo ${file.name} está vacío` };
+  }
+  if (file.size > MAX_FILE_BYTES) {
+    return { error: `${file.name} supera el límite de 8 MB` };
+  }
+
+  const mimeType = resolveMimeType(file);
+  if (!mimeType || mimeType === "application/pdf") {
+    return {
+      error: `${file.name}: la evidencia debe ser una imagen (JPG, PNG o WebP)`,
+    };
+  }
+
+  const nombreArchivo = sanitizeFilename(file.name);
+  const ext = extensionOf(nombreArchivo);
+  const unique = `${randomUUID()}${ext ? `.${ext}` : ""}`;
+  const storageKey = path.posix.join("cumplimientos", peticionId, unique);
+  const absolutePath = path.join(uploadRoot(), "cumplimientos", peticionId, unique);
+
+  await mkdir(path.dirname(absolutePath), { recursive: true });
+  const buffer = Buffer.from(await file.arrayBuffer());
+  await writeFile(absolutePath, buffer);
+
+  return {
+    storageKey,
+    absolutePath,
+    nombreArchivo,
+    mimeType,
+    sizeBytes: file.size,
+  };
 }
 
 export function publicUploadUrl(storageKey: string): string {

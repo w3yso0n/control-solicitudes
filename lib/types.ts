@@ -1,4 +1,4 @@
-export type Rol = "territorio" | "cuantiva" | "candidata" | "admin";
+export type Rol = "territorio" | "cuantiva" | "operador" | "candidata" | "admin";
 
 export type TipoPeticion =
   | "queja"
@@ -115,6 +115,9 @@ export type Peticion = {
   eventoId?: string;
   fechaEntrega: string;
   fechaCaptura: string;
+  fechaCumplimiento?: string;
+  evidenciaUrls?: string[];
+  descripcionCumplimiento?: string;
   estatus: EstatusPeticion;
   documentoUrl: string;
 };
@@ -224,6 +227,12 @@ export type PeticionConsultaDto = {
   origenCaptura: OrigenCaptura;
   escenarioAcuse: EscenarioAcuse;
   estatus: EstatusPeticion;
+  fechaCumplimiento: string | null;
+  descripcionCumplimiento: string | null;
+  evidenciaUrls: string[];
+  motivoNoProcede: string | null;
+  responsableAsignado: string | null;
+  cerradoPor: string | null;
   capturistaNombre: string | null;
   capturistaEmail: string;
   subidaPorNombre: string | null;

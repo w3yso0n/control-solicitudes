@@ -1,7 +1,7 @@
 import type { NextAuthConfig } from "next-auth";
 import type { Rol } from "@/lib/types";
 
-const ROLES: Rol[] = ["territorio", "cuantiva", "candidata", "admin"];
+const ROLES: Rol[] = ["territorio", "cuantiva", "operador", "candidata", "admin"];
 
 function asRol(value: unknown): Rol {
   if (typeof value === "string" && ROLES.includes(value as Rol)) {

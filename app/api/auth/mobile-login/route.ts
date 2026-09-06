@@ -6,7 +6,7 @@ import { users } from "@/lib/db/schema";
 import { signMobileToken } from "@/lib/mobile-auth";
 import type { Rol } from "@/lib/types";
 
-const ROLES: Rol[] = ["territorio", "cuantiva", "candidata", "admin"];
+const ROLES: Rol[] = ["territorio", "cuantiva", "operador", "candidata", "admin"];
 
 function asRol(value: string | null | undefined): Rol {
   if (value && ROLES.includes(value as Rol)) return value as Rol;

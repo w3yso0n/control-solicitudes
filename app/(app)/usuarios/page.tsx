@@ -12,6 +12,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 const ROL_TONE: Record<Rol, string> = {
   admin: "bg-guinda/10 text-guinda",
   candidata: "bg-magenta/10 text-magenta",
+  operador: "bg-sky-100 text-sky-800",
   cuantiva: "bg-emerald-100 text-emerald-700",
   territorio: "bg-ambar/15 text-[#a05a10]",
 };

@@ -6,7 +6,7 @@ import type { Rol, UsuarioPublico } from "@/lib/types";
 import { X } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 
-const ROLES: Rol[] = ["territorio", "cuantiva", "candidata", "admin"];
+const ROLES: Rol[] = ["territorio", "cuantiva", "operador", "candidata", "admin"];
 
 export function UsuarioFormModal({
   usuario,

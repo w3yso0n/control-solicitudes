@@ -4,7 +4,7 @@ import type { Rol, UsuarioPublico } from "@/lib/types";
 import { hash } from "bcryptjs";
 import { desc, eq } from "drizzle-orm";
 
-const ROLES: Rol[] = ["territorio", "cuantiva", "candidata", "admin"];
+const ROLES: Rol[] = ["territorio", "cuantiva", "operador", "candidata", "admin"];
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const SELECT_PUBLICO = {

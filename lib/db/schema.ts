@@ -18,7 +18,7 @@ export const users = pgTable("users", {
   displayName: text("display_name"),
   passwordHash: text("password_hash").notNull(),
   role: text("role", {
-    enum: ["territorio", "cuantiva", "candidata", "admin"],
+    enum: ["territorio", "cuantiva", "operador", "candidata", "admin"],
   })
     .notNull()
     .default("territorio"),

@@ -26,6 +26,9 @@ export function peticionDesdeConsulta(dto: PeticionConsultaDto): Peticion {
     coloniaId: dto.coloniaId ?? undefined,
     fechaEntrega: dto.fechaEntrega,
     fechaCaptura: dto.fechaCaptura,
+    fechaCumplimiento: dto.fechaCumplimiento ?? undefined,
+    evidenciaUrls: dto.evidenciaUrls,
+    descripcionCumplimiento: dto.descripcionCumplimiento ?? undefined,
     estatus: dto.estatus,
     documentoUrl: dto.documento.url,
   };

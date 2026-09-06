@@ -9,11 +9,12 @@ const { auth } = NextAuth(authConfig);
 const HOME_POR_ROL: Record<Rol, string> = {
   territorio: "/territorio",
   cuantiva: "/bandeja",
+  operador: "/cumplimientos",
   candidata: "/dashboard",
   admin: "/dashboard",
 };
 
-const ROLES: Rol[] = ["territorio", "cuantiva", "candidata", "admin"];
+const ROLES: Rol[] = ["territorio", "cuantiva", "operador", "candidata", "admin"];
 
 function rolDeSesion(value: unknown): Rol | null {
   if (typeof value === "string" && ROLES.includes(value as Rol)) {

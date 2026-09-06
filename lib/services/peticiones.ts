@@ -533,6 +533,18 @@ function toConsultaDto(
     loteFechaEntrega: lote.fechaEntrega,
     fechaEntrega: row.fechaEntrega,
     fechaCaptura: row.fechaCaptura.toISOString(),
+    fechaCumplimiento: row.fechaCumplimiento,
+    descripcionCumplimiento: row.descripcionCumplimiento,
+    evidenciaUrls: Array.isArray(row.evidenciaUrls)
+      ? row.evidenciaUrls
+          .filter((u): u is string => typeof u === "string" && u.length > 0)
+          .map((u) =>
+            u.startsWith("/") || u.startsWith("http") ? u : publicUploadUrl(u),
+          )
+      : [],
+    motivoNoProcede: row.motivoNoProcede,
+    responsableAsignado: row.responsableAsignado,
+    cerradoPor: row.cerradoPor,
     capturistaNombre: capturista.displayName,
     capturistaEmail: capturista.email,
     subidaPorNombre: territorio?.displayName ?? null,

@@ -6,6 +6,7 @@ import { useSession } from "@/lib/session";
 import type { Rol } from "@/lib/types";
 import {
   // BarChart3,
+  BadgeCheck,
   ClipboardList,
   FolderOpen,
   Inbox,
@@ -26,6 +27,7 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
   "/dashboard": LayoutDashboard,
   "/territorio": FolderOpen,
   "/bandeja": Inbox,
+  "/cumplimientos": BadgeCheck,
   "/peticiones": ClipboardList,
   // "/reportes": BarChart3,
   "/usuarios": Users,

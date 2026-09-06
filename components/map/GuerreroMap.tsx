@@ -1,6 +1,11 @@
 "use client";
 
 import { CATEGORIA_POR_ID } from "@/lib/catalogos";
+import {
+  escalaCumplimiento,
+  escalaOportunidad,
+  type ScoreZonaCumplimiento,
+} from "@/lib/cumplimiento";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import {
   ALTO_MAPA,
@@ -15,20 +20,27 @@ import {
 import type { ItcScore, Peticion } from "@/lib/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-type Capa = "temp" | "points" | "both";
+export type CapaMapa = "temp" | "cumplimiento" | "oportunidad";
+export type ModoMapa = "escucha" | "cumplidas";
 
-const CAPAS: { id: Capa; label: string }[] = [
+const CAPAS: { id: CapaMapa; label: string }[] = [
   { id: "temp", label: "Temperatura" },
-  { id: "points", label: "Puntos" },
-  { id: "both", label: "Ambas" },
+  { id: "cumplimiento", label: "Cumplimiento" },
+  { id: "oportunidad", label: "Oportunidad" },
 ];
 
-const LEYENDA = [
+const LEYENDA_TEMP = [
   { pct: 0, color: "#4d6fa3" },
   { pct: 30, color: "#d9b13b" },
   { pct: 55, color: "#d97b2e" },
   { pct: 78, color: "#c0392b" },
   { pct: 100, color: "#8f1d12" },
+];
+
+const LEYENDA_CUMP = [
+  { color: "#c0392b", label: "<40%" },
+  { color: "#d9b13b", label: "40–70%" },
+  { color: "#2f9e6b", label: ">70%" },
 ];
 
 const REGION_POR_CVE = Object.fromEntries(
@@ -39,25 +51,36 @@ type Tooltip = {
   x: number;
   y: number;
   nombre: string;
-  itc: ItcScore | undefined;
+  itc?: ItcScore;
+  scoreCump?: ScoreZonaCumplimiento;
+  folio?: string;
+  categoria?: string;
+  evidencias?: number;
 };
 
 export default function GuerreroMap({
   scores,
   peticiones,
+  scoresCumplimiento = [],
   onMunicipioClick,
   regionResaltada = null,
+  modo = "escucha",
 }: {
   scores: ItcScore[];
   peticiones: Peticion[];
+  scoresCumplimiento?: ScoreZonaCumplimiento[];
   onMunicipioClick?: (cveMun: string, nombre: string) => void;
   regionResaltada?: string | null;
+  modo?: ModoMapa;
 }) {
   const [features, setFeatures] = useState<MunicipioFeature[] | null>(null);
   const [error, setError] = useState(false);
-  const [capa, setCapa] = useState<Capa>("both");
+  const [capa, setCapa] = useState<CapaMapa>("temp");
   const [tooltip, setTooltip] = useState<Tooltip | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const capaActiva: CapaMapa = modo === "cumplidas" ? "temp" : capa;
+  const mostrarSwitch = modo === "escucha";
 
   useEffect(() => {
     let vivo = true;
@@ -74,6 +97,15 @@ export default function GuerreroMap({
   }, []);
 
   const byMun = useMemo(() => new Map(scores.map((s) => [s.clave, s])), [scores]);
+  const byCump = useMemo(
+    () => new Map(scoresCumplimiento.map((s) => [s.clave, s])),
+    [scoresCumplimiento],
+  );
+  const maxSimples = useMemo(
+    () =>
+      Math.max(1, ...scoresCumplimiento.map((s) => s.simplesPendientes), 0),
+    [scoresCumplimiento],
+  );
 
   const { proyeccion, path, paths, puntos } = useMemo(() => {
     if (!features) {
@@ -87,22 +119,19 @@ export default function GuerreroMap({
       nombre: f.properties.mun_name,
     }));
 
-    let puntos: { x: number; y: number }[] = [];
-    if (capa !== "temp") {
-      const byMunFeature = new Map(
-        features.map((f) => [f.properties.cveMun, f]),
-      );
-      const items = peticiones
-        .filter(
-          (p) =>
-            !regionResaltada || REGION_POR_CVE[p.cveMun] === regionResaltada,
-        )
-        .map((p) => ({ cveMun: p.cveMun, item: p }));
-      puntos = muestrearPuntos(items, byMunFeature, proyeccion);
-    }
+    const byMunFeature = new Map(
+      features.map((f) => [f.properties.cveMun, f]),
+    );
+    const items = peticiones
+      .filter(
+        (p) =>
+          !regionResaltada || REGION_POR_CVE[p.cveMun] === regionResaltada,
+      )
+      .map((p) => ({ cveMun: p.cveMun, item: p }));
+    const puntos = muestrearPuntos(items, byMunFeature, proyeccion);
 
     return { proyeccion, path, paths, puntos };
-  }, [features, peticiones, capa, regionResaltada]);
+  }, [features, peticiones, regionResaltada]);
 
   if (error) {
     return (
@@ -120,8 +149,27 @@ export default function GuerreroMap({
     );
   }
 
-  const dotColor = capa === "points" ? "#c8215f" : "#201e1d";
   const hayResalte = Boolean(regionResaltada);
+  const mostrarPuntos = modo === "cumplidas";
+
+  function fillDe(cveMun: string) {
+    if (modo === "cumplidas") {
+      const n = peticiones.filter((p) => p.cveMun === cveMun).length;
+      if (n <= 0) return COLOR_SIN_DATOS;
+      return escalaCumplimiento(Math.min(100, 40 + n * 12));
+    }
+    if (capaActiva === "cumplimiento") {
+      return escalaCumplimiento(byCump.get(cveMun)?.pct ?? null);
+    }
+    if (capaActiva === "oportunidad") {
+      return escalaOportunidad(
+        byCump.get(cveMun)?.simplesPendientes ?? 0,
+        maxSimples,
+      );
+    }
+    const itc = byMun.get(cveMun);
+    return itc?.score != null ? escalaTemperatura(itc.score) : COLOR_SIN_DATOS;
+  }
 
   return (
     <div ref={containerRef} className="relative flex h-full min-h-0 flex-col">
@@ -133,22 +181,28 @@ export default function GuerreroMap({
         ) : (
           <span />
         )}
-        <div className="flex items-center gap-1">
-          {CAPAS.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => setCapa(c.id)}
-              className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide transition-colors ${
-                capa === c.id
-                  ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(122,18,51,0.5)]"
-                  : "text-zinc-500 hover:bg-zinc-100"
-              }`}
-            >
-              {c.label}
-            </button>
-          ))}
-        </div>
+        {mostrarSwitch ? (
+          <div className="flex items-center gap-1">
+            {CAPAS.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => setCapa(c.id)}
+                className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide transition-colors ${
+                  capaActiva === c.id
+                    ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(122,18,51,0.5)]"
+                    : "text-zinc-500 hover:bg-zinc-100"
+                }`}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p className="text-[11px] font-medium uppercase tracking-wide text-zinc-400">
+            Cumplidas georreferenciadas
+          </p>
+        )}
       </div>
 
       <div className="relative min-h-0 flex-1">
@@ -159,20 +213,13 @@ export default function GuerreroMap({
           style={{ background: "#eae9e9" }}
         >
           {paths.map((p) => {
-            const itc = byMun.get(p.cveMun);
             const enRegion =
               !hayResalte || REGION_POR_CVE[p.cveMun] === regionResaltada;
-            const fillBase =
-              capa === "points"
-                ? COLOR_SIN_DATOS
-                : itc?.score != null
-                  ? escalaTemperatura(itc.score)
-                  : COLOR_SIN_DATOS;
             return (
               <path
                 key={p.cveMun}
                 d={p.d}
-                fill={fillBase}
+                fill={fillDe(p.cveMun)}
                 fillOpacity={hayResalte ? (enRegion ? 1 : 0.18) : 1}
                 stroke={enRegion && hayResalte ? "#7A1233" : "#f3f2f2"}
                 strokeWidth={enRegion && hayResalte ? 1.5 : 0.7}
@@ -183,7 +230,13 @@ export default function GuerreroMap({
                   let x = e.clientX - rect.left + 14;
                   const y = e.clientY - rect.top + 10;
                   if (x > rect.width - 250) x -= 270;
-                  setTooltip({ x, y, nombre: p.nombre, itc });
+                  setTooltip({
+                    x,
+                    y,
+                    nombre: p.nombre,
+                    itc: byMun.get(p.cveMun),
+                    scoreCump: byCump.get(p.cveMun),
+                  });
                 }}
                 onMouseLeave={() => setTooltip(null)}
                 onMouseEnter={(e) => {
@@ -204,16 +257,34 @@ export default function GuerreroMap({
               />
             );
           })}
-          {capa !== "temp"
+          {mostrarPuntos
             ? puntos.map((pt, i) => (
                 <circle
                   key={i}
                   cx={pt.x.toFixed(1)}
                   cy={pt.y.toFixed(1)}
-                  r={2.1}
-                  fill={dotColor}
-                  fillOpacity={0.55}
-                  className="pointer-events-none"
+                  r={modo === "cumplidas" ? 2.6 : 2.1}
+                  fill={modo === "cumplidas" ? "#2f9e6b" : "#201e1d"}
+                  fillOpacity={0.7}
+                  className="cursor-pointer"
+                  onMouseMove={(e) => {
+                    const rect = containerRef.current?.getBoundingClientRect();
+                    if (!rect || modo !== "cumplidas") return;
+                    e.stopPropagation();
+                    let x = e.clientX - rect.left + 14;
+                    const y = e.clientY - rect.top + 10;
+                    if (x > rect.width - 250) x -= 270;
+                    setTooltip({
+                      x,
+                      y,
+                      nombre: pt.item.ciudadano.nombre,
+                      folio: pt.item.folio,
+                      categoria:
+                        CATEGORIA_POR_ID[pt.item.categoriaId]?.nombre ??
+                        pt.item.categoriaId,
+                      evidencias: pt.item.evidenciaUrls?.length ?? 0,
+                    });
+                  }}
                 />
               ))
             : null}
@@ -224,55 +295,121 @@ export default function GuerreroMap({
             className="pointer-events-none absolute z-10 max-w-[240px] rounded-xl bg-tinta px-3 py-2.5 text-[12px] leading-relaxed text-hueso shadow-[0_12px_32px_rgba(28,10,18,0.35)]"
             style={{ left: tooltip.x, top: tooltip.y }}
           >
-            <strong className="text-[13px]">{tooltip.nombre}</strong>
-            <br />
-            {tooltip.itc?.score != null ? (
+            {tooltip.folio ? (
               <>
-                Temperatura <strong>{tooltip.itc.score}</strong> ·{" "}
-                {tooltip.itc.peticiones} peticiones
+                <strong className="font-mono text-[13px]">{tooltip.folio}</strong>
+                <br />
+                {tooltip.nombre}
+                <br />
+                <span className="opacity-75">{tooltip.categoria}</span>
                 <br />
                 <span className="opacity-75">
-                  Vol {tooltip.itc.componentes?.volumen} · Urg{" "}
-                  {tooltip.itc.componentes?.urgencia} · Col{" "}
-                  {tooltip.itc.componentes?.colectividad} · Div{" "}
-                  {tooltip.itc.componentes?.diversidad}
-                </span>
-                <br />
-                <span className="opacity-75">
-                  {tooltip.itc.topCategorias
-                    .map((t) => CATEGORIA_POR_ID[t.id]?.nombre ?? t.nombre)
-                    .join(" · ") || "—"}
+                  {tooltip.evidencias ?? 0} evidencia
+                  {(tooltip.evidencias ?? 0) === 1 ? "" : "s"}
                 </span>
               </>
             ) : (
-              <span className="opacity-75">
-                Sin peticiones — zona en blanco
-              </span>
+              <>
+                <strong className="text-[13px]">{tooltip.nombre}</strong>
+                <br />
+                {capaActiva === "cumplimiento" ? (
+                  tooltip.scoreCump?.pct != null ? (
+                    <>
+                      Cumplimiento <strong>{tooltip.scoreCump.pct}%</strong>
+                      <br />
+                      <span className="opacity-75">
+                        {tooltip.scoreCump.cumplidas} cumplidas ·{" "}
+                        {tooltip.scoreCump.enGestion} en gestión ·{" "}
+                        {tooltip.scoreCump.pendientes} pendientes
+                      </span>
+                    </>
+                  ) : (
+                    <span className="opacity-75">
+                      Sin peticiones gestionables
+                    </span>
+                  )
+                ) : capaActiva === "oportunidad" ? (
+                  <>
+                    <strong>{tooltip.scoreCump?.simplesPendientes ?? 0}</strong>{" "}
+                    simples pendientes
+                    <br />
+                    <span className="opacity-75">
+                      {tooltip.scoreCump?.mediasPendientes ?? 0} medias en
+                      pipeline
+                    </span>
+                  </>
+                ) : tooltip.itc?.score != null ? (
+                  <>
+                    Temperatura <strong>{tooltip.itc.score}</strong> ·{" "}
+                    {tooltip.itc.peticiones} peticiones
+                    <br />
+                    <span className="opacity-75">
+                      Vol {tooltip.itc.componentes?.volumen} · Urg{" "}
+                      {tooltip.itc.componentes?.urgencia} · Col{" "}
+                      {tooltip.itc.componentes?.colectividad} · Div{" "}
+                      {tooltip.itc.componentes?.diversidad}
+                    </span>
+                    <br />
+                    <span className="opacity-75">
+                      {tooltip.itc.topCategorias
+                        .map((t) => CATEGORIA_POR_ID[t.id]?.nombre ?? t.nombre)
+                        .join(" · ") || "—"}
+                    </span>
+                  </>
+                ) : modo === "cumplidas" ? (
+                  <span className="opacity-75">Sin cumplidas en el periodo</span>
+                ) : (
+                  <span className="opacity-75">
+                    Sin peticiones — zona en blanco
+                  </span>
+                )}
+              </>
             )}
           </div>
         ) : null}
 
         <div className="pointer-events-none absolute bottom-3 left-3 flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 text-[10px] font-medium text-zinc-600 shadow-sm backdrop-blur">
-          <span className="uppercase tracking-wide">Frío</span>
-          <span
-            className="h-2 w-24 rounded-full"
-            style={{
-              background: `linear-gradient(90deg, ${LEYENDA.map((s) => s.color).join(", ")})`,
-            }}
-          />
-          <span className="uppercase tracking-wide">Muy caliente</span>
+          {capaActiva === "cumplimiento" && modo === "escucha" ? (
+            <>
+              {LEYENDA_CUMP.map((s) => (
+                <span key={s.label} className="flex items-center gap-1">
+                  <span
+                    className="h-2 w-2 rounded-full"
+                    style={{ background: s.color }}
+                  />
+                  {s.label}
+                </span>
+              ))}
+            </>
+          ) : capaActiva === "oportunidad" && modo === "escucha" ? (
+            <>
+              <span className="uppercase tracking-wide">Sin simples</span>
+              <span
+                className="h-2 w-24 rounded-full"
+                style={{
+                  background:
+                    "linear-gradient(90deg, #dcd9d9, #93c5fd, #3b82f6, #1d4ed8)",
+                }}
+              />
+              <span className="uppercase tracking-wide">Quick wins</span>
+            </>
+          ) : (
+            <>
+              <span className="uppercase tracking-wide">
+                {modo === "cumplidas" ? "Pocas" : "Frío"}
+              </span>
+              <span
+                className="h-2 w-24 rounded-full"
+                style={{
+                  background: `linear-gradient(90deg, ${LEYENDA_TEMP.map((s) => s.color).join(", ")})`,
+                }}
+              />
+              <span className="uppercase tracking-wide">
+                {modo === "cumplidas" ? "Más cumplidas" : "Muy caliente"}
+              </span>
+            </>
+          )}
         </div>
-        {capa !== "temp" ? (
-          <div className="pointer-events-none absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-[10px] font-medium text-zinc-600 shadow-sm backdrop-blur">
-            <span
-              className="h-1.5 w-1.5 rounded-full"
-              style={{ background: dotColor }}
-            />
-            <span className="uppercase tracking-wide">
-              Peticiones georreferenciadas
-            </span>
-          </div>
-        ) : null}
       </div>
     </div>
   );

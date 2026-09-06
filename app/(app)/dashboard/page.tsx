@@ -1,13 +1,22 @@
 "use client";
 
+import { BalanceBar } from "@/components/cumplimientos/BalanceBar";
 import GuerreroMapLoader from "@/components/map/GuerreroMapLoader";
 import { ZonasEnBlanco } from "@/components/dashboard/ZonasEnBlanco";
 import { Card } from "@/components/ui";
 import {
   CATEGORIAS,
+  CATEGORIA_POR_ID,
   MUNICIPIO_POR_CVE,
   MUNICIPIOS_FOCO,
 } from "@/lib/catalogos";
+import {
+  balanceDe,
+  diasEntre,
+  esPendientePipeline,
+  filtrarPorPeriodoCumplimiento,
+  scoresCumplimientoPorMunicipio,
+} from "@/lib/cumplimiento";
 import { MUNICIPIOS_GUERRERO, type RegionGuerrero } from "@/lib/geografia-guerrero";
 import {
   calcularItcPorMunicipio,
@@ -16,6 +25,7 @@ import {
 } from "@/lib/itc";
 import { peticionDesdeConsulta } from "@/lib/peticion-from-consulta";
 import type { DashboardDto, PeriodoFiltro, Peticion } from "@/lib/types";
+import { nombreMunicipio as nombreMunGeo } from "@/lib/lote-titulo";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -26,6 +36,8 @@ const PERIODOS: { id: PeriodoFiltro; label: string }[] = [
   { id: "90", label: "90 días" },
   { id: "acumulado", label: "Acumulado" },
 ];
+
+type VistaDashboard = "escucha" | "cumplidas";
 
 function nombreMunicipio(cveMun: string) {
   return (
@@ -98,6 +110,7 @@ function KpiCard({
 export default function DashboardPage() {
   const router = useRouter();
   const [periodo, setPeriodo] = useState<PeriodoFiltro>("acumulado");
+  const [vista, setVista] = useState<VistaDashboard>("escucha");
   const [regionResaltada, setRegionResaltada] =
     useState<RegionGuerrero | null>(null);
   const mapaRef = useRef<HTMLDivElement>(null);
@@ -136,18 +149,35 @@ export default function DashboardPage() {
     void cargar();
   }, [cargar]);
 
-  const filtradas = useMemo(
-    () => filtrarPorPeriodo(peticiones, periodo, new Date()),
-    [peticiones, periodo],
+  const ahora = useMemo(() => new Date(), [peticiones.length]);
+  const porCaptura = useMemo(
+    () => filtrarPorPeriodo(peticiones, periodo, ahora),
+    [peticiones, periodo, ahora],
   );
+  const porCumplimiento = useMemo(
+    () => filtrarPorPeriodoCumplimiento(peticiones, periodo, ahora),
+    [peticiones, periodo, ahora],
+  );
+  const filtradas = vista === "cumplidas" ? porCumplimiento : porCaptura;
+  const modoCumplidas = vista === "cumplidas";
 
-  const scores = useMemo(() => {
-    const claves = new Set<string>([
+  const clavesMun = useMemo(() => {
+    const set = new Set<string>([
       ...MUNICIPIOS_FOCO.map((m) => m.cveMun),
-      ...filtradas.map((p) => p.cveMun),
+      ...MUNICIPIOS_GUERRERO.map((m) => m.cveMun),
     ]);
-    return calcularItcPorMunicipio(filtradas, [...claves]);
-  }, [filtradas]);
+    return [...set];
+  }, []);
+
+  const scores = useMemo(
+    () => calcularItcPorMunicipio(filtradas, clavesMun),
+    [filtradas, clavesMun],
+  );
+  const scoresCump = useMemo(
+    () => scoresCumplimientoPorMunicipio(porCaptura, clavesMun),
+    [porCaptura, clavesMun],
+  );
+  const balance = useMemo(() => balanceDe(porCaptura, ahora), [porCaptura, ahora]);
 
   const totalMunicipios = MUNICIPIOS_GUERRERO.length;
   const municipiosActivos = new Set(filtradas.map((p) => p.cveMun)).size;
@@ -183,28 +213,91 @@ export default function DashboardPage() {
         ? `${Math.round(horasAFolio)} h`
         : `${(horasAFolio / 24).toFixed(1)} d`;
 
+  const diasACumplir = (() => {
+    const conFecha = porCumplimiento.filter((p) => p.fechaCumplimiento);
+    if (conFecha.length === 0) return null;
+    const dias = conFecha
+      .map((p) => diasEntre(p.fechaCaptura, `${p.fechaCumplimiento}T12:00:00-06:00`))
+      .filter((d): d is number => d != null);
+    if (dias.length === 0) return null;
+    return dias.reduce((a, b) => a + b, 0) / dias.length;
+  })();
+
+  const ritmo = (() => {
+    const corte7 = new Date(ahora);
+    corte7.setDate(corte7.getDate() - 7);
+    const corte14 = new Date(ahora);
+    corte14.setDate(corte14.getDate() - 14);
+    const esta = peticiones.filter((p) => {
+      if (p.estatus !== "cumplida" || !p.fechaCumplimiento) return false;
+      return new Date(`${p.fechaCumplimiento}T12:00:00-06:00`) >= corte7;
+    }).length;
+    const previa = peticiones.filter((p) => {
+      if (p.estatus !== "cumplida" || !p.fechaCumplimiento) return false;
+      const d = new Date(`${p.fechaCumplimiento}T12:00:00-06:00`);
+      return d >= corte14 && d < corte7;
+    }).length;
+    return { esta, previa, delta: esta - previa };
+  })();
+
+  const conFoto = porCumplimiento.filter(
+    (p) => (p.evidenciaUrls?.length ?? 0) > 0,
+  ).length;
+  const gestionables = peticiones.filter(
+    (p) => p.complejidad === "simple" || p.complejidad === "media",
+  );
+  const pctCerradas =
+    gestionables.length > 0
+      ? Math.round(
+          (gestionables.filter((p) => p.estatus === "cumplida").length /
+            gestionables.length) *
+            100,
+        )
+      : 0;
+
   const distribucion = useMemo(() => {
     return CATEGORIAS.map((cat) => {
       const items = filtradas.filter((p) => p.categoriaId === cat.id);
+      const pend = porCaptura.filter(
+        (p) => p.categoriaId === cat.id && esPendientePipeline(p),
+      ).length;
       return {
         id: cat.id,
         nombre: ETIQUETA_CATEGORIA[cat.id] ?? cat.nombre,
         count: items.length,
+        pendientes: pend,
         comun: items.some((p) => p.comunitaria),
       };
     }).sort((a, b) => b.count - a.count);
-  }, [filtradas]);
+  }, [filtradas, porCaptura]);
 
-  const topMunicipios = [...scores]
-    .filter((s) => s.score != null)
-    .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
-    .slice(0, 6);
+  const topMunicipios = modoCumplidas
+    ? [...scoresCump]
+        .map((s) => ({
+          ...s,
+          enPeriodo: filtradas.filter((p) => p.cveMun === s.clave).length,
+        }))
+        .filter((s) => s.enPeriodo > 0)
+        .sort((a, b) => b.enPeriodo - a.enPeriodo)
+        .slice(0, 6)
+    : [...scores]
+        .filter((s) => s.score != null)
+        .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+        .slice(0, 6);
 
   function verPeticionesDe(cveMun: string) {
+    if (modoCumplidas) {
+      router.push(`/peticiones?municipio=${cveMun}&estatus=cumplida`);
+      return;
+    }
     router.push(`/peticiones?municipio=${cveMun}`);
   }
 
   function verPeticionesPorCategoria(categoriaId: string) {
+    if (modoCumplidas) {
+      router.push(`/peticiones?categoria=${categoriaId}&estatus=cumplida`);
+      return;
+    }
     router.push(`/peticiones?categoria=${categoriaId}`);
   }
 
@@ -213,7 +306,7 @@ export default function DashboardPage() {
     mapaRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  const kpis = [
+  const kpisEscucha = [
     {
       label: "Peticiones en el periodo",
       value: String(filtradas.length),
@@ -261,6 +354,59 @@ export default function DashboardPage() {
     },
   ];
 
+  const kpisCumplidas = [
+    {
+      label: "Cumplidas en el periodo",
+      value: String(porCumplimiento.length),
+      hint: `${municipiosActivos} municipios con evidencia`,
+      tone: "ok" as const,
+    },
+    {
+      label: "Ritmo vs semana previa",
+      value:
+        ritmo.delta === 0
+          ? "0"
+          : ritmo.delta > 0
+            ? `+${ritmo.delta}`
+            : String(ritmo.delta),
+      hint: `${ritmo.esta} esta semana · ${ritmo.previa} la anterior`,
+      tone: ritmo.delta >= 0 ? ("ok" as const) : ("warn" as const),
+    },
+    {
+      label: "Recibida → cumplida",
+      value:
+        diasACumplir == null ? "—" : `${diasACumplir.toFixed(1)} d`,
+      hint: "Promedio de cierre",
+      tone: "default" as const,
+    },
+    {
+      label: "Gestionables cerradas",
+      value: `${pctCerradas}%`,
+      hint: `${gestionables.filter((p) => p.estatus === "cumplida").length} de ${gestionables.length}`,
+      tone: "ok" as const,
+    },
+    {
+      label: "Con foto de evidencia",
+      value: String(conFoto),
+      hint:
+        porCumplimiento.length > 0
+          ? `${Math.round((conFoto / porCumplimiento.length) * 100)}% del periodo`
+          : "Sin cumplidas",
+      tone: "magenta" as const,
+    },
+    {
+      label: "Simples pendientes",
+      value: String(balance.simplesPendientes),
+      hint:
+        balance.simplesFrias > 0
+          ? `${balance.simplesFrias} con más de 30 días`
+          : "Quick wins de la semana",
+      tone: balance.simplesPendientes > 0 ? ("warn" as const) : ("ok" as const),
+    },
+  ];
+
+  const kpis = modoCumplidas ? kpisCumplidas : kpisEscucha;
+
   const totalPorTipo = useMemo(() => {
     const conteo = new Map<string, number>();
     for (const p of filtradas) {
@@ -276,6 +422,12 @@ export default function DashboardPage() {
     requerimiento: "requerimientos",
     reconocimiento: "reconocimientos",
   };
+
+  const ultimasCumplidas = [...porCumplimiento]
+    .sort((a, b) =>
+      (b.fechaCumplimiento ?? "").localeCompare(a.fechaCumplimiento ?? ""),
+    )
+    .slice(0, 8);
 
   return (
     <div className="space-y-4">
@@ -297,21 +449,44 @@ export default function DashboardPage() {
             </h1>
           </div>
         </div>
-        <div className="flex flex-wrap gap-1 rounded-full bg-white p-1 shadow-[0_1px_2px_rgba(28,10,18,0.04),0_10px_24px_-18px_rgba(28,10,18,0.4)]">
-          {PERIODOS.map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => setPeriodo(p.id)}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                periodo === p.id
-                  ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(122,18,51,0.5)]"
-                  : "text-zinc-600 hover:bg-zinc-100"
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
+        <div className="flex flex-col items-stretch gap-2 sm:items-end">
+          <div className="flex flex-wrap gap-1 rounded-full bg-white p-1 shadow-[0_1px_2px_rgba(28,10,18,0.04),0_10px_24px_-18px_rgba(28,10,18,0.4)]">
+            {(
+              [
+                ["escucha", "Escucha"],
+                ["cumplidas", "Cumplidas"],
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setVista(id)}
+                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                  vista === id
+                    ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(122,18,51,0.5)]"
+                    : "text-zinc-600 hover:bg-zinc-100"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-1 rounded-full bg-white p-1 shadow-[0_1px_2px_rgba(28,10,18,0.04),0_10px_24px_-18px_rgba(28,10,18,0.4)]">
+            {PERIODOS.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setPeriodo(p.id)}
+                className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+                  periodo === p.id
+                    ? "bg-zinc-900 text-white"
+                    : "text-zinc-600 hover:bg-zinc-100"
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -325,6 +500,8 @@ export default function DashboardPage() {
         <p className="text-sm text-zinc-500">Cargando…</p>
       ) : error ? null : (
         <div className="space-y-4">
+      {!modoCumplidas ? <BalanceBar balance={balance} /> : null}
+
       <Card className="grid grid-cols-2 divide-y divide-zinc-100 sm:grid-cols-3 sm:divide-y-0 sm:divide-x lg:grid-cols-6">
         {kpis.map((k) => (
           <KpiCard key={k.label} {...k} />
@@ -334,10 +511,15 @@ export default function DashboardPage() {
       <div className="grid gap-3 lg:grid-cols-3">
         <Card className="overflow-hidden lg:col-span-2">
           <div ref={mapaRef} className="border-b border-zinc-100 px-4 py-2.5">
-            <p className="text-sm font-medium">Índice de Temperatura Ciudadana</p>
+            <p className="text-sm font-medium">
+              {modoCumplidas
+                ? "Cumplidas en el territorio"
+                : "Índice de Temperatura Ciudadana"}
+            </p>
             <p className="text-[11px] text-zinc-400">
-              Vol ·40 / Urg ·25 / Col ·20 / Div ·15 — clic en un municipio para
-              ver sus peticiones
+              {modoCumplidas
+                ? "Puntos y municipios con evidencia de cierre — clic para ver las cumplidas"
+                : "Vol ·40 / Urg ·25 / Col ·20 / Div ·15 — Temperatura / Cumplimiento / Oportunidad"}
               {regionResaltada
                 ? ` · resaltando ${regionResaltada} (clic de nuevo en la región para quitar)`
                 : ""}
@@ -347,6 +529,8 @@ export default function DashboardPage() {
             <GuerreroMapLoader
               scores={scores}
               peticiones={filtradas}
+              scoresCumplimiento={scoresCump}
+              modo={modoCumplidas ? "cumplidas" : "escucha"}
               regionResaltada={regionResaltada}
               onMunicipioClick={(cveMun) => verPeticionesDe(cveMun)}
             />
@@ -359,7 +543,9 @@ export default function DashboardPage() {
               Capa temática
             </p>
             <p className="mt-0.5 text-sm font-semibold text-zinc-900">
-              Top categorías del periodo
+              {modoCumplidas
+                ? "Categorías ya resueltas"
+                : "Top categorías del periodo"}
             </p>
             <p className="mt-0.5 text-[11px] text-zinc-400">
               Clic en una categoría para ver sus peticiones
@@ -368,6 +554,7 @@ export default function DashboardPage() {
               {distribucion.slice(0, 6).map((cat, i) => {
                 const max = Math.max(1, distribucion[0]?.count ?? 1);
                 const pct = (cat.count / max) * 100;
+                const totalStack = cat.count + (modoCumplidas ? cat.pendientes : 0);
                 return (
                   <li key={cat.id}>
                     <button
@@ -389,20 +576,40 @@ export default function DashboardPage() {
                         </div>
                         <span className="tabular-nums text-sm font-semibold text-zinc-900">
                           {cat.count}
+                          {modoCumplidas && cat.pendientes > 0
+                            ? ` / ${totalStack}`
+                            : ""}
                         </span>
                       </div>
-                      <div className="h-1.5 overflow-hidden rounded-full bg-zinc-100">
-                        <div
-                          className="h-full rounded-full transition-[width] duration-500"
-                          style={{
-                            width: `${pct}%`,
-                            background: degradadoCategoria(
-                              i,
-                              distribucion.length,
-                            ),
-                          }}
-                        />
-                      </div>
+                      {modoCumplidas ? (
+                        <div className="flex h-1.5 overflow-hidden rounded-full bg-zinc-100">
+                          <div
+                            className="h-full bg-emerald-600"
+                            style={{
+                              width: `${totalStack > 0 ? (cat.count / totalStack) * 100 : 0}%`,
+                            }}
+                          />
+                          <div
+                            className="h-full bg-ambar"
+                            style={{
+                              width: `${totalStack > 0 ? (cat.pendientes / totalStack) * 100 : 0}%`,
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <div className="h-1.5 overflow-hidden rounded-full bg-zinc-100">
+                          <div
+                            className="h-full rounded-full transition-[width] duration-500"
+                            style={{
+                              width: `${pct}%`,
+                              background: degradadoCategoria(
+                                i,
+                                distribucion.length,
+                              ),
+                            }}
+                          />
+                        </div>
+                      )}
                     </button>
                   </li>
                 );
@@ -423,48 +630,134 @@ export default function DashboardPage() {
               Capa territorial
             </p>
             <p className="mt-0.5 text-sm font-semibold text-zinc-900">
-              Municipios más calientes
+              {modoCumplidas
+                ? "Municipios con más cumplidas"
+                : "Municipios más calientes"}
             </p>
             <ul className="mt-3 space-y-0.5">
               {topMunicipios.length === 0 ? (
                 <li className="px-1.5 py-2 text-sm text-zinc-500">
-                  Sin peticiones.
+                  {modoCumplidas ? "Sin cumplidas." : "Sin peticiones."}
                 </li>
+              ) : modoCumplidas ? (
+                topMunicipios.map((s, i) => {
+                  const row = s as (typeof scoresCump)[number] & {
+                    enPeriodo: number;
+                  };
+                  return (
+                    <li
+                      key={row.clave}
+                      onClick={() => verPeticionesDe(row.clave)}
+                      className="flex cursor-pointer items-center gap-3 rounded-lg px-1.5 py-1 text-sm transition-colors hover:bg-zinc-50"
+                    >
+                      <span className="w-5 shrink-0 text-xs font-medium text-zinc-400">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="min-w-0 flex-1 truncate text-zinc-700">
+                        {nombreMunicipio(row.clave)}
+                      </span>
+                      <span className="shrink-0 text-xs text-zinc-400">
+                        {row.enPeriodo} cump.
+                      </span>
+                      <span className="shrink-0 rounded-full bg-emerald-700 px-2.5 py-0.5 text-xs font-medium text-white">
+                        {row.pct ?? 0}%
+                      </span>
+                    </li>
+                  );
+                })
               ) : (
-                topMunicipios.map((s, i) => (
-                <li
-                  key={s.clave}
-                  onClick={() => verPeticionesDe(s.clave)}
-                  className="flex cursor-pointer items-center gap-3 rounded-lg px-1.5 py-1 text-sm transition-colors hover:bg-zinc-50"
-                >
-                  <span className="w-5 shrink-0 text-xs font-medium text-zinc-400">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="min-w-0 flex-1 truncate text-zinc-700">
-                    {nombreMunicipio(s.clave)}
-                  </span>
-                  <span className="shrink-0 text-xs text-zinc-400">
-                    {s.peticiones} pet.
-                  </span>
-                  <span
-                    className="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium text-white"
-                    style={{ background: itcFill(s.score) }}
-                  >
-                    {s.score}
-                  </span>
-                </li>
-                ))
+                topMunicipios.map((s, i) => {
+                  const row = s as (typeof scores)[number];
+                  return (
+                    <li
+                      key={row.clave}
+                      onClick={() => verPeticionesDe(row.clave)}
+                      className="flex cursor-pointer items-center gap-3 rounded-lg px-1.5 py-1 text-sm transition-colors hover:bg-zinc-50"
+                    >
+                      <span className="w-5 shrink-0 text-xs font-medium text-zinc-400">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="min-w-0 flex-1 truncate text-zinc-700">
+                        {nombreMunicipio(row.clave)}
+                      </span>
+                      <span className="shrink-0 text-xs text-zinc-400">
+                        {row.peticiones} pet.
+                      </span>
+                      <span
+                        className="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium text-white"
+                        style={{ background: itcFill(row.score) }}
+                      >
+                        {row.score}
+                      </span>
+                    </li>
+                  );
+                })
               )}
             </ul>
           </Card>
         </div>
       </div>
 
-      <ZonasEnBlanco
-        cvesActivos={new Set(filtradas.map((p) => p.cveMun))}
-        regionResaltada={regionResaltada}
-        onRegionClick={resaltarRegion}
-      />
+      {modoCumplidas ? (
+        <Card className="p-4">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-guinda">
+            Últimas evidencias
+          </p>
+          <p className="mt-0.5 text-sm font-semibold text-zinc-900">
+            Feed de cumplidas
+          </p>
+          <ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            {ultimasCumplidas.length === 0 ? (
+              <li className="text-sm text-zinc-500">
+                Aún no hay cumplidas en el periodo.
+              </li>
+            ) : (
+              ultimasCumplidas.map((p) => (
+                <li key={p.id}>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      router.push(`/peticiones?estatus=cumplida&municipio=${p.cveMun}`)
+                    }
+                    className="flex w-full gap-3 rounded-xl border border-zinc-100 p-2 text-left hover:bg-zinc-50"
+                  >
+                    {p.evidenciaUrls?.[0] ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={p.evidenciaUrls[0]}
+                        alt=""
+                        className="h-14 w-14 shrink-0 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-zinc-50 text-[10px] text-zinc-400">
+                        Sin foto
+                      </div>
+                    )}
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium">
+                        {p.ciudadano.nombre}
+                      </p>
+                      <p className="truncate text-xs text-zinc-400">
+                        {nombreMunGeo(p.cveMun)} ·{" "}
+                        {CATEGORIA_POR_ID[p.categoriaId]?.nombre}
+                      </p>
+                      <p className="font-mono text-[10px] text-zinc-400">
+                        {p.folio}
+                      </p>
+                    </div>
+                  </button>
+                </li>
+              ))
+            )}
+          </ul>
+        </Card>
+      ) : (
+        <ZonasEnBlanco
+          cvesActivos={new Set(filtradas.map((p) => p.cveMun))}
+          regionResaltada={regionResaltada}
+          onRegionClick={resaltarRegion}
+        />
+      )}
         </div>
       )}
     </div>

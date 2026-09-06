@@ -7,6 +7,7 @@ function asRol(value: unknown): Rol | null {
   if (
     value === "territorio" ||
     value === "cuantiva" ||
+    value === "operador" ||
     value === "candidata" ||
     value === "admin"
   ) {

@@ -13,7 +13,7 @@ export type CurrentUser = {
   role: Rol;
 };
 
-const ROLES: Rol[] = ["territorio", "cuantiva", "candidata", "admin"];
+const ROLES: Rol[] = ["territorio", "cuantiva", "operador", "candidata", "admin"];
 
 function asRol(value: string | null | undefined): Rol {
   if (value && ROLES.includes(value as Rol)) return value as Rol;
@@ -72,7 +72,20 @@ export function puedeCapturar(role: Rol): boolean {
 }
 
 export function puedeConsultar(role: Rol): boolean {
-  return role === "cuantiva" || role === "candidata" || role === "admin";
+  return (
+    role === "cuantiva" ||
+    role === "operador" ||
+    role === "candidata" ||
+    role === "admin"
+  );
+}
+
+export function puedeOperarCumplimiento(role: Rol): boolean {
+  return role === "operador" || role === "admin";
+}
+
+export function puedeVerCumplimientos(role: Rol): boolean {
+  return role === "operador" || role === "candidata" || role === "admin";
 }
 
 export async function requireCuantiva(): Promise<
@@ -94,6 +107,30 @@ export async function requireConsulta(): Promise<
   const user = await getCurrentUser();
   if (!user) return { error: "No autenticado", status: 401 };
   if (!puedeConsultar(user.role)) {
+    return { error: "No autorizado", status: 403 };
+  }
+  return { user };
+}
+
+export async function requireOperador(): Promise<
+  | { user: CurrentUser }
+  | { error: string; status: 401 | 403 }
+> {
+  const user = await getCurrentUser();
+  if (!user) return { error: "No autenticado", status: 401 };
+  if (!puedeOperarCumplimiento(user.role)) {
+    return { error: "No autorizado", status: 403 };
+  }
+  return { user };
+}
+
+export async function requireCumplimientos(): Promise<
+  | { user: CurrentUser }
+  | { error: string; status: 401 | 403 }
+> {
+  const user = await getCurrentUser();
+  if (!user) return { error: "No autenticado", status: 401 };
+  if (!puedeVerCumplimientos(user.role)) {
     return { error: "No autorizado", status: 403 };
   }
   return { user };

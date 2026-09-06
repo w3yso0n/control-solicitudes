@@ -3,7 +3,7 @@ import { stat } from "node:fs/promises";
 import { Readable } from "node:stream";
 import { getCurrentUser, puedeConsultar } from "@/lib/auth";
 import { getLoteDocumentoByStorageKey } from "@/lib/services/lotes";
-import { absolutePathForStorageKey } from "@/lib/uploads";
+import { absolutePathForStorageKey, mimeFromStorageKey } from "@/lib/uploads";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
@@ -24,13 +24,21 @@ export async function GET(
     }
 
     const doc = await getLoteDocumentoByStorageKey(storageKey);
-    if (!doc) {
+    const esEvidencia = storageKey.startsWith("cumplimientos/");
+
+    if (!doc && !esEvidencia) {
       return NextResponse.json({ error: "No autorizado" }, { status: 403 });
     }
 
-    const esDueno = doc.userId === user.id;
-    if (!esDueno && !puedeConsultar(user.role)) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+    if (esEvidencia) {
+      if (!puedeConsultar(user.role)) {
+        return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+      }
+    } else if (doc) {
+      const esDueno = doc.userId === user.id;
+      if (!esDueno && !puedeConsultar(user.role)) {
+        return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+      }
     }
 
     let fileStat;
@@ -44,12 +52,14 @@ export async function GET(
     }
 
     const stream = Readable.toWeb(createReadStream(absolute)) as ReadableStream;
+    const mimeType = doc?.mimeType ?? mimeFromStorageKey(storageKey);
+    const nombreArchivo = doc?.nombreArchivo ?? storageKey.split("/").pop() ?? "evidencia";
     return new NextResponse(stream, {
       headers: {
-        "Content-Type": doc.mimeType,
+        "Content-Type": mimeType,
         "Content-Length": String(fileStat.size),
         "X-Content-Type-Options": "nosniff",
-        "Content-Disposition": `inline; filename="${encodeURIComponent(doc.nombreArchivo)}"`,
+        "Content-Disposition": `inline; filename="${encodeURIComponent(nombreArchivo)}"`,
       },
     });
   } catch (error) {
