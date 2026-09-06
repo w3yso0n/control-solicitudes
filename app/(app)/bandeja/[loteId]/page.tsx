@@ -64,6 +64,9 @@ export default function LoteDocumentosPage() {
             Entrega {lote.fechaEntrega} · {nombreMunicipio(lote.cveMun)} ·{" "}
             {lote.documentos.length} archivos
             {pend ? ` · ${pend} pendientes` : " · todos capturados"}
+            {lote.subidaPorNombre || lote.subidaPorEmail
+              ? ` · ${lote.subidaPorNombre?.trim() || lote.subidaPorEmail}`
+              : ""}
           </p>
           {lote.notas?.trim() ? (
             <p className="mt-1 text-sm text-zinc-600">{lote.notas}</p>

@@ -89,6 +89,9 @@ export default function CuantivaBandejaPage() {
                       <p className="text-sm text-zinc-500">
                         {lote.fechaEntrega} · {nombreMunicipio(lote.cveMun)} ·{" "}
                         {lote.documentos.length} docs
+                        {lote.subidaPorNombre || lote.subidaPorEmail
+                          ? ` · ${lote.subidaPorNombre?.trim() || lote.subidaPorEmail}`
+                          : ""}
                       </p>
                     </div>
                     <span

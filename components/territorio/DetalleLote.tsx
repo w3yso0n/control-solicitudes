@@ -173,6 +173,14 @@ export function DetalleLote({
             <Dato label="Registrado" value={fechaCorta(lote.creadoEn)} />
             <Dato label="Evento o gira" value={etiquetaEvento(lote.eventoOrigen)} />
             <Dato label="Municipio" value={nombreMunicipio(lote.cveMun)} />
+            {lote.subidaPorEmail || lote.subidaPorNombre ? (
+              <Dato
+                label="Subido por"
+                value={
+                  lote.subidaPorNombre?.trim() || lote.subidaPorEmail || "—"
+                }
+              />
+            ) : null}
             <div className="col-span-2">
               <p className="text-[11px] uppercase tracking-wide text-zinc-400">
                 Estado

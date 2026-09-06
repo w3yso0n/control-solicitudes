@@ -7,6 +7,7 @@ import {
   etiquetaEvento,
 } from "@/components/territorio/EventoOrigenField";
 import { Button, Card, Field, Input, Textarea } from "@/components/ui";
+import { useSession } from "@/lib/session";
 import type { LoteDto } from "@/lib/types";
 import { FileText, UploadCloud } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type DragEvent } from "react";
@@ -41,6 +42,8 @@ function etiquetaCorta(id: string, fechaEntrega: string) {
 }
 
 export default function TerritorioPage() {
+  const { rol } = useSession();
+  const verTodos = rol === "admin";
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [fechaEntrega, setFechaEntrega] = useState(todayDateString);
@@ -304,6 +307,11 @@ export default function TerritorioPage() {
           <p className="text-sm font-semibold text-zinc-900">
             Historial de lotes
           </p>
+          {verTodos ? (
+            <p className="mt-0.5 text-xs text-zinc-400">
+              Todos los capturistas Territorio
+            </p>
+          ) : null}
         </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[640px] text-left text-sm">
@@ -312,6 +320,7 @@ export default function TerritorioPage() {
                 <th className="px-5 py-3">Lote</th>
                 <th className="px-5 py-3">Fecha</th>
                 <th className="px-5 py-3">Evento</th>
+                {verTodos ? <th className="px-5 py-3">Capturista</th> : null}
                 <th className="px-5 py-3">Archivos</th>
                 <th className="px-5 py-3">Estado</th>
                 <th className="px-5 py-3" />
@@ -332,6 +341,13 @@ export default function TerritorioPage() {
                     <td className="px-5 py-3 text-zinc-800">
                       {etiquetaEvento(lote.eventoOrigen)}
                     </td>
+                    {verTodos ? (
+                      <td className="px-5 py-3 text-zinc-600">
+                        {lote.subidaPorNombre?.trim() ||
+                          lote.subidaPorEmail ||
+                          "—"}
+                      </td>
+                    ) : null}
                     <td className="px-5 py-3 text-zinc-500">
                       {lote.documentos.length} escaneados
                     </td>
@@ -358,7 +374,7 @@ export default function TerritorioPage() {
               {lotes.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={verTodos ? 7 : 6}
                     className="px-5 py-8 text-center text-zinc-500"
                   >
                     {cargando

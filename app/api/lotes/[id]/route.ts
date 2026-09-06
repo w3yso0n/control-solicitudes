@@ -1,4 +1,4 @@
-import { getCurrentUserId } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import { deleteLote } from "@/lib/services/lotes";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -15,12 +15,12 @@ export async function DELETE(
       return NextResponse.json({ error: "ID inválido" }, { status: 400 });
     }
 
-    const userId = await getCurrentUserId();
-    if (!userId) {
+    const user = await getCurrentUser();
+    if (!user) {
       return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     }
 
-    const result = await deleteLote(userId, id);
+    const result = await deleteLote(user.id, id, { admin: user.role === "admin" });
     if ("error" in result) {
       const status =
         result.error === "No autorizado"

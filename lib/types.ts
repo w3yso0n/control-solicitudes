@@ -186,6 +186,8 @@ export type LoteDto = {
   notas: string | null;
   estatus: EstatusLote;
   creadoEn: string;
+  subidaPorNombre: string | null;
+  subidaPorEmail: string | null;
   documentos: LoteDocumentoDto[];
 };
 

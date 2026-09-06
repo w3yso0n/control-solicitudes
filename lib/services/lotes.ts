@@ -1,6 +1,6 @@
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { db } from "@/lib/db";
-import { loteDocumentos, lotes, peticiones } from "@/lib/db/schema";
+import { loteDocumentos, lotes, peticiones, users } from "@/lib/db/schema";
 import { toCapturaDto } from "@/lib/services/peticiones";
 import type {
   CapturaPeticionDto,
@@ -57,6 +57,7 @@ function toDocumentoDto(
 function toLoteDto(
   lote: typeof lotes.$inferSelect,
   documentos: LoteDocumentoDto[],
+  subidaPor: { displayName: string | null; email: string } | null = null,
 ): LoteDto {
   return {
     id: lote.id,
@@ -66,6 +67,8 @@ function toLoteDto(
     notas: lote.notas,
     estatus: lote.estatus,
     creadoEn: lote.createdAt.toISOString(),
+    subidaPorNombre: subidaPor?.displayName ?? null,
+    subidaPorEmail: subidaPor?.email ?? null,
     documentos,
   };
 }
@@ -97,26 +100,54 @@ async function documentosPorLoteIds(
 }
 
 function ensamblarLotes(
-  rows: (typeof lotes.$inferSelect)[],
+  rows: {
+    lote: typeof lotes.$inferSelect;
+    subidaPor: { displayName: string | null; email: string } | null;
+  }[],
   byLote: Map<string, LoteDocumentoDto[]>,
 ): LoteDto[] {
-  return rows.map((lote) => toLoteDto(lote, byLote.get(lote.id) ?? []));
+  return rows.map(({ lote, subidaPor }) =>
+    toLoteDto(lote, byLote.get(lote.id) ?? [], subidaPor),
+  );
 }
 
-export async function getLotes(userId: string): Promise<LoteDto[]> {
-  const rows = await db
-    .select()
+export async function getLotes(
+  userId: string,
+  opts?: { todos?: boolean },
+): Promise<LoteDto[]> {
+  const filtro = opts?.todos ? undefined : eq(lotes.userId, userId);
+  const query = db
+    .select({
+      lote: lotes,
+      subidaPor: {
+        displayName: users.displayName,
+        email: users.email,
+      },
+    })
     .from(lotes)
-    .where(eq(lotes.userId, userId))
-    .orderBy(desc(lotes.createdAt));
+    .innerJoin(users, eq(lotes.userId, users.id));
 
-  const byLote = await documentosPorLoteIds(rows.map((r) => r.id));
+  const rows = filtro
+    ? await query.where(filtro).orderBy(desc(lotes.createdAt))
+    : await query.orderBy(desc(lotes.createdAt));
+
+  const byLote = await documentosPorLoteIds(rows.map((r) => r.lote.id));
   return ensamblarLotes(rows, byLote);
 }
 
 export async function getLotesBandeja(): Promise<LoteDto[]> {
-  const rows = await db.select().from(lotes).orderBy(asc(lotes.createdAt));
-  const byLote = await documentosPorLoteIds(rows.map((r) => r.id));
+  const rows = await db
+    .select({
+      lote: lotes,
+      subidaPor: {
+        displayName: users.displayName,
+        email: users.email,
+      },
+    })
+    .from(lotes)
+    .innerJoin(users, eq(lotes.userId, users.id))
+    .orderBy(asc(lotes.createdAt));
+  const byLote = await documentosPorLoteIds(rows.map((r) => r.lote.id));
   return ensamblarLotes(rows, byLote);
 }
 
@@ -135,10 +166,22 @@ export async function countDocumentosPendientesBandeja(): Promise<number> {
 }
 
 export async function getLoteDtoById(id: string): Promise<LoteDto | null> {
-  const existing = await getLoteById(id);
-  if (!existing) return null;
+  const rows = await db
+    .select({
+      lote: lotes,
+      subidaPor: {
+        displayName: users.displayName,
+        email: users.email,
+      },
+    })
+    .from(lotes)
+    .innerJoin(users, eq(lotes.userId, users.id))
+    .where(eq(lotes.id, id))
+    .limit(1);
+  const row = rows[0];
+  if (!row) return null;
   const byLote = await documentosPorLoteIds([id]);
-  return toLoteDto(existing, byLote.get(id) ?? []);
+  return toLoteDto(row.lote, byLote.get(id) ?? [], row.subidaPor);
 }
 
 export async function getLoteDocumentoByStorageKey(storageKey: string) {
@@ -227,6 +270,8 @@ export async function createLote(userId: string, input: CreateLoteInput) {
       notas,
       estatus: "cerrado" as const,
       creadoEn: new Date().toISOString(),
+      subidaPorNombre: null,
+      subidaPorEmail: null,
       documentos: documentos.map((row) => toDocumentoDto(row)),
     } satisfies LoteDto,
   };
@@ -262,10 +307,16 @@ export async function getLoteById(id: string) {
   return rows[0] ?? null;
 }
 
-export async function deleteLote(userId: string, id: string) {
+export async function deleteLote(
+  userId: string,
+  id: string,
+  opts?: { admin?: boolean },
+) {
   const existing = await getLoteById(id);
   if (!existing) return { error: "Lote no encontrado" };
-  if (existing.userId !== userId) return { error: "No autorizado" };
+  if (!opts?.admin && existing.userId !== userId) {
+    return { error: "No autorizado" };
+  }
 
   await db.delete(lotes).where(eq(lotes.id, id));
   await removeLoteDir(id);

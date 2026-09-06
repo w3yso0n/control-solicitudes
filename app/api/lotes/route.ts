@@ -1,14 +1,14 @@
-import { getCurrentUserId } from "@/lib/auth";
+import { getCurrentUser } from "@/lib/auth";
 import { createLote, getLotes } from "@/lib/services/lotes";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const userId = await getCurrentUserId();
-    if (!userId) {
+    const user = await getCurrentUser();
+    if (!user) {
       return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     }
-    const rows = await getLotes(userId);
+    const rows = await getLotes(user.id, { todos: user.role === "admin" });
     return NextResponse.json(rows);
   } catch (error) {
     console.error("[API] GET /api/lotes:", error);
@@ -21,8 +21,8 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const userId = await getCurrentUserId();
-    if (!userId) {
+    const user = await getCurrentUser();
+    if (!user) {
       return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     }
 
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     const notasRaw = formData.get("notas");
-    const result = await createLote(userId, {
+    const result = await createLote(user.id, {
       fechaEntrega: String(formData.get("fechaEntrega") ?? ""),
       eventoOrigen: String(formData.get("eventoOrigen") ?? ""),
       cveMun: String(formData.get("cveMun") ?? ""),
