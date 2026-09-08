@@ -21,7 +21,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 const ICONS: Record<string, typeof LayoutDashboard> = {
   "/dashboard": LayoutDashboard,
@@ -65,6 +65,56 @@ export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+  const navWrapRef = useRef<HTMLDivElement>(null);
+  const navThumbRef = useRef<HTMLDivElement>(null);
+  const navScrollHide = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function syncNavThumb() {
+    const el = navRef.current;
+    const thumb = navThumbRef.current;
+    if (!el || !thumb) return;
+    const { scrollTop, scrollHeight, clientHeight } = el;
+    if (scrollHeight <= clientHeight + 1) {
+      thumb.hidden = true;
+      return;
+    }
+    thumb.hidden = false;
+    const thumbH = Math.max(28, (clientHeight / scrollHeight) * clientHeight);
+    const maxTop = clientHeight - thumbH;
+    const top =
+      maxTop <= 0
+        ? 0
+        : (scrollTop / (scrollHeight - clientHeight)) * maxTop;
+    thumb.style.height = `${thumbH}px`;
+    thumb.style.transform = `translateY(${top}px)`;
+  }
+
+  function onNavScroll() {
+    const wrap = navWrapRef.current;
+    if (!wrap) return;
+    syncNavThumb();
+    wrap.classList.add("is-scrolling");
+    if (navScrollHide.current) clearTimeout(navScrollHide.current);
+    navScrollHide.current = setTimeout(() => {
+      wrap.classList.remove("is-scrolling");
+    }, 700);
+  }
+
+  useEffect(() => {
+    return () => {
+      if (navScrollHide.current) clearTimeout(navScrollHide.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+    syncNavThumb();
+    const ro = new ResizeObserver(() => syncNavThumb());
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [collapsed, rol, ready]);
 
   useEffect(() => {
     if (!ready) return;
@@ -101,7 +151,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Sidebar: fijo respecto al viewport, no viaja con el scroll de la página. */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden rounded-r-[1.75rem] bg-gradient-to-b from-guinda to-[#4d0c22] text-white shadow-[12px_0_36px_-20px_rgba(28,10,18,0.55)] transition-[width] duration-200 ${
+        className={`sidebar-shell fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden rounded-r-[1.75rem] bg-gradient-to-b from-guinda to-[#4d0c22] text-white shadow-[12px_0_36px_-20px_rgba(28,10,18,0.55)] transition-[width] duration-200 [color-scheme:dark] ${
           collapsed ? "w-[72px]" : "w-72"
         } ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
@@ -127,7 +177,15 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           </div>
         ) : null}
-        <nav className="flex-1 overflow-y-auto p-4">
+        <div
+          ref={navWrapRef}
+          className="sidebar-nav-wrap relative min-h-0 flex-1"
+        >
+        <nav
+          ref={navRef}
+          className="sidebar-nav-scroll h-full overflow-y-auto p-4"
+          onScroll={onNavScroll}
+        >
           {grupos.map((grupo, index) => (
             <div key={grupo.id} className={index > 0 ? "mt-4" : ""}>
               {index > 0 ? (
@@ -167,6 +225,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           ))}
         </nav>
+          <div ref={navThumbRef} className="sidebar-nav-thumb" aria-hidden />
+        </div>
 
         {/* Pie fijo del sidebar: colapsar y cerrar sesión siempre visibles, no hacen scroll con el nav. */}
         <div className="shrink-0 border-t border-white/10">

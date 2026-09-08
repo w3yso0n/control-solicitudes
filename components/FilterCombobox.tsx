@@ -16,6 +16,7 @@ export function FilterCombobox({
   placeholder,
   emptyLabel,
   searchPlaceholder = "Buscar…",
+  disabled = false,
 }: {
   value: string;
   onChange: (id: string) => void;
@@ -23,6 +24,7 @@ export function FilterCombobox({
   placeholder: string;
   emptyLabel?: string;
   searchPlaceholder?: string;
+  disabled?: boolean;
 }) {
   const listId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -43,7 +45,7 @@ export function FilterCombobox({
   }, [options, q]);
 
   useEffect(() => {
-    if (!abierto) return;
+    if (!abierto || disabled) return;
     searchRef.current?.focus();
     const onDoc = (e: MouseEvent) => {
       if (!rootRef.current?.contains(e.target as Node)) {
@@ -63,7 +65,14 @@ export function FilterCombobox({
       document.removeEventListener("mousedown", onDoc);
       window.removeEventListener("keydown", onKey);
     };
-  }, [abierto]);
+  }, [abierto, disabled]);
+
+  useEffect(() => {
+    if (disabled) {
+      setAbierto(false);
+      setQ("");
+    }
+  }, [disabled]);
 
   function elegir(id: string) {
     onChange(id);
@@ -78,17 +87,26 @@ export function FilterCombobox({
         aria-haspopup="listbox"
         aria-expanded={abierto}
         aria-controls={listId}
-        onClick={() => setAbierto((v) => !v)}
-        className={`flex w-full items-center justify-between gap-2 rounded-2xl border bg-white px-3.5 py-2.5 text-left text-sm outline-none ring-magenta/30 transition-shadow focus:ring-2 ${
-          abierto
-            ? "border-guinda/40 ring-2 ring-magenta/30"
-            : "border-zinc-200 hover:border-zinc-300"
+        aria-disabled={disabled}
+        disabled={disabled}
+        onClick={() => {
+          if (disabled) return;
+          setAbierto((v) => !v);
+        }}
+        className={`flex w-full items-center justify-between gap-2 rounded-2xl border px-3.5 py-2.5 text-left text-sm outline-none ring-magenta/30 transition-shadow focus:ring-2 ${
+          disabled
+            ? "cursor-not-allowed border-zinc-200 bg-zinc-50 text-zinc-500"
+            : abierto
+              ? "border-guinda/40 bg-white ring-2 ring-magenta/30"
+              : "border-zinc-200 bg-white hover:border-zinc-300"
         }`}
       >
         <span className="min-w-0 truncate">
           {seleccionado ? (
             <>
-              <span className="font-medium text-zinc-900">
+              <span
+                className={`font-medium ${disabled ? "text-zinc-500" : "text-zinc-900"}`}
+              >
                 {seleccionado.label}
               </span>
               {seleccionado.meta ? (

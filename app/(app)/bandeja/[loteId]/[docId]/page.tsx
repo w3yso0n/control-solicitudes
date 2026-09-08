@@ -6,16 +6,22 @@ import {
   UbicacionCaptura,
   type UbicacionCapturaValue,
 } from "@/components/cuantiva/UbicacionCaptura";
-import { Button, Card, Field, Input, Select, Textarea } from "@/components/ui";
+import { CampoConEspecificar } from "@/components/CampoConEspecificar";
+import { FilterCombobox } from "@/components/FilterCombobox";
+import { AvisoExito } from "@/components/AvisoExito";
+import { Button, Card, Field, Input, Textarea } from "@/components/ui";
 import {
   ALCANCES,
   CATEGORIAS,
   categoriasConExtras,
   COMPLEJIDADES,
   ESCENARIOS_ACUSE,
+  esOpcionEspecificar,
+  partirOpcionEspecificar,
   RELACIONES_REMITENTE,
   TIPOS_PETICION,
   URGENCIAS,
+  valorOpcionEspecificar,
 } from "@/lib/catalogos";
 import { derivarEscenarioAcuse } from "@/lib/acuse";
 import { parseCoord } from "@/lib/geo";
@@ -34,7 +40,7 @@ import type {
 import { ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 function opcionesConActual(lista: string[], actual: string) {
   if (actual && !lista.includes(actual)) return [actual, ...lista];
@@ -56,14 +62,16 @@ export default function CapturaPage() {
   const [relacion, setRelacion] = useState<RelacionRemitente>("mismo");
   const [remitenteNombre, setRemitenteNombre] = useState("");
   const [remitenteTelefono, setRemitenteTelefono] = useState("");
-  const [escenario, setEscenario] = useState<EscenarioAcuse>("D");
+  const [escenario, setEscenario] = useState<EscenarioAcuse>("A");
   const [descripcion, setDescripcion] = useState("");
   const [transcripcion, setTranscripcion] = useState("");
   const [categoriaId, setCategoriaId] = useState(CATEGORIAS[0].id);
   const [subcategoria, setSubcategoria] = useState(
     CATEGORIAS[0].subcategorias[0],
   );
+  const [subcategoriaOtro, setSubcategoriaOtro] = useState("");
   const [subcategoria2, setSubcategoria2] = useState("");
+  const [subcategoria2Otro, setSubcategoria2Otro] = useState("");
   const [tipo, setTipo] = useState<TipoPeticion>("peticion");
   const [urgencia, setUrgencia] = useState<Urgencia>("media");
   const [alcance, setAlcance] = useState<Alcance>("individual");
@@ -81,13 +89,23 @@ export default function CapturaPage() {
   });
   const [folio, setFolio] = useState<string | null>(null);
   const [peticionId, setPeticionId] = useState<string | null>(null);
-  const [guardado, setGuardado] = useState(false);
+  const [aviso, setAviso] = useState<{ titulo: string; mensaje: string } | null>(
+    null,
+  );
+  const cerrarAviso = useCallback(() => {
+    setAviso(null);
+    window.setTimeout(() => {
+      router.push("/peticiones");
+    }, 450);
+  }, [router]);
   const [ampliado, setAmpliado] = useState(false);
   const [coincidencias, setCoincidencias] = useState<CoincidenciaIdentidad[]>(
     [],
   );
   const [avisarAgrupar, setAvisarAgrupar] = useState(false);
   const [categorias, setCategorias] = useState(CATEGORIAS);
+  const categoriasRef = useRef(categorias);
+  categoriasRef.current = categorias;
 
   useEffect(() => {
     let vivo = true;
@@ -140,7 +158,7 @@ export default function CapturaPage() {
       const pet = encontrado?.peticion ?? null;
       setFolio(pet?.folio ?? encontrado?.folio ?? null);
       setPeticionId(pet?.id ?? null);
-      setGuardado(false);
+      setAviso(null);
       setAmpliado(false);
       setCoincidencias([]);
       setAvisarAgrupar(false);
@@ -155,8 +173,25 @@ export default function CapturaPage() {
         setDescripcion(pet.descripcion);
         setTranscripcion(pet.transcripcion);
         setCategoriaId(pet.categoriaId);
-        setSubcategoria(pet.subcategorias[0] ?? "");
-        setSubcategoria2(pet.subcategorias[1] ?? "");
+        {
+          const cats = categoriasRef.current;
+          const catPet =
+            cats.find((c) => c.id === pet.categoriaId) ??
+            CATEGORIAS.find((c) => c.id === pet.categoriaId) ??
+            CATEGORIAS[0];
+          const p1 = partirOpcionEspecificar(
+            pet.subcategorias[0] ?? "",
+            catPet.subcategorias,
+          );
+          const p2 = partirOpcionEspecificar(
+            pet.subcategorias[1] ?? "",
+            catPet.subcategorias,
+          );
+          setSubcategoria(p1.select);
+          setSubcategoriaOtro(p1.extra);
+          setSubcategoria2(p2.select);
+          setSubcategoria2Otro(p2.extra);
+        }
         setTipo(pet.tipo);
         setUrgencia(pet.urgencia);
         setAlcance(pet.alcance);
@@ -179,12 +214,14 @@ export default function CapturaPage() {
         setRelacion("mismo");
         setRemitenteNombre("");
         setRemitenteTelefono("");
-        setEscenario("D");
+        setEscenario("A");
         setDescripcion("");
         setTranscripcion("");
         setCategoriaId(CATEGORIAS[0].id);
         setSubcategoria(CATEGORIAS[0].subcategorias[0]);
+        setSubcategoriaOtro("");
         setSubcategoria2("");
+        setSubcategoria2Otro("");
         setTipo("peticion");
         setUrgencia("media");
         setAlcance("individual");
@@ -245,21 +282,35 @@ export default function CapturaPage() {
 
   const doc = lote?.documentos.find((d) => d.id === docId);
 
-  async function confirmar(e: React.FormEvent, forzar = false) {
-    e.preventDefault();
+  async function confirmar(e?: React.SyntheticEvent, forzar = false) {
+    e?.preventDefault();
     if (!doc || enviando) return;
     if (!complejidad) {
       setErrorEnvio("Asigna la complejidad antes de confirmar.");
       return;
     }
     if (ubicacion.lat == null || ubicacion.lng == null) {
-      setErrorEnvio("Elige una ubicación (INEGI, Google o pin en el mapa).");
+      setErrorEnvio(
+        ubicacion.metodo === "inegi"
+          ? "Elige una localidad INEGI para poder guardar."
+          : "Elige una ubicación (INEGI, Google o pin en el mapa).",
+      );
+      return;
+    }
+    const sub1 = valorOpcionEspecificar(subcategoria, subcategoriaOtro);
+    if (typeof sub1 === "object") {
+      setErrorEnvio(sub1.error);
+      return;
+    }
+    const sub2 = valorOpcionEspecificar(subcategoria2, subcategoria2Otro);
+    if (typeof sub2 === "object") {
+      setErrorEnvio(sub2.error);
       return;
     }
     setErrorEnvio("");
     setEnviando(true);
     try {
-      const subs = [subcategoria, subcategoria2].filter(Boolean);
+      const subs = [sub1, sub2].filter(Boolean);
       const res = await fetch(`/api/cuantiva/documentos/${doc.id}/capturar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -310,10 +361,21 @@ export default function CapturaPage() {
         setErrorEnvio(data.error || "No se pudo capturar el documento");
         return;
       }
+      const eraEdicion = Boolean(folio);
       setFolio(data.peticion.folio);
       setPeticionId(data.peticion.id);
-      setGuardado(true);
       setAvisarAgrupar(false);
+      setAviso(
+        eraEdicion
+          ? {
+              titulo: "Cambios guardados",
+              mensaje: `La captura se actualizó. El folio ${data.peticion.folio} no cambia.`,
+            }
+          : {
+              titulo: "Captura confirmada",
+              mensaje: `Se generó el folio ${data.peticion.folio}.`,
+            },
+      );
       setLote((prev) => {
         if (!prev) return prev;
         return {
@@ -413,16 +475,15 @@ export default function CapturaPage() {
           </button>
         </Card>
         <Card className="p-5">
-          <form onSubmit={(e) => void confirmar(e)} className="space-y-3">
+          <form
+            noValidate
+            onSubmit={(e) => void confirmar(e)}
+            className="space-y-3"
+          >
             {folio ? (
               <p className="text-sm text-zinc-600">
                 Este documento ya tiene folio. Puedes corregir los datos y
                 guardar; el folio no cambia.
-              </p>
-            ) : null}
-            {guardado ? (
-              <p className="rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
-                Captura guardada.
               </p>
             ) : null}
             {errorEnvio ? (
@@ -507,18 +568,16 @@ export default function CapturaPage() {
               />
             </Field>
             <Field label="¿Quién envía el formato?">
-              <Select
+              <FilterCombobox
                 value={relacion}
-                onChange={(e) =>
-                  setRelacion(e.target.value as RelacionRemitente)
-                }
-              >
-                {RELACIONES_REMITENTE.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.nombre}
-                  </option>
-                ))}
-              </Select>
+                onChange={(id) => setRelacion(id as RelacionRemitente)}
+                options={RELACIONES_REMITENTE.map((r) => ({
+                  id: r.id,
+                  label: r.nombre,
+                }))}
+                placeholder="Elige quién envía"
+                searchPlaceholder="Buscar…"
+              />
             </Field>
             {esIntermediario ? (
               <div className="grid gap-3 sm:grid-cols-2">
@@ -537,18 +596,23 @@ export default function CapturaPage() {
               </div>
             ) : null}
             <Field label="Escenario de acuse WhatsApp">
-              <Select
+              <FilterCombobox
                 value={escenario}
-                onChange={(e) =>
-                  setEscenario(e.target.value as EscenarioAcuse)
-                }
-              >
-                {ESCENARIOS_ACUSE.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.nombre}
-                  </option>
-                ))}
-              </Select>
+                onChange={(id) => setEscenario(id as EscenarioAcuse)}
+                options={ESCENARIOS_ACUSE.map((s) => ({
+                  id: s.id,
+                  label: s.nombre,
+                }))}
+                placeholder="Elige escenario"
+                searchPlaceholder="Buscar escenario…"
+                disabled={!esIntermediario}
+              />
+              {!esIntermediario ? (
+                <p className="mt-1 text-[11px] text-zinc-400">
+                  Quien envía es el peticionario: el acuse queda en A y no se
+                  puede cambiar.
+                </p>
+              ) : null}
             </Field>
             <Field label="Descripción">
               <Textarea
@@ -567,102 +631,108 @@ export default function CapturaPage() {
             </Field>
             <UbicacionCaptura value={ubicacion} onChange={setUbicacion} />
             <Field label="Complejidad">
-              <Select
+              <FilterCombobox
                 value={complejidad}
-                onChange={(e) =>
-                  setComplejidad(e.target.value as Complejidad)
-                }
-                required
-              >
-                <option value="">Selecciona…</option>
-                {COMPLEJIDADES.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.nombre}
-                  </option>
-                ))}
-              </Select>
+                onChange={(id) => setComplejidad(id as Complejidad)}
+                options={COMPLEJIDADES.map((c) => ({
+                  id: c.id,
+                  label: c.nombre,
+                }))}
+                placeholder="Selecciona…"
+                searchPlaceholder="Buscar complejidad…"
+              />
             </Field>
             <Field label="Categoría">
-              <Select
+              <FilterCombobox
                 value={categoriaId}
-                onChange={(e) => {
-                  const id = e.target.value;
+                onChange={(id) => {
                   setCategoriaId(id);
                   const cat = categorias.find((c) => c.id === id);
                   setSubcategoria(cat?.subcategorias[0] ?? "");
+                  setSubcategoriaOtro("");
                   setSubcategoria2("");
+                  setSubcategoria2Otro("");
                 }}
-              >
-                {categorias.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.nombre}
-                  </option>
-                ))}
-              </Select>
+                options={categorias.map((c) => ({
+                  id: c.id,
+                  label: c.nombre,
+                }))}
+                placeholder="Elige categoría"
+                searchPlaceholder="Buscar categoría…"
+              />
             </Field>
-            <Field label="Subcategoría">
-              <Select
-                value={subcategoria}
-                onChange={(e) => setSubcategoria(e.target.value)}
-              >
-                {subs.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-            <Field label="Subcategoría adicional (opcional)">
-              <Select
-                value={subcategoria2}
-                onChange={(e) => setSubcategoria2(e.target.value)}
-              >
-                <option value="">Ninguna</option>
-                {subs2
-                  .filter((s) => s !== subcategoria)
-                  .map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-              </Select>
-            </Field>
+            <CampoConEspecificar
+              label="Subcategoría"
+              especificarLabel="Especificar subcategoría"
+              especificarPlaceholder="Escribe la subcategoría…"
+              value={subcategoria}
+              extra={subcategoriaOtro}
+              onChange={(id, extra) => {
+                setSubcategoria(id);
+                setSubcategoriaOtro(extra);
+              }}
+              options={subs.map((s) => ({ id: s, label: s }))}
+              placeholder="Elige subcategoría"
+              searchPlaceholder="Buscar subcategoría…"
+            />
+            <CampoConEspecificar
+              label="Subcategoría adicional (opcional)"
+              especificarLabel="Especificar subcategoría adicional"
+              especificarPlaceholder="Escribe la subcategoría…"
+              value={subcategoria2}
+              extra={subcategoria2Otro}
+              onChange={(id, extra) => {
+                setSubcategoria2(id);
+                setSubcategoria2Otro(extra);
+              }}
+              options={subs2
+                .filter((s) => {
+                  if (esOpcionEspecificar(s) && esOpcionEspecificar(subcategoria)) {
+                    return true;
+                  }
+                  return s !== subcategoria;
+                })
+                .map((s) => ({ id: s, label: s }))}
+              placeholder="Ninguna"
+              emptyLabel="Ninguna"
+              searchPlaceholder="Buscar subcategoría…"
+            />
             <div className="grid gap-3 sm:grid-cols-3">
               <Field label="Tipo">
-                <Select
+                <FilterCombobox
                   value={tipo}
-                  onChange={(e) => setTipo(e.target.value as TipoPeticion)}
-                >
-                  {TIPOS_PETICION.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.nombre}
-                    </option>
-                  ))}
-                </Select>
+                  onChange={(id) => setTipo(id as TipoPeticion)}
+                  options={TIPOS_PETICION.map((t) => ({
+                    id: t.id,
+                    label: t.nombre,
+                  }))}
+                  placeholder="Tipo"
+                  searchPlaceholder="Buscar…"
+                />
               </Field>
               <Field label="Urgencia">
-                <Select
+                <FilterCombobox
                   value={urgencia}
-                  onChange={(e) => setUrgencia(e.target.value as Urgencia)}
-                >
-                  {URGENCIAS.map((u) => (
-                    <option key={u.id} value={u.id}>
-                      {u.nombre}
-                    </option>
-                  ))}
-                </Select>
+                  onChange={(id) => setUrgencia(id as Urgencia)}
+                  options={URGENCIAS.map((u) => ({
+                    id: u.id,
+                    label: u.nombre,
+                  }))}
+                  placeholder="Urgencia"
+                  searchPlaceholder="Buscar…"
+                />
               </Field>
               <Field label="Alcance">
-                <Select
+                <FilterCombobox
                   value={alcance}
-                  onChange={(e) => setAlcance(e.target.value as Alcance)}
-                >
-                  {ALCANCES.map((a) => (
-                    <option key={a.id} value={a.id}>
-                      {a.nombre}
-                    </option>
-                  ))}
-                </Select>
+                  onChange={(id) => setAlcance(id as Alcance)}
+                  options={ALCANCES.map((a) => ({
+                    id: a.id,
+                    label: a.nombre,
+                  }))}
+                  placeholder="Alcance"
+                  searchPlaceholder="Buscar…"
+                />
               </Field>
             </div>
             {alcance === "colectivo" ? (
@@ -680,12 +750,17 @@ export default function CapturaPage() {
                 type="button"
                 className="w-full"
                 disabled={enviando}
-                onClick={(e) => void confirmar(e, true)}
+                onClick={() => void confirmar(undefined, true)}
               >
                 {enviando ? "Guardando…" : "Confirmar y agrupar peticionario"}
               </Button>
             ) : (
-              <Button type="submit" className="w-full" disabled={enviando}>
+              <Button
+                type="button"
+                className="w-full"
+                disabled={enviando}
+                onClick={() => void confirmar()}
+              >
                 {enviando
                   ? "Guardando…"
                   : folio
@@ -693,6 +768,11 @@ export default function CapturaPage() {
                     : "Confirmar captura y generar folio"}
               </Button>
             )}
+            {errorEnvio ? (
+              <p className="text-sm text-guinda" role="alert">
+                {errorEnvio}
+              </p>
+            ) : null}
             {folio ? (
               <div className="flex flex-wrap gap-2">
                 {siguientePendiente ? (
@@ -723,6 +803,12 @@ export default function CapturaPage() {
       {ampliado ? (
         <ModalDocumento doc={doc} onCerrar={() => setAmpliado(false)} />
       ) : null}
+      <AvisoExito
+        abierto={Boolean(aviso)}
+        titulo={aviso?.titulo ?? ""}
+        mensaje={aviso?.mensaje}
+        onCerrar={cerrarAviso}
+      />
     </div>
   );
 }

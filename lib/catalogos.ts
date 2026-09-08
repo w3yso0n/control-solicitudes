@@ -326,6 +326,42 @@ export function categoriasConExtras(
   });
 }
 
+export const ETIQUETA_OTRO_ESPECIFICAR = "Otro (especificar)";
+
+export function esOpcionEspecificar(valor: string): boolean {
+  const n = valor.trim().toLowerCase().replace(/\s+/g, " ");
+  return n.includes("otro") && n.includes("especificar");
+}
+
+export function partirOpcionEspecificar(
+  valor: string,
+  opciones: string[],
+): { select: string; extra: string } {
+  const otro =
+    opciones.find(esOpcionEspecificar) ?? ETIQUETA_OTRO_ESPECIFICAR;
+  const oficiales = opciones.filter((o) => !esOpcionEspecificar(o));
+  const v = valor.trim();
+  if (!v) return { select: "", extra: "" };
+  if (esOpcionEspecificar(v)) return { select: otro, extra: "" };
+  if (oficiales.includes(v)) return { select: v, extra: "" };
+  return { select: otro, extra: v };
+}
+
+export function valorOpcionEspecificar(
+  select: string,
+  extra: string,
+): string | { error: string } {
+  const s = select.trim();
+  if (!s) return "";
+  if (!esOpcionEspecificar(s)) return s;
+  const t = extra.trim();
+  if (!t) return { error: "Especifica la opción de Otro." };
+  if (esOpcionEspecificar(t)) {
+    return { error: "Escribe el detalle concreto, no Otro (especificar)." };
+  }
+  return t;
+}
+
 export const TIPOS_PETICION = [
   { id: "queja", nombre: "Queja" },
   { id: "peticion", nombre: "Petición" },

@@ -156,7 +156,7 @@ function PeticionesContent() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div className="space-y-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.15em] text-guinda">
             Gestión y consulta
@@ -165,15 +165,35 @@ function PeticionesContent() {
             {cargando ? "Peticiones" : `${filtradas.length} peticiones`}
           </h1>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="w-full sm:w-56">
-            <Input
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              placeholder="Buscar folio, nombre o texto…"
-            />
+        <div className="space-y-2">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <div className="w-full sm:max-w-sm">
+              <Input
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                placeholder="Buscar folio, nombre o texto…"
+              />
+            </div>
+            {hayFiltros ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setBusqueda("");
+                  setCategoriaId("");
+                  setCveMun("");
+                  setDistLocal("");
+                  setDistFederal("");
+                  setComplejidad("");
+                  setEstatus("");
+                  setOrigen("");
+                }}
+                className="shrink-0 text-sm font-medium text-guinda transition-colors hover:underline"
+              >
+                Limpiar
+              </button>
+            ) : null}
           </div>
-          <div className="w-full sm:w-52">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
             <FilterCombobox
               value={categoriaId}
               onChange={setCategoriaId}
@@ -182,8 +202,6 @@ function PeticionesContent() {
               emptyLabel="Todas las categorías"
               searchPlaceholder="Buscar categoría…"
             />
-          </div>
-          <div className="w-full sm:w-52">
             <FilterCombobox
               value={cveMun}
               onChange={setCveMun}
@@ -192,8 +210,6 @@ function PeticionesContent() {
               emptyLabel="Todos los municipios"
               searchPlaceholder="Buscar municipio…"
             />
-          </div>
-          <div className="w-full sm:w-48">
             <FilterCombobox
               value={distLocal}
               onChange={setDistLocal}
@@ -205,8 +221,6 @@ function PeticionesContent() {
               emptyLabel="Todo dist. local"
               searchPlaceholder="Buscar distrito…"
             />
-          </div>
-          <div className="w-full sm:w-48">
             <FilterCombobox
               value={distFederal}
               onChange={setDistFederal}
@@ -218,8 +232,6 @@ function PeticionesContent() {
               emptyLabel="Todo dist. federal"
               searchPlaceholder="Buscar distrito…"
             />
-          </div>
-          <div className="w-full sm:w-44">
             <FilterCombobox
               value={complejidad}
               onChange={setComplejidad}
@@ -228,8 +240,6 @@ function PeticionesContent() {
               emptyLabel="Toda complejidad"
               searchPlaceholder="Buscar…"
             />
-          </div>
-          <div className="w-full sm:w-44">
             <FilterCombobox
               value={estatus}
               onChange={setEstatus}
@@ -238,8 +248,6 @@ function PeticionesContent() {
               emptyLabel="Todo estatus"
               searchPlaceholder="Buscar…"
             />
-          </div>
-          <div className="w-full sm:w-48">
             <FilterCombobox
               value={origen}
               onChange={setOrigen}
@@ -249,24 +257,6 @@ function PeticionesContent() {
               searchPlaceholder="Buscar…"
             />
           </div>
-          {hayFiltros ? (
-            <button
-              type="button"
-              onClick={() => {
-                setBusqueda("");
-                setCategoriaId("");
-                setCveMun("");
-                setDistLocal("");
-                setDistFederal("");
-                setComplejidad("");
-                setEstatus("");
-                setOrigen("");
-              }}
-              className="shrink-0 text-sm font-medium text-guinda hover:underline"
-            >
-              Limpiar
-            </button>
-          ) : null}
         </div>
       </div>
 

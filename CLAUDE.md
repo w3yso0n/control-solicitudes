@@ -1,5 +1,7 @@
 @AGENTS.md
 
-# Convenciones de diseño
+# Diseño
 
-- **Tipografía de títulos**: los `<h1>`/títulos de página usan la fuente sans por defecto (`Inter`, heredada de `body`), en `font-semibold` (no `font-bold`) y `tracking-tight`. No uses `font-display` (Fraunces) en títulos de página — quedó reservada para identidad de marca, no un encabezado de contenido.
+Antes de cualquier decisión de diseño —crear, editar o extender un componente, pantalla, layout, modal, tabla, formulario, sidebar, hover, overlay o patrón nuevo— **leer `design.md`** y seguirlo. No improvisar tokens, motion ni anatomía si ya hay un patrón ahí.
+
+Si el caso no está documentado: copiar el patrón más cercano de `design.md` y de la UI existente, implementarlo, y **añadir el apartado en `design.md`**.

@@ -5,6 +5,7 @@ import {
   COLONIAS_ACAPULCO,
   COMPLEJIDADES,
   ESCENARIOS_ACUSE,
+  esOpcionEspecificar,
   RELACIONES_REMITENTE,
   TIPOS_PETICION,
   URGENCIAS,
@@ -240,12 +241,19 @@ function validarCampos(
   if (subcategorias.length > 2) {
     return { error: "Máximo dos subcategorías", status: 400 };
   }
+  if (subcategorias.some((s) => esOpcionEspecificar(s))) {
+    return { error: "Especifica la opción de Otro.", status: 400 };
+  }
+  if (subcategorias.some((s) => s.length > 160)) {
+    return { error: "La subcategoría es demasiado larga", status: 400 };
+  }
   const subSet = new Set([
     ...categoria.subcategorias,
     ...extrasCatalogo,
     ...(input.subcategoriasPermitidas ?? []),
   ]);
-  if (subcategorias.some((s) => !subSet.has(s))) {
+  const permiteLibre = categoria.subcategorias.some(esOpcionEspecificar);
+  if (subcategorias.some((s) => !subSet.has(s) && !permiteLibre)) {
     return { error: "Subcategoría inválida", status: 400 };
   }
 
@@ -293,9 +301,12 @@ function validarCampos(
     telefonoRemitente: remitenteTelefono,
   });
   const escenarioRaw = asString(input.escenarioAcuse);
-  const escenarioAcuse = ESCENARIO_IDS.has(escenarioRaw)
-    ? (escenarioRaw as EscenarioAcuse)
-    : escenarioDerivado;
+  const escenarioAcuse =
+    remitenteRelacion === "mismo"
+      ? "A"
+      : ESCENARIO_IDS.has(escenarioRaw)
+        ? (escenarioRaw as EscenarioAcuse)
+        : escenarioDerivado;
 
   return {
     ciudadanoNombre,

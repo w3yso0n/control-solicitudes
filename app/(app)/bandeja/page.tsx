@@ -1,12 +1,15 @@
 "use client";
 
 import { esImagenPreview } from "@/components/cuantiva/DocumentoPreview";
+import { FilterCombobox } from "@/components/FilterCombobox";
+import { etiquetaEvento } from "@/components/territorio/EventoOrigenField";
 import { Button, Card } from "@/components/ui";
+import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { nombreMunicipio, tituloLote } from "@/lib/lote-titulo";
 import type { LoteDocumentoDto, LoteDto } from "@/lib/types";
 import { FileText } from "lucide-react";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 function EstadoDoc({ doc }: { doc: LoteDocumentoDto }) {
   if (doc.estatus === "capturado") {
@@ -27,6 +30,8 @@ export default function CuantivaBandejaPage() {
   const [lotes, setLotes] = useState<LoteDto[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
+  const [cveMun, setCveMun] = useState("");
+  const [evento, setEvento] = useState("");
 
   const cargar = useCallback(async () => {
     setError("");
@@ -53,14 +58,85 @@ export default function CuantivaBandejaPage() {
     void cargar();
   }, [cargar]);
 
+  const municipiosOpciones = useMemo(() => {
+    const vistos = new Set(lotes.map((l) => l.cveMun));
+    return MUNICIPIOS_GUERRERO.filter((m) => vistos.has(m.cveMun))
+      .map((m) => ({ id: m.cveMun, label: m.nombre, meta: m.region }))
+      .sort((a, b) => a.label.localeCompare(b.label, "es"));
+  }, [lotes]);
+
+  const eventosOpciones = useMemo(() => {
+    const vistos = new Set<string>();
+    const opts: { id: string; label: string }[] = [];
+    for (const lote of lotes) {
+      const label = etiquetaEvento(lote.eventoOrigen);
+      const id = label.toLowerCase();
+      if (vistos.has(id)) continue;
+      vistos.add(id);
+      opts.push({ id, label });
+    }
+    return opts.sort((a, b) => a.label.localeCompare(b.label, "es"));
+  }, [lotes]);
+
+  const lotesFiltrados = useMemo(() => {
+    return lotes.filter((lote) => {
+      if (cveMun && lote.cveMun !== cveMun) return false;
+      if (evento && etiquetaEvento(lote.eventoOrigen).toLowerCase() !== evento) {
+        return false;
+      }
+      return true;
+    });
+  }, [lotes, cveMun, evento]);
+
+  const hayFiltros = cveMun !== "" || evento !== "";
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold">Bandeja de captura</h1>
-        <p className="text-sm text-zinc-500">
+        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-guinda">
+          Operación
+        </p>
+        <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
+          Bandeja de captura
+        </h1>
+        <p className="mt-1 text-sm text-zinc-500">
           Lotes cerrados, más antiguos primero. Entra al lote para ver y editar
           cada archivo.
         </p>
+      </div>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="w-full sm:max-w-xs">
+          <FilterCombobox
+            value={cveMun}
+            onChange={setCveMun}
+            options={municipiosOpciones}
+            placeholder="Todos los municipios"
+            emptyLabel="Todos los municipios"
+            searchPlaceholder="Buscar municipio o región…"
+          />
+        </div>
+        <div className="w-full sm:max-w-xs">
+          <FilterCombobox
+            value={evento}
+            onChange={setEvento}
+            options={eventosOpciones}
+            placeholder="Todos los eventos"
+            emptyLabel="Todos los eventos"
+            searchPlaceholder="Buscar evento…"
+          />
+        </div>
+        {hayFiltros ? (
+          <button
+            type="button"
+            onClick={() => {
+              setCveMun("");
+              setEvento("");
+            }}
+            className="shrink-0 text-sm font-medium text-guinda transition-colors hover:underline"
+          >
+            Limpiar
+          </button>
+        ) : null}
       </div>
       {error ? (
         <p className="text-sm text-guinda" role="alert">
@@ -72,7 +148,7 @@ export default function CuantivaBandejaPage() {
           <p className="text-sm text-zinc-500">Cargando bandeja…</p>
         ) : null}
         {!cargando
-          ? lotes.map((lote) => {
+          ? lotesFiltrados.map((lote) => {
               const pend = lote.documentos.filter(
                 (d) => d.estatus === "pendiente",
               ).length;
@@ -167,6 +243,11 @@ export default function CuantivaBandejaPage() {
           : null}
         {!cargando && lotes.length === 0 && !error ? (
           <p className="text-sm text-zinc-500">No hay lotes en bandeja.</p>
+        ) : null}
+        {!cargando && lotes.length > 0 && lotesFiltrados.length === 0 ? (
+          <p className="text-sm text-zinc-500">
+            No hay lotes que coincidan con esos filtros.
+          </p>
         ) : null}
       </div>
     </div>

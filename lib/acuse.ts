@@ -9,7 +9,7 @@ export function derivarEscenarioAcuse(input: {
   const tienePeticionario = Boolean(input.telefonoPeticionario?.trim());
   const tieneRemitente = Boolean(input.telefonoRemitente?.trim());
   if (input.relacion === "mismo") {
-    return tienePeticionario ? "A" : "D";
+    return "A";
   }
   if (tienePeticionario && tieneRemitente) return "B";
   if (!tienePeticionario && tieneRemitente) return "C";

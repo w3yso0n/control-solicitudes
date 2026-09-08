@@ -1,18 +1,20 @@
 "use client";
 
 import { DocumentoPreview } from "@/components/cuantiva/DocumentoPreview";
+import { FilterCombobox } from "@/components/FilterCombobox";
 import { Button, Card } from "@/components/ui";
 import { nombreMunicipio, tituloLote } from "@/lib/lote-titulo";
 import type { LoteDto } from "@/lib/types";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function LoteDocumentosPage() {
   const { loteId } = useParams<{ loteId: string }>();
   const [lote, setLote] = useState<LoteDto | null>(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
+  const [estatusDoc, setEstatusDoc] = useState("");
 
   const cargar = useCallback(async () => {
     setError("");
@@ -38,6 +40,12 @@ export default function LoteDocumentosPage() {
   useEffect(() => {
     void cargar();
   }, [cargar]);
+
+  const documentos = useMemo(() => {
+    if (!lote) return [];
+    if (!estatusDoc) return lote.documentos;
+    return lote.documentos.filter((d) => d.estatus === estatusDoc);
+  }, [lote, estatusDoc]);
 
   if (cargando) {
     return <p className="text-sm text-zinc-500">Cargando lote…</p>;
@@ -78,8 +86,21 @@ export default function LoteDocumentosPage() {
           </Link>
         ) : null}
       </div>
+      <div className="w-full sm:max-w-xs">
+        <FilterCombobox
+          value={estatusDoc}
+          onChange={setEstatusDoc}
+          options={[
+            { id: "pendiente", label: "Pendiente" },
+            { id: "capturado", label: "Capturado" },
+          ]}
+          placeholder="Todos los archivos"
+          emptyLabel="Todos los archivos"
+          searchPlaceholder="Buscar estatus…"
+        />
+      </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {lote.documentos.map((doc) => {
+        {documentos.map((doc) => {
           const capturado = doc.estatus === "capturado";
           return (
             <Card
@@ -117,6 +138,11 @@ export default function LoteDocumentosPage() {
             </Card>
           );
         })}
+        {documentos.length === 0 ? (
+          <p className="col-span-full text-sm text-zinc-500">
+            No hay archivos con ese estatus.
+          </p>
+        ) : null}
       </div>
     </div>
   );
