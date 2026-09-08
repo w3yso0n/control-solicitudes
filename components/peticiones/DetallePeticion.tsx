@@ -16,6 +16,7 @@ import {
   TIPOS_PETICION,
   URGENCIAS,
 } from "@/lib/catalogos";
+import { nombreZona } from "@/lib/geo";
 import { nombreMunicipio } from "@/lib/lote-titulo";
 import { PLANTILLAS_DEFAULT, normalizarPlantillas } from "@/lib/plantillas-default";
 import type { PlantillasConfig } from "@/lib/services/config";
@@ -279,7 +280,7 @@ export function DetallePeticion({
                 label="Distrito local"
                 value={
                   peticion.distritoLocal
-                    ? `Distrito local ${Number(peticion.distritoLocal)}`
+                    ? nombreZona(peticion.distritoLocal, "local")
                     : "—"
                 }
               />
@@ -287,7 +288,7 @@ export function DetallePeticion({
                 label="Distrito federal"
                 value={
                   peticion.distritoFederal
-                    ? `Distrito federal ${Number(peticion.distritoFederal)}`
+                    ? nombreZona(peticion.distritoFederal, "federal")
                     : "—"
                 }
               />

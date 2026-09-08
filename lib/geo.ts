@@ -1,4 +1,8 @@
 import { geoContains } from "d3-geo";
+import {
+  CATALOGO_DISTRITOS_FEDERALES,
+  CATALOGO_DISTRITOS_LOCALES,
+} from "@/lib/distritos-guerrero";
 import { nombreMunicipio } from "@/lib/lote-titulo";
 import type { MunicipioFeature } from "@/lib/mapa-guerrero";
 
@@ -16,20 +20,12 @@ export type DistritoFeature = GeoJSON.Feature<
   { clave: string; tipo: "local" | "federal"; nombre: string; entidad: string }
 >;
 
-export const DISTRITOS_FEDERALES: DistritoInfo[] = Array.from(
-  { length: 8 },
-  (_, i) => {
-    const clave = String(i + 1).padStart(2, "0");
-    return { clave, nombre: `Distrito federal ${i + 1}` };
-  },
+export const DISTRITOS_FEDERALES: DistritoInfo[] = CATALOGO_DISTRITOS_FEDERALES.map(
+  (dist) => ({ clave: dist.clave, nombre: dist.nombre }),
 );
 
-export const DISTRITOS_LOCALES: DistritoInfo[] = Array.from(
-  { length: 28 },
-  (_, i) => {
-    const clave = String(i + 1).padStart(2, "0");
-    return { clave, nombre: `Distrito local ${i + 1}` };
-  },
+export const DISTRITOS_LOCALES: DistritoInfo[] = CATALOGO_DISTRITOS_LOCALES.map(
+  (dist) => ({ clave: dist.clave, nombre: dist.nombre }),
 );
 
 export const NIVEL_LABEL: Record<NivelGeografia, string> = {

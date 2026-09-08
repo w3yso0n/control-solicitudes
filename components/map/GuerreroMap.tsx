@@ -109,7 +109,9 @@ export default function GuerreroMap({
         : cargarDistritosMapa(nivel === "local" ? "local" : "federal");
     carga
       .then((f) => {
-        if (vivo) setFeatures(f);
+        if (!vivo) return;
+        if (f.length === 0) setError(true);
+        else setFeatures(f);
       })
       .catch(() => {
         if (vivo) setError(true);
@@ -160,7 +162,7 @@ export default function GuerreroMap({
   if (error) {
     return (
       <div className="flex h-full items-center justify-center px-6 text-center text-sm text-zinc-500">
-        No se pudo cargar la geometría del estado. Revisa tu conexión.
+        No se pudo armar el mapa de esta geografía. El de municipios sigue disponible.
       </div>
     );
   }

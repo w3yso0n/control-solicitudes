@@ -1,3 +1,4 @@
+import { catalogoDe } from "@/lib/distritos-guerrero";
 import { geoBounds, geoContains, geoMercator, geoPath } from "d3-geo";
 import { scaleLinear } from "d3-scale";
 import { feature } from "topojson-client";
@@ -62,6 +63,65 @@ export type ZonaFeature = GeoJSON.Feature<
 let cacheLocal: Promise<ZonaFeature[]> | null = null;
 let cacheFederal: Promise<ZonaFeature[]> | null = null;
 
+function anillosDe(geom: GeoJSON.Geometry): GeoJSON.Position[][][] {
+  if (geom.type === "Polygon") return [geom.coordinates];
+  if (geom.type === "MultiPolygon") return geom.coordinates;
+  if (geom.type === "GeometryCollection") {
+    return geom.geometries.flatMap(anillosDe);
+  }
+  return [];
+}
+
+function nombreDistritoMapa(
+  tipo: "local" | "federal",
+  clave: string,
+  fallback?: string,
+): string {
+  const catalogo = catalogoDe(tipo).find((dist) => dist.clave === clave);
+  if (catalogo) return catalogo.nombre;
+  if (fallback) return fallback;
+  return tipo === "local"
+    ? `Distrito local ${clave}`
+    : `Distrito federal ${clave}`;
+}
+
+async function cargarDistritosDesdeMunicipios(
+  tipo: "local" | "federal",
+): Promise<ZonaFeature[]> {
+  const munis = await cargarMunicipiosGuerrero();
+  const byCve = new Map(munis.map((f) => [f.properties.cveMun, f]));
+  return catalogoDe(tipo).flatMap((dist) => {
+    const coords = dist.municipios.flatMap((mun) => {
+      const feat = byCve.get(mun.cveMun);
+      return feat ? anillosDe(feat.geometry) : [];
+    });
+    if (coords.length === 0) return [];
+    return [
+      {
+        type: "Feature" as const,
+        properties: { clave: dist.clave, nombre: dist.nombre },
+        geometry: { type: "MultiPolygon" as const, coordinates: coords },
+      },
+    ];
+  });
+}
+
+function mapearFeaturesDistrito(
+  tipo: "local" | "federal",
+  fc: GeoJSON.FeatureCollection,
+): ZonaFeature[] {
+  return (fc.features as ZonaFeature[]).map((f) => {
+    const clave = String(f.properties?.clave ?? "").padStart(2, "0");
+    return {
+      ...f,
+      properties: {
+        clave,
+        nombre: nombreDistritoMapa(tipo, clave, f.properties?.nombre),
+      },
+    };
+  });
+}
+
 export function cargarDistritosMapa(
   tipo: "local" | "federal",
 ): Promise<ZonaFeature[]> {
@@ -76,15 +136,16 @@ export function cargarDistritosMapa(
       if (!r.ok) throw new Error(`geo ${r.status}`);
       return r.json() as Promise<GeoJSON.FeatureCollection>;
     })
-    .then((fc) =>
-      (fc.features as ZonaFeature[]).map((f) => ({
-        ...f,
-        properties: {
-          clave: String(f.properties?.clave ?? "").padStart(2, "0"),
-          nombre: f.properties?.nombre ?? `Distrito ${f.properties?.clave}`,
-        },
-      })),
-    );
+    .then((fc) => {
+      const mapped = mapearFeaturesDistrito(tipo, fc);
+      if (mapped.length === 0) throw new Error("geo vacio");
+      return mapped;
+    })
+    .catch(async () => {
+      const fallback = await cargarDistritosDesdeMunicipios(tipo);
+      if (fallback.length === 0) throw new Error("geo fallback vacio");
+      return fallback;
+    });
   if (tipo === "local") cacheLocal = carga;
   else cacheFederal = carga;
   return carga;
