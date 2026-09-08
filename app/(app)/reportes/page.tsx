@@ -123,7 +123,7 @@ function deltaLabel(actual: number, anterior: number) {
   const d = actual - anterior;
   if (d === 0) return { text: "sin cambio", clase: "text-zinc-500" };
   if (d > 0) return { text: `+${d}`, clase: "text-emerald-700" };
-  return { text: String(d), clase: "text-red-700" };
+  return { text: String(d), clase: "text-guinda" };
 }
 
 function conteoPor<T extends string>(items: T[]): Map<T, number> {
@@ -134,6 +134,81 @@ function conteoPor<T extends string>(items: T[]): Map<T, number> {
 
 function nombreMunicipio(cveMun: string) {
   return MUNICIPIOS_GUERRERO.find((m) => m.cveMun === cveMun)?.nombre ?? cveMun;
+}
+
+/** Par de barras horizontales enfrentadas: periodo actual vs anterior, mismo eje. */
+function BarraComparativa({
+  actual,
+  anterior,
+  max,
+}: {
+  actual: number;
+  anterior: number;
+  max: number;
+}) {
+  const wActual = max > 0 ? Math.max((actual / max) * 100, actual > 0 ? 3 : 0) : 0;
+  const wAnterior = max > 0 ? Math.max((anterior / max) * 100, anterior > 0 ? 3 : 0) : 0;
+  return (
+    <div className="flex w-full flex-col gap-1">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-100">
+        <div
+          className="h-full rounded-full bg-guinda transition-[width]"
+          style={{ width: `${wActual}%` }}
+        />
+      </div>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-100">
+        <div
+          className="h-full rounded-full bg-zinc-300 transition-[width]"
+          style={{ width: `${wAnterior}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/** Arco de proporción (donut) para una sola métrica sobre un total. */
+function ArcoProporcion({
+  valor,
+  total,
+  color = "var(--color-guinda)",
+  size = 96,
+}: {
+  valor: number;
+  total: number;
+  color?: string;
+  size?: number;
+}) {
+  const pct = total > 0 ? valor / total : 0;
+  const r = size / 2 - 8;
+  const c = 2 * Math.PI * r;
+  const dash = c * pct;
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${size} ${size}`}
+      className="shrink-0 -rotate-90"
+    >
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke="var(--color-zinc-100, #f4f4f5)"
+        strokeWidth={8}
+      />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke={color}
+        strokeWidth={8}
+        strokeLinecap="round"
+        strokeDasharray={`${dash} ${c - dash}`}
+      />
+    </svg>
+  );
 }
 
 export default function ReportesPage() {
@@ -264,6 +339,7 @@ export default function ReportesPage() {
     }))
     .sort((a, b) => b.count - a.count);
   const maxTema = Math.max(1, ...temas.map((t) => t.count));
+  const maxZona = Math.max(1, ...porZona.map((z) => Math.max(z.actual, z.anterior)));
 
   const porGira = useMemo(() => {
     const map = new Map<string, number>();
@@ -303,6 +379,7 @@ export default function ReportesPage() {
     }))
     .sort((a, b) => b.count - a.count)
     .slice(0, 8);
+  const maxDistrito = Math.max(1, ...distritosTop.map((d) => d.count));
 
   const porCapturista = useMemo(() => {
     const map = new Map<string, number>();
@@ -316,6 +393,7 @@ export default function ReportesPage() {
       .map(([nombre, count]) => ({ nombre, count }))
       .sort((a, b) => b.count - a.count);
   }, [actual, consultasPorId]);
+  const maxCapturista = Math.max(1, ...porCapturista.map((c) => c.count));
 
   const porOperador = useMemo(() => {
     const map = new Map<string, { asignadas: number; cumplidas: number }>();
@@ -332,6 +410,7 @@ export default function ReportesPage() {
       .map(([nombre, v]) => ({ nombre, ...v }))
       .sort((a, b) => b.cumplidas - a.cumplidas || b.asignadas - a.asignadas);
   }, [actual, consultasPorId]);
+  const maxOperador = Math.max(1, ...porOperador.map((o) => o.asignadas));
 
   const blancas = porZona.filter((z) => z.actual === 0);
   const municipiosActivos = porZona.filter((z) => z.actual > 0).length;
@@ -343,6 +422,11 @@ export default function ReportesPage() {
       .filter((c) => !conDatos.has(c))
       .map((c) => nombreMunicipio(c));
   }, [actual, municipiosFoco, nivel]);
+
+  const pctCumplidas =
+    actual.length > 0 ? Math.round((cumplidas.length / actual.length) * 100) : 0;
+  const pctIntermediarios =
+    actual.length > 0 ? Math.round((intermediarios.length / actual.length) * 100) : 0;
 
   function elegirPeriodo(id: PeriodoReporte) {
     setPeriodo(id);
@@ -359,7 +443,8 @@ export default function ReportesPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-5xl space-y-6 print:max-w-none print:space-y-0">
+      {/* ───────────────────────── Controles (solo pantalla) ───────────────────────── */}
       <div className="flex flex-col gap-3 print:hidden sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="text-xl font-semibold">Reportes</h1>
@@ -424,224 +509,247 @@ export default function ReportesPage() {
         <p className="text-sm text-zinc-500 print:hidden">Cargando reportes…</p>
       ) : null}
 
-      <Card className="overflow-hidden print:border-0 print:shadow-none">
-        <div className="flex items-center justify-between gap-4 border-b border-zinc-200 bg-white px-6 py-5">
-          <Image
-            src="/brand/logo-wordmark-on-light.png"
-            alt="BE4TRIZ MOJICA"
-            width={160}
-            height={160}
-            className="h-16 w-auto object-contain"
-          />
-          <div className="text-right">
-            <p className="text-[11px] uppercase tracking-wide text-zinc-400">
-              Gabinete de campaña · Guerrero
-            </p>
-            <p className="text-sm font-semibold text-guinda">{meta.titulo}</p>
-            <p className="text-xs text-zinc-500">{etiquetaActual}</p>
+      {/* ───────────────────────── Vista de pantalla ───────────────────────── */}
+      <div className="space-y-4 print:hidden">
+        {/* Hero: el número que manda + su tendencia, separado del resto */}
+        <Card className="overflow-hidden">
+          <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.15em] text-guinda">
+                {meta.kpis}
+              </p>
+              <div className="mt-1 flex items-baseline gap-3">
+                <span className="text-5xl font-semibold tracking-tight text-zinc-900">
+                  {actual.length}
+                </span>
+                <span className={`text-sm font-medium ${volDelta.clase}`}>
+                  {volDelta.text} vs {previa.length} {etiquetaPrevia}
+                </span>
+              </div>
+              <p className="mt-1 text-sm text-zinc-500">{etiquetaActual}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-x-8 gap-y-3 sm:grid-cols-2">
+              <div>
+                <p className="text-2xl font-semibold text-zinc-900">
+                  {urgenciaAlta}
+                </p>
+                <p className="text-xs text-zinc-500">urgencia alta</p>
+              </div>
+              <div>
+                <p className="text-2xl font-semibold text-zinc-900">
+                  {comunitarias}
+                </p>
+                <p className="text-xs text-zinc-500">alcance comunitario</p>
+              </div>
+              <div>
+                <p className="text-2xl font-semibold text-zinc-900">
+                  {municipiosActivos}
+                  <span className="text-base font-normal text-zinc-400">
+                    /{municipiosConDatos}
+                  </span>
+                </p>
+                <p className="text-xs text-zinc-500">zonas con actividad</p>
+              </div>
+              <div>
+                <p className="text-2xl font-semibold text-zinc-900">
+                  {compromisos.length}
+                </p>
+                <p className="text-xs text-zinc-500">compromisos de gobierno</p>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div className="grid gap-3 border-b border-zinc-100 p-6 sm:grid-cols-3 lg:grid-cols-6">
-          <div>
-            <p className="text-xs text-zinc-500">{meta.kpis}</p>
-            <p className="mt-1 text-3xl font-semibold">{actual.length}</p>
-            <p className={`text-xs ${volDelta.clase}`}>
-              {volDelta.text} vs periodo anterior ({previa.length})
-            </p>
+          {/* Cumplimiento como arco, separado visualmente del resumen operativo */}
+          <div className="flex items-center gap-5 border-t border-zinc-100 bg-hueso/60 px-6 py-4">
+            <div className="relative shrink-0">
+              <ArcoProporcion valor={cumplidas.length} total={actual.length} size={72} />
+              <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-zinc-900">
+                {pctCumplidas}%
+              </span>
+            </div>
+            <div className="text-sm">
+              <p className="font-medium text-zinc-900">
+                {cumplidas.length} cumplidas {meta.corto}
+              </p>
+              <p className="text-zinc-500">
+                {conEvidencia.length} de {cumplidas.length} con foto de evidencia
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-xs text-zinc-500">Urgencia alta</p>
-            <p className="mt-1 text-3xl font-semibold">{urgenciaAlta}</p>
-            <p className="text-xs text-zinc-500">integridad, salud o vulnerabilidad</p>
-          </div>
-          <div>
-            <p className="text-xs text-zinc-500">COMUNITARIA</p>
-            <p className="mt-1 text-3xl font-semibold">{comunitarias}</p>
-            <p className="text-xs text-zinc-500">alcance colectivo</p>
-          </div>
-          <div>
-            <p className="text-xs text-zinc-500">Cumplidas</p>
-            <p className="mt-1 text-3xl font-semibold">{cumplidas.length}</p>
-            <p className="text-xs text-zinc-500">
-              {conEvidencia.length} con foto
-            </p>
-          </div>
-          <div>
-            <p className="text-xs text-zinc-500">Compromisos</p>
-            <p className="mt-1 text-3xl font-semibold">{compromisos.length}</p>
-            <p className="text-xs text-zinc-500">estructurales / gobierno</p>
-          </div>
-          <div>
-            <p className="text-xs text-zinc-500">Zonas activas</p>
-            <p className="mt-1 text-3xl font-semibold">{municipiosActivos}</p>
-            <p className="text-xs text-zinc-500">
-              de {municipiosConDatos} con datos
-            </p>
-          </div>
-        </div>
+        </Card>
 
-        <section className="px-6 py-5">
-          <h2 className="text-sm font-semibold text-zinc-900">1. Volumen por zona</h2>
-          <p className="mb-3 text-xs text-zinc-500">
-            Comparativo contra {etiquetaPrevia}.
-          </p>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="border-b border-zinc-200 text-xs uppercase text-zinc-500">
-                <tr>
-                  <th className="py-2 pr-3">Zona</th>
-                  <th className="py-2 pr-3 text-right">Periodo</th>
-                  <th className="py-2 pr-3 text-right">Anterior</th>
-                  <th className="py-2 pr-3 text-right">Δ</th>
-                  <th className="py-2">Tema principal</th>
-                </tr>
-              </thead>
-              <tbody>
-                {porZona.map((z) => {
-                  const d = deltaLabel(z.actual, z.anterior);
-                  return (
-                    <tr key={z.clave} className="border-b border-zinc-100">
-                      <td className="py-2 pr-3 font-medium">{z.nombre}</td>
-                      <td className="py-2 pr-3 text-right">{z.actual}</td>
-                      <td className="py-2 pr-3 text-right text-zinc-500">
-                        {z.anterior}
-                      </td>
-                      <td className={`py-2 pr-3 text-right ${d.clase}`}>{d.text}</td>
-                      <td className="py-2 text-zinc-600">{z.tema}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+        {/* Volumen por zona: barras enfrentadas en vez de tabla de números */}
+        <Card className="p-6">
+          <div className="mb-4 flex items-baseline justify-between gap-3">
+            <h2 className="text-sm font-semibold text-zinc-900">
+              Volumen por zona
+            </h2>
+            <span className="text-xs text-zinc-400">
+              ▊ periodo actual · ▬ {etiquetaPrevia}
+            </span>
           </div>
-          {huecosFoco.length > 0 ? (
-            <p className="mt-3 text-xs text-zinc-500">
-              Municipios foco sin peticiones {meta.corto}: {huecosFoco.join(", ")}.
+          {porZona.length === 0 ? (
+            <p className="text-sm text-zinc-500">Sin peticiones en el periodo.</p>
+          ) : (
+            <ul className="space-y-3">
+              {porZona.slice(0, 12).map((z) => {
+                const d = deltaLabel(z.actual, z.anterior);
+                return (
+                  <li key={z.clave} className="grid grid-cols-[1fr_auto] items-center gap-4 sm:grid-cols-[10rem_1fr_auto]">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-zinc-900">
+                        {z.nombre}
+                      </p>
+                      <p className="truncate text-xs text-zinc-400">{z.tema}</p>
+                    </div>
+                    <div className="hidden sm:block">
+                      <BarraComparativa actual={z.actual} anterior={z.anterior} max={maxZona} />
+                    </div>
+                    <div className="flex items-baseline gap-2 justify-self-end text-right">
+                      <span className="text-lg font-semibold tabular-nums text-zinc-900">
+                        {z.actual}
+                      </span>
+                      <span className={`text-xs tabular-nums ${d.clase}`}>{d.text}</span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+          {porZona.length > 12 ? (
+            <p className="mt-3 text-xs text-zinc-400">
+              +{porZona.length - 12} zonas más en el documento de impresión.
             </p>
           ) : null}
-        </section>
+          {huecosFoco.length > 0 ? (
+            <p className="mt-4 rounded-xl bg-ambar/10 px-3 py-2 text-xs text-zinc-600">
+              Sin peticiones {meta.corto} en municipios foco: {huecosFoco.join(", ")}.
+            </p>
+          ) : null}
+        </Card>
 
-        <section className="border-t border-zinc-100 px-6 py-5">
-          <h2 className="text-sm font-semibold text-zinc-900">
-            2. Distribución temática
+        {/* Distribución temática */}
+        <Card className="p-6">
+          <h2 className="mb-4 text-sm font-semibold text-zinc-900">
+            De qué habla la ciudadanía
           </h2>
-          <p className="mb-4 text-xs text-zinc-500">
-            Qué está preocupando a la ciudadanía {meta.corto}.
-          </p>
-          <ul className="space-y-3">
-            {temas.map((t) => (
-              <li key={t.id}>
-                <div className="mb-1 flex items-center justify-between text-sm">
-                  <span>{t.nombre}</span>
-                  <span className="text-zinc-500">{t.count}</span>
+          <ul className="space-y-2.5">
+            {temas.slice(0, 8).map((t) => (
+              <li key={t.id} className="grid grid-cols-[1fr_auto] items-center gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="w-36 shrink-0 truncate text-sm text-zinc-700 sm:w-48">
+                    {t.nombre}
+                  </span>
+                  <div className="h-2 w-full max-w-xs overflow-hidden rounded-full bg-zinc-100">
+                    <div
+                      className="h-full rounded-full bg-brasa"
+                      style={{ width: `${(t.count / maxTema) * 100}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="h-2 overflow-hidden rounded-full bg-zinc-100">
-                  <div
-                    className="h-full rounded-full bg-guinda"
-                    style={{ width: `${(t.count / maxTema) * 100}%` }}
-                  />
-                </div>
+                <span className="text-sm font-medium tabular-nums text-zinc-900">
+                  {t.count}
+                </span>
               </li>
             ))}
             {temas.length === 0 ? (
               <li className="text-sm text-zinc-500">Sin peticiones en el periodo.</li>
             ) : null}
           </ul>
-        </section>
+        </Card>
 
-        <div className="grid gap-0 border-t border-zinc-100 lg:grid-cols-2">
-          <section className="px-6 py-5 lg:border-r lg:border-zinc-100">
-            <h2 className="text-sm font-semibold text-zinc-900">
-              3. Por evento o gira
+        {/* Rankings en grid 2x2, formato consistente con barra mini */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Card className="p-6">
+            <h2 className="mb-1 text-sm font-semibold text-zinc-900">
+              Eventos y giras
             </h2>
             <p className="mb-3 text-xs text-zinc-500">
-              Volumen capturado ligado a giras {meta.corto}.
+              Volumen capturado en campo {meta.corto}.
             </p>
             {porGira.length === 0 ? (
               <p className="text-sm text-zinc-500">
-                Ninguna petición de este periodo está ligada a un evento.
+                Ninguna petición está ligada a un evento.
               </p>
             ) : (
-              <ul className="space-y-3">
-                {porGira.map((ev) => (
-                  <li
-                    key={ev.nombre}
-                    className="flex items-start justify-between gap-3 rounded-md bg-zinc-50 px-3 py-2"
-                  >
-                    <div>
-                      <p className="text-sm font-medium">{ev.nombre}</p>
-                    </div>
-                    <span className="text-sm font-semibold text-guinda">
+              <ul className="space-y-2">
+                {porGira.slice(0, 6).map((ev) => (
+                  <li key={ev.nombre} className="flex items-center justify-between gap-3">
+                    <span className="truncate text-sm text-zinc-700">{ev.nombre}</span>
+                    <span className="rounded-full bg-guinda/8 px-2 py-0.5 text-xs font-semibold text-guinda">
                       {ev.count}
                     </span>
                   </li>
                 ))}
               </ul>
             )}
-          </section>
-          <section className="px-6 py-5">
-            <h2 className="text-sm font-semibold text-zinc-900">
-              4. Distritos locales
+          </Card>
+
+          <Card className="p-6">
+            <h2 className="mb-1 text-sm font-semibold text-zinc-900">
+              Distritos locales
             </h2>
             <p className="mb-3 text-xs text-zinc-500">
               Volumen por distrito {meta.corto}.
             </p>
             {distritosTop.length === 0 ? (
-              <p className="text-sm text-zinc-500">
-                Sin distrito asignado en las peticiones del periodo.
-              </p>
+              <p className="text-sm text-zinc-500">Sin distrito asignado.</p>
             ) : (
-              <ol className="space-y-2 text-sm">
-                {distritosTop.map((c, i) => (
-                  <li key={c.nombre} className="flex justify-between">
-                    <span>
-                      <span className="mr-2 text-zinc-400">{i + 1}.</span>
+              <ul className="space-y-2">
+                {distritosTop.map((c) => (
+                  <li key={c.nombre} className="flex items-center gap-3">
+                    <span className="w-28 shrink-0 truncate text-sm text-zinc-700">
                       {c.nombre}
                     </span>
-                    <span className="text-zinc-500">{c.count}</span>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-100">
+                      <div
+                        className="h-full rounded-full bg-guinda/70"
+                        style={{ width: `${(c.count / maxDistrito) * 100}%` }}
+                      />
+                    </div>
+                    <span className="w-5 shrink-0 text-right text-xs font-medium tabular-nums text-zinc-500">
+                      {c.count}
+                    </span>
                   </li>
                 ))}
-              </ol>
+              </ul>
             )}
-            {blancas.length > 0 ? (
-              <p className="mt-4 text-xs text-zinc-500">
-                Sin peticiones {meta.corto}:{" "}
-                {blancas.map((z) => z.nombre).join(", ")}.
-              </p>
-            ) : null}
-          </section>
-        </div>
+          </Card>
 
-        <div className="grid gap-0 border-t border-zinc-100 lg:grid-cols-2">
-          <section className="px-6 py-5 lg:border-r lg:border-zinc-100">
-            <h2 className="text-sm font-semibold text-zinc-900">
-              5. Operadores y evidencias
+          <Card className="p-6">
+            <h2 className="mb-1 text-sm font-semibold text-zinc-900">
+              Operadores
             </h2>
             <p className="mb-3 text-xs text-zinc-500">
-              Asignadas vs cumplidas {meta.corto}. {conEvidencia.length} de{" "}
-              {cumplidas.length} cumplidas tienen foto.
+              Cumplidas sobre asignadas {meta.corto}.
             </p>
             {porOperador.length === 0 ? (
-              <p className="text-sm text-zinc-500">
-                Nadie tiene peticiones asignadas en el periodo.
-              </p>
+              <p className="text-sm text-zinc-500">Nadie tiene asignaciones.</p>
             ) : (
-              <ul className="space-y-2 text-sm">
-                {porOperador.map((o) => (
-                  <li key={o.nombre} className="flex justify-between gap-3">
-                    <span>{o.nombre}</span>
-                    <span className="tabular-nums text-zinc-500">
+              <ul className="space-y-2">
+                {porOperador.slice(0, 6).map((o) => (
+                  <li key={o.nombre} className="flex items-center gap-3">
+                    <span className="w-28 shrink-0 truncate text-sm text-zinc-700">
+                      {o.nombre}
+                    </span>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-100">
+                      <div
+                        className="h-full rounded-full bg-emerald-500"
+                        style={{ width: `${(o.asignadas / maxOperador) * 100}%` }}
+                      />
+                    </div>
+                    <span className="w-10 shrink-0 text-right text-xs font-medium tabular-nums text-zinc-500">
                       {o.cumplidas}/{o.asignadas}
                     </span>
                   </li>
                 ))}
               </ul>
             )}
-          </section>
-          <section className="px-6 py-5">
-            <h2 className="text-sm font-semibold text-zinc-900">
-              6. Productividad de captura
+          </Card>
+
+          <Card className="p-6">
+            <h2 className="mb-1 text-sm font-semibold text-zinc-900">
+              Captura
             </h2>
             <p className="mb-3 text-xs text-zinc-500">
               Folios confirmados por capturista {meta.corto}.
@@ -649,22 +757,33 @@ export default function ReportesPage() {
             {porCapturista.length === 0 ? (
               <p className="text-sm text-zinc-500">Sin capturas en el periodo.</p>
             ) : (
-              <ul className="space-y-2 text-sm">
-                {porCapturista.map((c) => (
-                  <li key={c.nombre} className="flex justify-between gap-3">
-                    <span>{c.nombre}</span>
-                    <span className="tabular-nums text-zinc-500">{c.count}</span>
+              <ul className="space-y-2">
+                {porCapturista.slice(0, 6).map((c) => (
+                  <li key={c.nombre} className="flex items-center gap-3">
+                    <span className="w-28 shrink-0 truncate text-sm text-zinc-700">
+                      {c.nombre}
+                    </span>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-100">
+                      <div
+                        className="h-full rounded-full bg-ambar"
+                        style={{ width: `${(c.count / maxCapturista) * 100}%` }}
+                      />
+                    </div>
+                    <span className="w-5 shrink-0 text-right text-xs font-medium tabular-nums text-zinc-500">
+                      {c.count}
+                    </span>
                   </li>
                 ))}
               </ul>
             )}
-          </section>
+          </Card>
         </div>
 
-        <div className="grid gap-0 border-t border-zinc-100 lg:grid-cols-2">
-          <section className="px-6 py-5 lg:border-r lg:border-zinc-100">
-            <h2 className="text-sm font-semibold text-zinc-900">
-              7. Compromisos de gobierno
+        {/* Compromisos + intermediarios: cierre del reporte */}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Card className="p-6">
+            <h2 className="mb-1 text-sm font-semibold text-zinc-900">
+              Compromisos de gobierno
             </h2>
             <p className="mb-3 text-xs text-zinc-500">
               Estructurales o en compromiso {meta.corto}.
@@ -672,39 +791,279 @@ export default function ReportesPage() {
             {compromisos.length === 0 ? (
               <p className="text-sm text-zinc-500">Ninguno en el periodo.</p>
             ) : (
-              <ul className="space-y-2 text-sm">
-                {compromisos.slice(0, 8).map((p) => (
-                  <li key={p.id} className="flex justify-between gap-3">
-                    <span className="font-mono text-xs">{p.folio}</span>
-                    <span className="truncate text-zinc-500">
+              <ul className="space-y-1.5">
+                {compromisos.slice(0, 6).map((p) => (
+                  <li key={p.id} className="flex items-center justify-between gap-3 text-sm">
+                    <span className="font-mono text-xs text-zinc-500">{p.folio}</span>
+                    <span className="truncate text-zinc-700">
                       {nombreMunicipio(p.cveMun)}
                     </span>
                   </li>
                 ))}
               </ul>
             )}
-          </section>
-          <section className="px-6 py-5">
-            <h2 className="text-sm font-semibold text-zinc-900">
-              8. Intermediarios
-            </h2>
-            <p className="mb-3 text-xs text-zinc-500">
+            {compromisos.length > 6 ? (
+              <p className="mt-2 text-xs text-zinc-400">
+                +{compromisos.length - 6} más en el documento de impresión.
+              </p>
+            ) : null}
+          </Card>
+
+          <Card className="flex items-center gap-5 p-6">
+            <div className="relative shrink-0">
+              <ArcoProporcion
+                valor={intermediarios.length}
+                total={actual.length}
+                color="var(--color-ambar)"
+                size={72}
+              />
+              <span className="absolute inset-0 flex items-center justify-center text-sm font-semibold text-zinc-900">
+                {pctIntermediarios}%
+              </span>
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-zinc-900">Intermediarios</h2>
+              <p className="mt-0.5 text-2xl font-semibold text-zinc-900">
+                {intermediarios.length}
+              </p>
+              <p className="text-xs text-zinc-500">
+                peticiones que no trajo el mismo ciudadano {meta.corto}
+              </p>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      {/* ───────────────────────── Documento de impresión ───────────────────────── */}
+      <div className="hidden print:block print-report">
+        <header className="print-report__header">
+          <Image
+            src="/brand/logo-wordmark-on-light.png"
+            alt="BE4TRIZ MOJICA"
+            width={160}
+            height={160}
+            className="print-report__logo"
+          />
+          <div className="print-report__headmeta">
+            <p className="print-report__eyebrow">Gabinete de campaña · Guerrero</p>
+            <h1 className="print-report__title">{meta.titulo}</h1>
+            <p className="print-report__range">{etiquetaActual}</p>
+          </div>
+        </header>
+
+        <section className="print-report__summary">
+          <div className="print-report__summary-main">
+            <span className="print-report__summary-value">{actual.length}</span>
+            <span className="print-report__summary-label">{meta.kpis}</span>
+            <span className={`print-report__delta ${volDelta.clase === "text-guinda" ? "is-down" : volDelta.clase === "text-emerald-700" ? "is-up" : ""}`}>
+              {volDelta.text} vs {previa.length} ({etiquetaPrevia})
+            </span>
+          </div>
+          <dl className="print-report__stats">
+            <div>
+              <dt>Urgencia alta</dt>
+              <dd>{urgenciaAlta}</dd>
+            </div>
+            <div>
+              <dt>Comunitaria</dt>
+              <dd>{comunitarias}</dd>
+            </div>
+            <div>
+              <dt>Cumplidas</dt>
+              <dd>
+                {cumplidas.length}{" "}
+                <span className="print-report__stat-sub">({pctCumplidas}%)</span>
+              </dd>
+            </div>
+            <div>
+              <dt>Con evidencia</dt>
+              <dd>{conEvidencia.length}</dd>
+            </div>
+            <div>
+              <dt>Compromisos</dt>
+              <dd>{compromisos.length}</dd>
+            </div>
+            <div>
+              <dt>Zonas activas</dt>
+              <dd>
+                {municipiosActivos}
+                <span className="print-report__stat-sub">/{municipiosConDatos}</span>
+              </dd>
+            </div>
+          </dl>
+        </section>
+
+        <section className="print-report__section">
+          <h2>Volumen por zona</h2>
+          <p className="print-report__note">Comparativo contra {etiquetaPrevia}.</p>
+          <table className="print-report__table">
+            <thead>
+              <tr>
+                <th>Zona</th>
+                <th className="num">Periodo</th>
+                <th className="num">Anterior</th>
+                <th className="num">Δ</th>
+                <th>Tema principal</th>
+              </tr>
+            </thead>
+            <tbody>
+              {porZona.map((z) => {
+                const d = deltaLabel(z.actual, z.anterior);
+                return (
+                  <tr key={z.clave}>
+                    <td className="strong">{z.nombre}</td>
+                    <td className="num">{z.actual}</td>
+                    <td className="num muted">{z.anterior}</td>
+                    <td className={`num ${d.clase === "text-guinda" ? "is-down" : d.clase === "text-emerald-700" ? "is-up" : "muted"}`}>
+                      {d.text}
+                    </td>
+                    <td className="muted">{z.tema}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {huecosFoco.length > 0 ? (
+            <p className="print-report__note">
+              Municipios foco sin peticiones {meta.corto}: {huecosFoco.join(", ")}.
+            </p>
+          ) : null}
+        </section>
+
+        <section className="print-report__section">
+          <h2>Distribución temática</h2>
+          <p className="print-report__note">
+            Qué está preocupando a la ciudadanía {meta.corto}.
+          </p>
+          <ul className="print-report__bars">
+            {temas.map((t) => (
+              <li key={t.id}>
+                <span className="print-report__bar-label">{t.nombre}</span>
+                <span className="print-report__bar-track">
+                  <span
+                    className="print-report__bar-fill"
+                    style={{ width: `${(t.count / maxTema) * 100}%` }}
+                  />
+                </span>
+                <span className="print-report__bar-value">{t.count}</span>
+              </li>
+            ))}
+            {temas.length === 0 ? <li className="print-report__note">Sin peticiones en el periodo.</li> : null}
+          </ul>
+        </section>
+
+        <section className="print-report__section print-report__cols">
+          <div>
+            <h2>Eventos y giras</h2>
+            <p className="print-report__note">Volumen capturado en campo {meta.corto}.</p>
+            {porGira.length === 0 ? (
+              <p className="print-report__note">Ninguna petición ligada a un evento.</p>
+            ) : (
+              <ol className="print-report__list">
+                {porGira.map((ev) => (
+                  <li key={ev.nombre}>
+                    <span>{ev.nombre}</span>
+                    <span className="strong">{ev.count}</span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+          <div>
+            <h2>Distritos locales</h2>
+            <p className="print-report__note">Volumen por distrito {meta.corto}.</p>
+            {distritosTop.length === 0 ? (
+              <p className="print-report__note">Sin distrito asignado.</p>
+            ) : (
+              <ol className="print-report__list">
+                {distritosTop.map((c) => (
+                  <li key={c.nombre}>
+                    <span>{c.nombre}</span>
+                    <span className="strong">{c.count}</span>
+                  </li>
+                ))}
+              </ol>
+            )}
+            {blancas.length > 0 ? (
+              <p className="print-report__note">
+                Sin peticiones {meta.corto}: {blancas.map((z) => z.nombre).join(", ")}.
+              </p>
+            ) : null}
+          </div>
+        </section>
+
+        <section className="print-report__section print-report__cols">
+          <div>
+            <h2>Operadores y evidencias</h2>
+            <p className="print-report__note">
+              Asignadas vs cumplidas {meta.corto}. {conEvidencia.length} de {cumplidas.length}{" "}
+              cumplidas tienen foto.
+            </p>
+            {porOperador.length === 0 ? (
+              <p className="print-report__note">Nadie tiene peticiones asignadas.</p>
+            ) : (
+              <ol className="print-report__list">
+                {porOperador.map((o) => (
+                  <li key={o.nombre}>
+                    <span>{o.nombre}</span>
+                    <span className="strong">{o.cumplidas}/{o.asignadas}</span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+          <div>
+            <h2>Productividad de captura</h2>
+            <p className="print-report__note">Folios confirmados por capturista {meta.corto}.</p>
+            {porCapturista.length === 0 ? (
+              <p className="print-report__note">Sin capturas en el periodo.</p>
+            ) : (
+              <ol className="print-report__list">
+                {porCapturista.map((c) => (
+                  <li key={c.nombre}>
+                    <span>{c.nombre}</span>
+                    <span className="strong">{c.count}</span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+        </section>
+
+        <section className="print-report__section print-report__cols">
+          <div>
+            <h2>Compromisos de gobierno</h2>
+            <p className="print-report__note">Estructurales o en compromiso {meta.corto}.</p>
+            {compromisos.length === 0 ? (
+              <p className="print-report__note">Ninguno en el periodo.</p>
+            ) : (
+              <ol className="print-report__list">
+                {compromisos.map((p) => (
+                  <li key={p.id}>
+                    <span className="print-report__folio">{p.folio}</span>
+                    <span className="strong">{nombreMunicipio(p.cveMun)}</span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
+          <div>
+            <h2>Intermediarios</h2>
+            <p className="print-report__note">
               Peticiones que no trajo el mismo ciudadano {meta.corto}.
             </p>
-            <p className="text-3xl font-semibold">{intermediarios.length}</p>
-            <p className="text-xs text-zinc-500">
-              {actual.length > 0
-                ? `${Math.round((intermediarios.length / actual.length) * 100)}% del periodo`
-                : "Sin peticiones"}
+            <p className="print-report__bignum">{intermediarios.length}</p>
+            <p className="print-report__note">
+              {actual.length > 0 ? `${pctIntermediarios}% del periodo` : "Sin peticiones"}
             </p>
-          </section>
-        </div>
+          </div>
+        </section>
 
-        <footer className="border-t border-zinc-100 bg-zinc-50 px-6 py-3 text-[11px] text-zinc-500">
-          Documento interno · {fechaLarga(HOY_FIJO)} · No constituye promesa de
-          resolución. La voz ciudadana se registra y se toma en cuenta.
+        <footer className="print-report__footer">
+          Documento interno · {fechaLarga(HOY_FIJO)} · No constituye promesa de resolución.
+          La voz ciudadana se registra y se toma en cuenta.
         </footer>
-      </Card>
+      </div>
     </div>
   );
 }

@@ -103,6 +103,21 @@ Cuando un modal pide elegir entre dos desenlaces excluyentes de una acción (ej.
 - Acciones previas al paso de decisión (ej. "Pasar a en gestión") van solas, arriba, como un único botón — son un paso distinto, no compiten con la decisión binaria.
 - Acciones secundarias que no son parte del desenlace (ej. "Reclasificar complejidad") van colapsadas al fondo del modal detrás de un disclosure discreto (`text-xs text-zinc-500` + `ChevronDown` que rota), fuera del flujo principal.
 
+### Reportes: pantalla densa vs. documento de impresión
+
+Referencia: `app/(app)/reportes/page.tsx`. Un reporte con muchas cifras no se resuelve con una sola vista que sirve para pantalla y para PDF — son dos layouts distintos con el mismo dato de fondo.
+
+**En pantalla** (`print:hidden`): jerarquía en tres niveles, no una tabla plana de números.
+- Hero: el KPI que manda (volumen del periodo) grande junto a su delta vs. periodo anterior, con las métricas secundarias como bloque de apoyo, no al mismo nivel visual.
+- Proporciones sobre un total (cumplidas/total, intermediarios/total) van en `ArcoProporcion` (donut SVG inline), no como número suelto — el ojo necesita el contexto del total sin leer dos cifras y dividir.
+- Comparativos por categoría (zona actual vs. anterior) usan `BarraComparativa`: dos barras horizontales apiladas (gruesa = actual en guinda, delgada = anterior en zinc-300) en vez de columnas de números — se escanea de un vistazo quién subió y quién bajó.
+- Rankings (operadores, capturistas, distritos, temas) usan barra mini + valor a la derecha, con el color reservado por tipo de dato: guinda/brasa para volumen ciudadano, ambar para productividad de captura, emerald para cumplimiento de operadores. No mezclar el significado de un color entre secciones.
+- Grid `sm:grid-cols-2` para pares de rankings relacionados, cada uno en su propia `Card` — nunca todas las secciones apiladas en una sola columna larga.
+
+**En impresión** (`hidden print:block`, clases `print-report__*` en `globals.css`): documento propio, no una copia de la vista de pantalla con `window.print()`. Página carta (`@page { size: letter portrait; margin: 14mm 16mm }`), tipografía editorial — `font-display` (Fraunces) solo en el título del documento y el número grande de intermediarios, Inter en todo lo demás, tamaños en `pt`. Sin `Card`, sin sombras, sin `rounded-2xl`: hairlines (`border-bottom` 0.5–1.5pt en grises zinc) para separar secciones, como un documento impreso real. Tablas con cabecera uppercase pequeña y alineación numérica a la derecha. `AppShell` oculta sidebar y header con `print:hidden` y quita el padding de `main` con `print:p-0` para que el documento ocupe toda la hoja.
+
+Si se agrega una sección nueva al reporte, se agrega en ambos layouts: la versión escaneable en pantalla y su equivalente editorial en el bloque de impresión.
+
 ### Sidebar / scrollbar overlay
 
 - Nativo oculto. Thumb propio, 4px, blanco semitransparente sobre guinda.

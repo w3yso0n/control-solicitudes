@@ -156,7 +156,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Sidebar: fijo respecto al viewport, no viaja con el scroll de la página. */}
       <aside
-        className={`sidebar-shell fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden rounded-r-[1.75rem] bg-gradient-to-b from-guinda to-[#4d0c22] text-white shadow-[12px_0_36px_-20px_rgba(28,10,18,0.55)] transition-[width] duration-200 [color-scheme:dark] ${
+        className={`sidebar-shell fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden rounded-r-[1.75rem] bg-gradient-to-b from-guinda to-[#4d0c22] text-white shadow-[12px_0_36px_-20px_rgba(28,10,18,0.55)] transition-[width] duration-200 [color-scheme:dark] print:hidden ${
           collapsed ? "w-[72px]" : "w-72"
         } ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
@@ -261,9 +261,9 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Columna de contenido: el margen izquierdo reserva el espacio fijo del sidebar. */}
       <div
-        className={`flex min-h-screen flex-col transition-[margin] duration-200 ${collapsed ? "md:ml-[72px]" : "md:ml-72"}`}
+        className={`flex min-h-screen flex-col transition-[margin] duration-200 print:ml-0 ${collapsed ? "md:ml-[72px]" : "md:ml-72"}`}
       >
-        <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-3 border-b border-zinc-200 bg-white px-4 shadow-[0_1px_0_rgba(28,10,18,0.04)] md:px-6">
+        <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-3 border-b border-zinc-200 bg-white px-4 shadow-[0_1px_0_rgba(28,10,18,0.04)] print:hidden md:px-6">
           <button
             type="button"
             className="rounded-full p-2 text-guinda md:hidden"
@@ -295,7 +295,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           )}
         </header>
-        <main className="flex-1 p-4 md:p-6">{children}</main>
+        <main className="flex-1 p-4 print:p-0 md:p-6">{children}</main>
       </div>
     </div>
   );

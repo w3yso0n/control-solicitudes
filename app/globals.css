@@ -152,3 +152,308 @@ body {
     stroke-dashoffset: 0;
   }
 }
+
+/* ───────────────────────── Documento de impresión: Reportes ─────────────────────────
+   No es un screenshot de la pantalla: es su propio layout editorial, visible solo
+   dentro de @media print (el resto de la página usa print:hidden). Página carta,
+   tipografía Fraunces para el título (identidad de marca en un documento formal),
+   Inter para todo lo demás, sin sombras/rounded-corners de UI. */
+@media print {
+  @page {
+    size: letter portrait;
+    margin: 14mm 16mm;
+  }
+
+  body {
+    background: #ffffff;
+  }
+}
+
+.print-report {
+  color: var(--color-tinta);
+  font-size: 10.5pt;
+  line-height: 1.4;
+}
+
+.print-report__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16pt;
+  border-bottom: 1.5pt solid var(--color-guinda);
+  padding-bottom: 8pt;
+  margin-bottom: 14pt;
+}
+
+.print-report__logo {
+  height: 34pt;
+  width: auto;
+  object-fit: contain;
+}
+
+.print-report__headmeta {
+  text-align: right;
+}
+
+.print-report__eyebrow {
+  font-size: 7.5pt;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-guinda);
+  margin: 0;
+}
+
+.print-report__title {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 17pt;
+  font-weight: 600;
+  margin: 2pt 0 0;
+  color: var(--color-tinta);
+}
+
+.print-report__range {
+  font-size: 9pt;
+  color: #71717a;
+  margin: 1pt 0 0;
+}
+
+.print-report__summary {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 20pt;
+  border-bottom: 0.75pt solid #e4e4e7;
+  padding-bottom: 12pt;
+  margin-bottom: 14pt;
+}
+
+.print-report__summary-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 92pt;
+}
+
+.print-report__summary-value {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 34pt;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-guinda);
+}
+
+.print-report__summary-label {
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #71717a;
+  margin-top: 3pt;
+}
+
+.print-report__delta {
+  font-size: 8.5pt;
+  font-weight: 600;
+  margin-top: 4pt;
+  color: #52525b;
+}
+
+.print-report__delta.is-up {
+  color: #047857;
+}
+
+.print-report__delta.is-down {
+  color: var(--color-guinda);
+}
+
+.print-report__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10pt 16pt;
+  margin: 0;
+}
+
+.print-report__stats dt {
+  font-size: 7.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #a1a1aa;
+}
+
+.print-report__stats dd {
+  font-size: 14pt;
+  font-weight: 600;
+  margin: 1pt 0 0;
+  color: var(--color-tinta);
+}
+
+.print-report__stat-sub {
+  font-size: 8.5pt;
+  font-weight: 400;
+  color: #a1a1aa;
+}
+
+.print-report__section {
+  break-inside: avoid;
+  padding: 11pt 0;
+  border-bottom: 0.75pt solid #e4e4e7;
+}
+
+.print-report__section h2 {
+  font-size: 10pt;
+  font-weight: 600;
+  margin: 0 0 2pt;
+  color: var(--color-tinta);
+}
+
+.print-report__note {
+  font-size: 8.5pt;
+  color: #71717a;
+  margin: 0 0 6pt;
+}
+
+.print-report__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9pt;
+}
+
+.print-report__table th {
+  text-align: left;
+  font-size: 7.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #a1a1aa;
+  font-weight: 600;
+  border-bottom: 0.75pt solid #d4d4d8;
+  padding: 3pt 6pt 3pt 0;
+}
+
+.print-report__table td {
+  padding: 3pt 6pt 3pt 0;
+  border-bottom: 0.5pt solid #f0f0f1;
+}
+
+.print-report__table th.num,
+.print-report__table td.num {
+  text-align: right;
+}
+
+.print-report__table td.strong {
+  font-weight: 600;
+}
+
+.print-report__table td.muted {
+  color: #a1a1aa;
+}
+
+.print-report__table td.is-up {
+  color: #047857;
+}
+
+.print-report__table td.is-down {
+  color: var(--color-guinda);
+}
+
+.print-report__bars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5pt;
+}
+
+.print-report__bars li {
+  display: grid;
+  grid-template-columns: 96pt 1fr 20pt;
+  align-items: center;
+  gap: 8pt;
+}
+
+.print-report__bar-label {
+  font-size: 8.5pt;
+  color: #3f3f46;
+}
+
+.print-report__bar-track {
+  height: 5pt;
+  border-radius: 3pt;
+  background: #f0f0f1;
+  overflow: hidden;
+}
+
+.print-report__bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--color-brasa);
+  border-radius: 3pt;
+}
+
+.print-report__bar-value {
+  font-size: 8.5pt;
+  font-weight: 600;
+  text-align: right;
+}
+
+.print-report__cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 20pt;
+}
+
+.print-report__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: item;
+  display: flex;
+  flex-direction: column;
+  gap: 3pt;
+}
+
+.print-report__list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8pt;
+  font-size: 8.5pt;
+  counter-increment: item;
+}
+
+.print-report__list li::before {
+  content: counter(item) ".";
+  color: #d4d4d8;
+  margin-right: 5pt;
+}
+
+.print-report__list li span:first-child {
+  flex: 1;
+  color: #3f3f46;
+}
+
+.print-report__list .strong {
+  font-weight: 600;
+  color: var(--color-tinta);
+}
+
+.print-report__folio {
+  font-family: var(--font-mono);
+  font-size: 7.5pt;
+  color: #71717a;
+}
+
+.print-report__bignum {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 28pt;
+  font-weight: 600;
+  color: var(--color-ambar);
+  margin: 4pt 0 0;
+  line-height: 1;
+}
+
+.print-report__footer {
+  padding-top: 10pt;
+  font-size: 7.5pt;
+  color: #a1a1aa;
+  text-align: center;
+}
