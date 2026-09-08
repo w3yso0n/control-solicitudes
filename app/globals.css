@@ -156,12 +156,15 @@ body {
 /* ───────────────────────── Documento de impresión: Reportes ─────────────────────────
    No es un screenshot de la pantalla: es su propio layout editorial, visible solo
    dentro de @media print (el resto de la página usa print:hidden). Página carta,
-   tipografía Fraunces para el título (identidad de marca en un documento formal),
-   Inter para todo lo demás, sin sombras/rounded-corners de UI. */
+   una sola familia (Inter, `--font-sans`) en todo el documento — nada de Fraunces
+   ni fuentes serif en los números grandes, ni sombras/rounded-corners de UI.
+   Portada tipo one-pager ejecutivo (`print-cover`, primera hoja): banner guinda
+   a sangre con título + KPI principal, tarjetas de estadísticas con header de
+   color bloque y dos highlights (zona/tema top). Cuerpo con hairlines. */
 @media print {
   @page {
     size: letter portrait;
-    margin: 14mm 16mm;
+    margin: 16mm 16mm 14mm;
   }
 
   body {
@@ -171,125 +174,237 @@ body {
 
 .print-report {
   color: var(--color-tinta);
-  font-size: 10.5pt;
-  line-height: 1.4;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  line-height: 1.45;
 }
 
-.print-report__header {
+/* ── Portada: masthead editorial. El color vive en texto y bordes, nunca
+   solo en background — así se ve igual si el navegador no imprime fondos
+   (la casilla "Gráficos en segundo plano" del diálogo de impresión suele
+   estar desactivada por defecto). Cierra en una sola hoja. ── */
+.print-cover {
+  break-after: page;
+}
+
+.print-cover__brand {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 16pt;
-  border-bottom: 1.5pt solid var(--color-guinda);
-  padding-bottom: 8pt;
-  margin-bottom: 14pt;
 }
 
-.print-report__logo {
-  height: 34pt;
+.print-cover__logo {
+  height: 26pt;
   width: auto;
   object-fit: contain;
 }
 
-.print-report__headmeta {
+.print-cover__generated {
+  font-size: 8pt;
+  color: #a1a1aa;
   text-align: right;
-}
-
-.print-report__eyebrow {
-  font-size: 7.5pt;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--color-guinda);
   margin: 0;
 }
 
-.print-report__title {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 17pt;
-  font-weight: 600;
-  margin: 2pt 0 0;
-  color: var(--color-tinta);
+.print-cover__rule {
+  height: 3pt;
+  background: var(--color-guinda);
+  margin: 14pt 0 30pt;
 }
 
-.print-report__range {
-  font-size: 9pt;
-  color: #71717a;
-  margin: 1pt 0 0;
-}
-
-.print-report__summary {
+.print-cover__masthead {
   display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 20pt;
-  border-bottom: 0.75pt solid #e4e4e7;
-  padding-bottom: 12pt;
-  margin-bottom: 14pt;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 24pt;
 }
 
-.print-report__summary-main {
-  display: flex;
-  flex-direction: column;
-  min-width: 92pt;
-}
-
-.print-report__summary-value {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 34pt;
+.print-cover__kicker {
+  font-size: 9.5pt;
   font-weight: 600;
+  color: var(--color-guinda);
+  margin: 0 0 8pt;
+}
+
+.print-cover__title {
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-size: 33pt;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.06;
+  margin: 0;
+  color: var(--color-tinta);
+  overflow-wrap: break-word;
+}
+
+.print-cover__range {
+  font-size: 11pt;
+  color: #52525b;
+  margin: 10pt 0 0;
+}
+
+.print-cover__headline {
+  text-align: right;
+  padding-left: 24pt;
+  border-left: 0.75pt solid #e4e4e7;
+  min-width: 130pt;
+}
+
+.print-cover__headline-value {
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-size: 56pt;
+  font-weight: 800;
   line-height: 1;
   color: var(--color-guinda);
+  letter-spacing: -0.03em;
 }
 
-.print-report__summary-label {
-  font-size: 8pt;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+.print-cover__headline-label {
+  font-size: 8.5pt;
   color: #71717a;
-  margin-top: 3pt;
+  margin-top: 6pt;
 }
 
-.print-report__delta {
+.print-cover__headline-delta {
   font-size: 8.5pt;
   font-weight: 600;
-  margin-top: 4pt;
+  margin-top: 5pt;
   color: #52525b;
 }
 
-.print-report__delta.is-up {
+.print-cover__headline-delta.is-up {
   color: #047857;
 }
 
-.print-report__delta.is-down {
+.print-cover__headline-delta.is-down {
   color: var(--color-guinda);
 }
 
-.print-report__stats {
+.print-cover__stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10pt 16pt;
-  margin: 0;
+  grid-template-columns: repeat(6, 1fr);
+  margin: 32pt 0 0;
+  padding-top: 14pt;
+  border-top: 0.75pt solid var(--color-tinta);
 }
 
-.print-report__stats dt {
+.print-cover__stats > div {
+  padding: 0 12pt 0 0;
+  border-left: 0.75pt solid #e4e4e7;
+  padding-left: 12pt;
+}
+
+.print-cover__stats > div:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.print-cover__stats dt {
   font-size: 7.5pt;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #a1a1aa;
+  color: #71717a;
+  margin: 0;
 }
 
-.print-report__stats dd {
-  font-size: 14pt;
-  font-weight: 600;
-  margin: 1pt 0 0;
+.print-cover__stats dd {
+  font-size: 19pt;
+  font-weight: 700;
+  margin: 5pt 0 0;
   color: var(--color-tinta);
+  letter-spacing: -0.01em;
 }
 
-.print-report__stat-sub {
+.print-cover__stat-sub {
   font-size: 8.5pt;
   font-weight: 400;
   color: #a1a1aa;
+}
+
+.print-cover__highlights {
+  margin: 34pt 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28pt;
+}
+
+.print-cover__highlight-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8pt;
+  font-size: 9pt;
+  font-weight: 700;
+  color: var(--color-tinta);
+  padding-bottom: 5pt;
+  margin-bottom: 7pt;
+  border-bottom: 1.5pt solid var(--color-guinda);
+}
+
+.print-cover__highlight-count {
+  font-weight: 400;
+  color: #a1a1aa;
+}
+
+.print-cover__highlight-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8pt;
+  font-size: 9pt;
+  padding: 4.5pt 0;
+  border-bottom: 0.5pt solid #f0f0f1;
+}
+
+.print-cover__highlight-row:last-child {
+  border-bottom: none;
+}
+
+.print-cover__highlight-row span:first-child {
+  color: #3f3f46;
+}
+
+.print-cover__highlight-row span:last-child {
+  font-weight: 700;
+  color: var(--color-tinta);
+  font-variant-numeric: tabular-nums;
+}
+
+.print-cover__footer {
+  margin-top: 30pt;
+  padding-top: 10pt;
+  border-top: 0.75pt solid #e4e4e7;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12pt;
+  font-size: 7.5pt;
+  color: #a1a1aa;
+}
+
+/* ── Cuerpo: secciones de detalle ── */
+.print-report__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16pt;
+  border-bottom: 1.5pt solid var(--color-guinda);
+  padding-bottom: 6pt;
+  margin-bottom: 14pt;
+}
+
+.print-report__header-title {
+  font-size: 11pt;
+  font-weight: 600;
+  color: var(--color-tinta);
+  margin: 0;
+}
+
+.print-report__header-range {
+  font-size: 8.5pt;
+  color: #71717a;
+  margin: 0;
 }
 
 .print-report__section {
@@ -443,16 +558,19 @@ body {
 }
 
 .print-report__bignum {
-  font-family: var(--font-display), Georgia, serif;
-  font-size: 28pt;
-  font-weight: 600;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-size: 26pt;
+  font-weight: 700;
   color: var(--color-ambar);
   margin: 4pt 0 0;
   line-height: 1;
+  letter-spacing: -0.01em;
 }
 
 .print-report__footer {
   padding-top: 10pt;
+  margin-top: 4pt;
+  border-top: 0.75pt solid #e4e4e7;
   font-size: 7.5pt;
   color: #a1a1aa;
   text-align: center;

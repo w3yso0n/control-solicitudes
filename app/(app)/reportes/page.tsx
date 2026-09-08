@@ -836,30 +836,45 @@ export default function ReportesPage() {
 
       {/* ───────────────────────── Documento de impresión ───────────────────────── */}
       <div className="hidden print:block print-report">
-        <header className="print-report__header">
-          <Image
-            src="/brand/logo-wordmark-on-light.png"
-            alt="BE4TRIZ MOJICA"
-            width={160}
-            height={160}
-            className="print-report__logo"
-          />
-          <div className="print-report__headmeta">
-            <p className="print-report__eyebrow">Gabinete de campaña · Guerrero</p>
-            <h1 className="print-report__title">{meta.titulo}</h1>
-            <p className="print-report__range">{etiquetaActual}</p>
+        {/* Portada: masthead editorial. El color vive en texto/bordes (no en
+            fondos grandes) para verse bien aunque el navegador no imprima
+            fondos por defecto. */}
+        <section className="print-cover">
+          <div className="print-cover__brand">
+            <Image
+              src="/brand/logo-wordmark-on-light.png"
+              alt="BE4TRIZ MOJICA"
+              width={150}
+              height={150}
+              className="print-cover__logo"
+            />
+            <p className="print-cover__generated">
+              Gabinete de campaña · Guerrero
+              <br />
+              Generado el {fechaLarga(HOY_FIJO)}
+            </p>
           </div>
-        </header>
 
-        <section className="print-report__summary">
-          <div className="print-report__summary-main">
-            <span className="print-report__summary-value">{actual.length}</span>
-            <span className="print-report__summary-label">{meta.kpis}</span>
-            <span className={`print-report__delta ${volDelta.clase === "text-guinda" ? "is-down" : volDelta.clase === "text-emerald-700" ? "is-up" : ""}`}>
-              {volDelta.text} vs {previa.length} ({etiquetaPrevia})
-            </span>
+          <div className="print-cover__rule" />
+
+          <div className="print-cover__masthead">
+            <div>
+              <p className="print-cover__kicker">Reporte de peticiones ciudadanas</p>
+              <h1 className="print-cover__title">{meta.titulo}</h1>
+              <p className="print-cover__range">{etiquetaActual}</p>
+            </div>
+            <div className="print-cover__headline">
+              <div className="print-cover__headline-value">{actual.length}</div>
+              <div className="print-cover__headline-label">{meta.kpis}</div>
+              <div
+                className={`print-cover__headline-delta ${volDelta.clase === "text-guinda" ? "is-down" : volDelta.clase === "text-emerald-700" ? "is-up" : ""}`}
+              >
+                {volDelta.text} vs {previa.length} ({etiquetaPrevia})
+              </div>
+            </div>
           </div>
-          <dl className="print-report__stats">
+
+          <dl className="print-cover__stats">
             <div>
               <dt>Urgencia alta</dt>
               <dd>{urgenciaAlta}</dd>
@@ -872,7 +887,7 @@ export default function ReportesPage() {
               <dt>Cumplidas</dt>
               <dd>
                 {cumplidas.length}{" "}
-                <span className="print-report__stat-sub">({pctCumplidas}%)</span>
+                <span className="print-cover__stat-sub">({pctCumplidas}%)</span>
               </dd>
             </div>
             <div>
@@ -887,11 +902,58 @@ export default function ReportesPage() {
               <dt>Zonas activas</dt>
               <dd>
                 {municipiosActivos}
-                <span className="print-report__stat-sub">/{municipiosConDatos}</span>
+                <span className="print-cover__stat-sub">/{municipiosConDatos}</span>
               </dd>
             </div>
           </dl>
+
+          <div className="print-cover__highlights">
+            <div>
+              <p className="print-cover__highlight-head">
+                Zonas con más volumen
+                <span className="print-cover__highlight-count">{meta.corto}</span>
+              </p>
+              {porZona.slice(0, 5).map((z) => (
+                <div key={z.clave} className="print-cover__highlight-row">
+                  <span>{z.nombre}</span>
+                  <span>{z.actual}</span>
+                </div>
+              ))}
+              {porZona.length === 0 ? (
+                <div className="print-cover__highlight-row">
+                  <span>Sin peticiones en el periodo</span>
+                </div>
+              ) : null}
+            </div>
+            <div>
+              <p className="print-cover__highlight-head">
+                De qué habla la ciudadanía
+                <span className="print-cover__highlight-count">{meta.corto}</span>
+              </p>
+              {temas.slice(0, 5).map((t) => (
+                <div key={t.id} className="print-cover__highlight-row">
+                  <span>{t.nombre}</span>
+                  <span>{t.count}</span>
+                </div>
+              ))}
+              {temas.length === 0 ? (
+                <div className="print-cover__highlight-row">
+                  <span>Sin peticiones en el periodo</span>
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          <p className="print-cover__footer">
+            <span>Documento interno · No constituye promesa de resolución.</span>
+            <span>La voz ciudadana se registra y se toma en cuenta.</span>
+          </p>
         </section>
+
+        <header className="print-report__header">
+          <h2 className="print-report__header-title">{meta.titulo}</h2>
+          <p className="print-report__header-range">{etiquetaActual}</p>
+        </header>
 
         <section className="print-report__section">
           <h2>Volumen por zona</h2>
@@ -1060,8 +1122,7 @@ export default function ReportesPage() {
         </section>
 
         <footer className="print-report__footer">
-          Documento interno · {fechaLarga(HOY_FIJO)} · No constituye promesa de resolución.
-          La voz ciudadana se registra y se toma en cuenta.
+          Beatriz Mojica · Gabinete de campaña · Guerrero
         </footer>
       </div>
     </div>
