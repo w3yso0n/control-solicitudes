@@ -31,6 +31,7 @@ export function FilterCombobox({
   const searchRef = useRef<HTMLInputElement>(null);
   const [abierto, setAbierto] = useState(false);
   const [q, setQ] = useState("");
+  const [abrirHaciaArriba, setAbrirHaciaArriba] = useState(false);
 
   const seleccionado = options.find((o) => o.id === value);
 
@@ -46,6 +47,12 @@ export function FilterCombobox({
 
   useEffect(() => {
     if (!abierto || disabled) return;
+    const rect = rootRef.current?.getBoundingClientRect();
+    if (rect) {
+      const espacioAbajo = window.innerHeight - rect.bottom;
+      const espacioArriba = rect.top;
+      setAbrirHaciaArriba(espacioAbajo < 320 && espacioArriba > espacioAbajo);
+    }
     searchRef.current?.focus();
     const onDoc = (e: MouseEvent) => {
       if (!rootRef.current?.contains(e.target as Node)) {
@@ -61,9 +68,15 @@ export function FilterCombobox({
     };
     document.addEventListener("mousedown", onDoc);
     window.addEventListener("keydown", onKey);
+    const onScroll = () => {
+      setAbierto(false);
+      setQ("");
+    };
+    window.addEventListener("scroll", onScroll);
     return () => {
       document.removeEventListener("mousedown", onDoc);
       window.removeEventListener("keydown", onKey);
+      window.removeEventListener("scroll", onScroll);
     };
   }, [abierto, disabled]);
 
@@ -124,7 +137,11 @@ export function FilterCombobox({
       </button>
 
       {abierto ? (
-        <div className="absolute left-0 right-0 z-30 mt-2 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-[0_12px_40px_-12px_rgba(28,10,18,0.35)]">
+        <div
+          className={`absolute left-0 right-0 z-30 overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-[0_12px_40px_-12px_rgba(28,10,18,0.35)] ${
+            abrirHaciaArriba ? "bottom-full mb-2" : "top-full mt-2"
+          }`}
+        >
           <div className="flex items-center gap-2 border-b border-zinc-100 px-3 py-2.5">
             <Search size={14} className="shrink-0 text-zinc-400" />
             <input

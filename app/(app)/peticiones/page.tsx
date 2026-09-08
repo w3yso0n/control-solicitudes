@@ -2,6 +2,7 @@
 
 import { FilterCombobox } from "@/components/FilterCombobox";
 import { DetallePeticion } from "@/components/peticiones/DetallePeticion";
+import { BotonWhatsApp } from "@/components/peticiones/ModalWhatsApp";
 import { Card, Input } from "@/components/ui";
 import { CATEGORIA_POR_ID, CATEGORIAS, COLONIA_POR_ID, COMPLEJIDADES, ESTATUS_PETICION, ORIGENES_CAPTURA } from "@/lib/catalogos";
 import {
@@ -11,8 +12,14 @@ import {
 } from "@/lib/geo";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { nombreMunicipio } from "@/lib/lote-titulo";
+import { PLANTILLAS_DEFAULT, normalizarPlantillas } from "@/lib/plantillas-default";
 import { useSession } from "@/lib/session";
+import type { PlantillasConfig } from "@/lib/services/config";
 import type { PeticionConsultaDto } from "@/lib/types";
+import {
+  puedeAbrirWhatsApp,
+  telefonoVisibleConsulta,
+} from "@/lib/whatsapp-acuse";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 
@@ -27,11 +34,6 @@ const ETIQUETA_TIPO: Record<string, string> = {
 function etiquetaColonia(coloniaId: string | null) {
   if (!coloniaId?.trim()) return "N/A";
   return COLONIA_POR_ID[coloniaId]?.nombre ?? "N/A";
-}
-
-function telefonoLabel(tel: string | null) {
-  if (!tel || tel === "0000000000") return "Sin teléfono";
-  return tel;
 }
 
 function PeticionesContent() {
@@ -59,6 +61,8 @@ function PeticionesContent() {
   );
   const [estatus, setEstatus] = useState(() => searchParams.get("estatus") ?? "");
   const [origen, setOrigen] = useState(() => searchParams.get("origen") ?? "");
+  const [plantillas, setPlantillas] =
+    useState<PlantillasConfig>(PLANTILLAS_DEFAULT);
 
   const cargar = useCallback(async () => {
     setError("");
@@ -86,6 +90,20 @@ function PeticionesContent() {
   useEffect(() => {
     void cargar();
   }, [cargar]);
+
+  useEffect(() => {
+    let vivo = true;
+    fetch("/api/config")
+      .then((r) => r.json())
+      .then((d: { plantillas?: unknown }) => {
+        if (!vivo || !d.plantillas) return;
+        setPlantillas(normalizarPlantillas(d.plantillas));
+      })
+      .catch(() => undefined);
+    return () => {
+      vivo = false;
+    };
+  }, []);
 
   const municipiosConDatos = useMemo(() => {
     const claves = new Set(peticiones.map((p) => p.cveMun));
@@ -288,7 +306,7 @@ function PeticionesContent() {
             {filtradas.map((p) => {
               const activa = p.id === seleccionadaId;
               const comunitaria = p.alcance === "colectivo";
-              const tel = telefonoLabel(p.ciudadanoTelefono);
+              const tel = telefonoVisibleConsulta(p);
               const descripcion = p.descripcion.trim() || "N/A";
               return (
                 <tr
@@ -358,12 +376,24 @@ function PeticionesContent() {
                       {p.urgencia}
                     </span>
                   </td>
-                  <td
-                    className={`px-3 py-2 ${
-                      tel === "Sin teléfono" ? "text-zinc-400" : "text-zinc-700"
-                    }`}
-                  >
-                    {tel}
+                  <td className="px-3 py-2">
+                    {puedeAbrirWhatsApp(p) ? (
+                      <BotonWhatsApp
+                        peticion={p}
+                        plantillas={plantillas}
+                        variante="lista"
+                      />
+                    ) : (
+                      <span
+                        className={
+                          tel === "Sin teléfono"
+                            ? "text-zinc-400"
+                            : "text-zinc-700 tabular-nums"
+                        }
+                      >
+                        {tel}
+                      </span>
+                    )}
                   </td>
                 </tr>
               );
@@ -387,6 +417,7 @@ function PeticionesContent() {
         <DetallePeticion
           peticion={seleccionada}
           puedeBandeja={puedeBandeja}
+          plantillas={plantillas}
           onCerrar={() => setSeleccionadaId(null)}
         />
       ) : null}

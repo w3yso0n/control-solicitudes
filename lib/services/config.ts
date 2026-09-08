@@ -1,9 +1,15 @@
 import { MUNICIPIOS_FOCO } from "@/lib/catalogos";
 import { db } from "@/lib/db";
 import { configApp, eventos } from "@/lib/db/schema";
-import { PLANTILLAS_DEFAULT } from "@/lib/plantillas-default";
+import {
+  PLANTILLAS_DEFAULT,
+  normalizarPlantillas,
+  type PlantillasConfig,
+} from "@/lib/plantillas-default";
 import { registrarAuditoria, type ActorAudit } from "@/lib/services/auditoria";
 import { desc, eq } from "drizzle-orm";
+
+export type { DestinoPlantilla, PlantillaAcuse, PlantillasConfig } from "@/lib/plantillas-default";
 
 export type EventoCatalogoDto = {
   id: string;
@@ -13,8 +19,6 @@ export type EventoCatalogoDto = {
   lugar: string | null;
   activo: boolean;
 };
-
-export type PlantillasConfig = Record<"A" | "B" | "C" | "D", string>;
 
 export type ConfigPublica = {
   plantillas: PlantillasConfig;
@@ -57,16 +61,8 @@ async function escribirClave(
 }
 
 export async function getPlantillas(): Promise<PlantillasConfig> {
-  const stored = await leerClave<Partial<PlantillasConfig>>(
-    "plantillas",
-    PLANTILLAS_DEFAULT,
-  );
-  return {
-    A: stored.A?.trim() || PLANTILLAS_DEFAULT.A,
-    B: stored.B?.trim() || PLANTILLAS_DEFAULT.B,
-    C: stored.C?.trim() || PLANTILLAS_DEFAULT.C,
-    D: stored.D?.trim() || PLANTILLAS_DEFAULT.D,
-  };
+  const stored = await leerClave<unknown>("plantillas", PLANTILLAS_DEFAULT);
+  return normalizarPlantillas(stored);
 }
 
 export async function getMunicipiosFoco(): Promise<string[]> {

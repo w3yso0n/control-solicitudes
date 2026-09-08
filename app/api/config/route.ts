@@ -1,14 +1,20 @@
-import { getCurrentUser, puedeCapturar, requireAdmin } from "@/lib/auth";
+import {
+  getCurrentUser,
+  puedeCapturar,
+  puedeConsultar,
+  requireAdmin,
+} from "@/lib/auth";
 import { categoriasConExtras } from "@/lib/catalogos";
 import {
   getConfigCompleta,
   getMunicipiosFoco,
+  getPlantillas,
   getSubsExtra,
   guardarMunicipiosFoco,
   guardarPlantillas,
   guardarSubsExtra,
 } from "@/lib/services/config";
-import type { PlantillasConfig } from "@/lib/services/config";
+import { normalizarPlantillas } from "@/lib/plantillas-default";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
@@ -26,17 +32,26 @@ export async function GET() {
       });
     }
 
+    const plantillas = puedeConsultar(user.role)
+      ? await getPlantillas()
+      : undefined;
+
     if (puedeCapturar(user.role)) {
       const extras = await getSubsExtra();
       return NextResponse.json({
         subsExtra: extras,
         categorias: categoriasConExtras(extras),
+        plantillas,
       });
     }
 
     if (user.role === "candidata") {
       const municipiosFoco = await getMunicipiosFoco();
-      return NextResponse.json({ municipiosFoco });
+      return NextResponse.json({ municipiosFoco, plantillas });
+    }
+
+    if (user.role === "operador") {
+      return NextResponse.json({ plantillas });
     }
 
     return NextResponse.json({ error: "No autorizado" }, { status: 403 });
@@ -59,16 +74,11 @@ export async function PUT(request: NextRequest) {
     const seccion = typeof body.seccion === "string" ? body.seccion : "";
 
     if (seccion === "plantillas") {
-      const raw = body.plantillas as Partial<PlantillasConfig> | undefined;
-      if (!raw) {
+      const raw = body.plantillas;
+      if (!raw || typeof raw !== "object") {
         return NextResponse.json({ error: "Plantillas inválidas" }, { status: 400 });
       }
-      await guardarPlantillas(authz.user, {
-        A: String(raw.A ?? ""),
-        B: String(raw.B ?? ""),
-        C: String(raw.C ?? ""),
-        D: String(raw.D ?? ""),
-      });
+      await guardarPlantillas(authz.user, normalizarPlantillas(raw));
     } else if (seccion === "geografia") {
       const claves = Array.isArray(body.municipiosFoco)
         ? body.municipiosFoco.filter((c): c is string => typeof c === "string")

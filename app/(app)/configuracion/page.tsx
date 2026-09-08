@@ -1,11 +1,18 @@
 "use client";
 
+import { AvisoExito } from "@/components/AvisoExito";
 import { MunicipioSelect } from "@/components/MunicipioSelect";
 import { Button, Card, Field, Input, Textarea } from "@/components/ui";
 import { CATEGORIAS } from "@/lib/catalogos";
 import { DISTRITOS_FEDERALES, DISTRITOS_LOCALES } from "@/lib/geo";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { nombreMunicipio } from "@/lib/lote-titulo";
+import {
+  PLANTILLA_IDS,
+  PLANTILLAS_DEFAULT,
+  normalizarPlantillas,
+  type PlantillasConfig,
+} from "@/lib/plantillas-default";
 import type { Categoria } from "@/lib/types";
 import { useCallback, useEffect, useState } from "react";
 
@@ -20,8 +27,6 @@ type EventoDto = {
   activo: boolean;
 };
 
-type Plantillas = Record<"A" | "B" | "C" | "D", string>;
-
 const TABS: { id: Tab; label: string }[] = [
   { id: "eventos", label: "Eventos" },
   { id: "catalogo", label: "Catálogo" },
@@ -34,6 +39,9 @@ export default function ConfiguracionPage() {
   const [error, setError] = useState("");
   const [ok, setOk] = useState("");
   const [guardando, setGuardando] = useState(false);
+  const [aviso, setAviso] = useState<{ titulo: string; mensaje?: string } | null>(
+    null,
+  );
 
   const [eventos, setEventos] = useState<EventoDto[]>([]);
   const [nuevoNombre, setNuevoNombre] = useState("");
@@ -46,12 +54,8 @@ export default function ConfiguracionPage() {
   const [nuevaSub, setNuevaSub] = useState<Record<string, string>>({});
 
   const [foco, setFoco] = useState<string[]>([]);
-  const [plantillas, setPlantillas] = useState<Plantillas>({
-    A: "",
-    B: "",
-    C: "",
-    D: "",
-  });
+  const [plantillas, setPlantillas] =
+    useState<PlantillasConfig>(PLANTILLAS_DEFAULT);
 
   const cargar = useCallback(async () => {
     setError("");
@@ -63,7 +67,7 @@ export default function ConfiguracionPage() {
         subsExtra?: Record<string, string[]>;
         categorias?: Categoria[];
         municipiosFoco?: string[];
-        plantillas?: Plantillas;
+        plantillas?: unknown;
       };
       if (!res.ok) {
         setError(data.error || "No se pudo cargar la configuración");
@@ -73,7 +77,7 @@ export default function ConfiguracionPage() {
       setSubsExtra(data.subsExtra ?? {});
       setCategorias(data.categorias ?? CATEGORIAS);
       setFoco(data.municipiosFoco ?? []);
-      if (data.plantillas) setPlantillas(data.plantillas);
+      if (data.plantillas) setPlantillas(normalizarPlantillas(data.plantillas));
     } catch {
       setError("No se pudo cargar la configuración");
     }
@@ -98,7 +102,11 @@ export default function ConfiguracionPage() {
         setError(data.error || "No se pudo guardar");
         return;
       }
-      setOk("Guardado.");
+      if (seccion === "plantillas") {
+        setAviso({ titulo: "Textos de acuse guardados" });
+      } else {
+        setOk("Guardado.");
+      }
       await cargar();
     } catch {
       setError("No se pudo guardar");
@@ -434,24 +442,70 @@ export default function ConfiguracionPage() {
       {tab === "acuses" ? (
         <Card className="space-y-4 p-5">
           <p className="text-sm text-zinc-500">
-            Textos listos para cuando se active WhatsApp. Placeholders:{" "}
+            Textos que se abren en WhatsApp Web o la app desde Consulta (icono
+            junto al teléfono). Placeholders:{" "}
             <code className="text-xs">{"{nombre}"}</code>,{" "}
             <code className="text-xs">{"{folio}"}</code>,{" "}
             <code className="text-xs">{"{tema}"}</code>,{" "}
-            <code className="text-xs">{"{remitente}"}</code>. No se envía nada
-            todavía.
+            <code className="text-xs">{"{remitente}"}</code>. El escenario D no
+            abre chat: no hay número. El envío lo hace la persona en WhatsApp;
+            la plataforma no manda mensajes sola.
           </p>
-          {(["A", "B", "C", "D"] as const).map((id) => (
-            <Field key={id} label={`Escenario ${id}`}>
-              <Textarea
-                rows={3}
-                value={plantillas[id]}
-                onChange={(e) =>
-                  setPlantillas({ ...plantillas, [id]: e.target.value })
-                }
-              />
-            </Field>
-          ))}
+          {PLANTILLA_IDS.filter((id) => id !== "D").map((id) => {
+            const ambos = id === "B";
+            return (
+              <div key={id} className="space-y-2">
+                <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Escenario {id}
+                </p>
+                {ambos ? (
+                  <>
+                    <Field label="Texto al peticionario">
+                      <Textarea
+                        rows={3}
+                        value={plantillas[id].texto}
+                        onChange={(e) =>
+                          setPlantillas({
+                            ...plantillas,
+                            [id]: {
+                              ...plantillas[id],
+                              texto: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </Field>
+                    <Field label="Texto al remitente">
+                      <Textarea
+                        rows={3}
+                        value={plantillas[id].textoRemitente}
+                        onChange={(e) =>
+                          setPlantillas({
+                            ...plantillas,
+                            [id]: {
+                              ...plantillas[id],
+                              textoRemitente: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </Field>
+                  </>
+                ) : (
+                  <Textarea
+                    rows={3}
+                    value={plantillas[id].texto}
+                    onChange={(e) =>
+                      setPlantillas({
+                        ...plantillas,
+                        [id]: { ...plantillas[id], texto: e.target.value },
+                      })
+                    }
+                  />
+                )}
+              </div>
+            );
+          })}
           <Button
             type="button"
             disabled={guardando}
@@ -461,6 +515,13 @@ export default function ConfiguracionPage() {
           </Button>
         </Card>
       ) : null}
+
+      <AvisoExito
+        abierto={Boolean(aviso)}
+        titulo={aviso?.titulo ?? ""}
+        mensaje={aviso?.mensaje}
+        onCerrar={() => setAviso(null)}
+      />
     </div>
   );
 }

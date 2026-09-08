@@ -133,14 +133,6 @@ async function cambiarEstatus(
     };
   }
 
-  if (hacia === "cumplida") {
-    const actuales = Array.isArray(row.evidenciaUrls) ? row.evidenciaUrls : [];
-    const evidencias = extra.evidenciaUrls ?? actuales;
-    if (evidencias.length === 0) {
-      return { error: "Adjunta al menos una imagen de evidencia", status: 400 as const };
-    }
-  }
-
   await db
     .update(peticiones)
     .set({

@@ -2,6 +2,7 @@
 
 import { Button, Card } from "@/components/ui";
 import { ROL_LABEL } from "@/lib/catalogos";
+import { useBodyScrollLock } from "@/lib/body-scroll-lock";
 import type { UsuarioPublico } from "@/lib/types";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -39,15 +40,14 @@ export function UsuarioDetalle({
   const [eliminando, setEliminando] = useState(false);
   const [error, setError] = useState("");
 
+  useBodyScrollLock(true);
+
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCerrar();
     };
     window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
   }, [onCerrar]);

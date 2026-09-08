@@ -22,6 +22,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { resetBodyScroll } from "@/lib/body-scroll-lock";
 
 const ICONS: Record<string, typeof LayoutDashboard> = {
   "/dashboard": LayoutDashboard,
@@ -100,6 +101,10 @@ export function AppShell({ children }: { children: ReactNode }) {
       wrap.classList.remove("is-scrolling");
     }, 700);
   }
+
+  useEffect(() => {
+    resetBodyScroll();
+  }, [pathname]);
 
   useEffect(() => {
     return () => {

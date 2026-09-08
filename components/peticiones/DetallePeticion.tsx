@@ -2,6 +2,7 @@
 
 import { ModalDocumento } from "@/components/cuantiva/ModalDocumento";
 import { esImagenPreview } from "@/components/cuantiva/DocumentoPreview";
+import { BotonWhatsApp } from "@/components/peticiones/ModalWhatsApp";
 import { Button, Card } from "@/components/ui";
 import {
   ALCANCES,
@@ -16,7 +17,11 @@ import {
   URGENCIAS,
 } from "@/lib/catalogos";
 import { nombreMunicipio } from "@/lib/lote-titulo";
+import { PLANTILLAS_DEFAULT, normalizarPlantillas } from "@/lib/plantillas-default";
+import type { PlantillasConfig } from "@/lib/services/config";
 import type { LoteDocumentoDto, PeticionConsultaDto } from "@/lib/types";
+import { useBodyScrollLock } from "@/lib/body-scroll-lock";
+import { telefonoVisibleConsulta } from "@/lib/whatsapp-acuse";
 import { FileText, Maximize2, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -75,32 +80,52 @@ function asLoteDocumento(p: PeticionConsultaDto): LoteDocumentoDto {
 export function DetallePeticion({
   peticion,
   puedeBandeja,
+  plantillas: plantillasProp,
   onCerrar,
 }: {
   peticion: PeticionConsultaDto;
   puedeBandeja: boolean;
+  plantillas?: PlantillasConfig;
   onCerrar: () => void;
 }) {
   const [ampliado, setAmpliado] = useState(false);
+  const [plantillas, setPlantillas] = useState<PlantillasConfig>(
+    plantillasProp ?? PLANTILLAS_DEFAULT,
+  );
   const doc = asLoteDocumento(peticion);
 
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    if (plantillasProp) setPlantillas(normalizarPlantillas(plantillasProp));
+  }, [plantillasProp]);
+
+  useEffect(() => {
+    if (plantillasProp) return;
+    let vivo = true;
+    fetch("/api/config")
+      .then((r) => r.json())
+      .then((d: { plantillas?: unknown }) => {
+        if (!vivo || !d.plantillas) return;
+        setPlantillas(normalizarPlantillas(d.plantillas));
+      })
+      .catch(() => undefined);
+    return () => {
+      vivo = false;
+    };
+  }, [plantillasProp]);
+
+  useBodyScrollLock(true);
+
+  useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape" && !ampliado) onCerrar();
     };
     window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
   }, [onCerrar, ampliado]);
 
-  const telefono =
-    !peticion.ciudadanoTelefono || peticion.ciudadanoTelefono === "0000000000"
-      ? "Sin teléfono"
-      : peticion.ciudadanoTelefono;
+  const telefono = telefonoVisibleConsulta(peticion);
   const capturista =
     peticion.capturistaNombre?.trim() || peticion.capturistaEmail;
   const subidaPor =
@@ -225,7 +250,23 @@ export function DetallePeticion({
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Dato label="Ciudadano" value={peticion.ciudadanoNombre} />
-              <Dato label="Teléfono" value={telefono} />
+              <div>
+                <p className="text-[11px] uppercase tracking-wide text-zinc-400">
+                  Teléfono
+                </p>
+                <div className="mt-0.5 flex items-center gap-1.5">
+                  <p
+                    className={`text-sm ${
+                      telefono === "Sin teléfono"
+                        ? "text-zinc-400"
+                        : "text-zinc-800"
+                    }`}
+                  >
+                    {telefono}
+                  </p>
+                  <BotonWhatsApp peticion={peticion} plantillas={plantillas} />
+                </div>
+              </div>
               <Dato
                 label="Domicilio"
                 value={peticion.ciudadanoDomicilio || "—"}
@@ -327,10 +368,14 @@ export function DetallePeticion({
                     : "El peticionario"
                 }
               />
-              <Dato
-                label="WhatsApp remitente"
-                value={peticion.remitenteTelefono || "—"}
-              />
+              <div>
+                <p className="text-[11px] uppercase tracking-wide text-zinc-400">
+                  WhatsApp remitente
+                </p>
+                <p className="mt-0.5 text-sm text-zinc-800">
+                  {peticion.remitenteTelefono || "—"}
+                </p>
+              </div>
               <Dato
                 label="Escenario acuse"
                 value={etiqueta(ESCENARIOS_ACUSE, peticion.escenarioAcuse)}

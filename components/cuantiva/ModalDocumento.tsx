@@ -2,6 +2,7 @@
 
 import { Button, Card } from "@/components/ui";
 import { esImagenPreview } from "@/components/cuantiva/DocumentoPreview";
+import { useBodyScrollLock } from "@/lib/body-scroll-lock";
 import type { LoteDocumentoDto } from "@/lib/types";
 import { Download, X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -16,15 +17,14 @@ export function ModalDocumento({
   const [descargando, setDescargando] = useState(false);
   const [error, setError] = useState("");
 
+  useBodyScrollLock(true);
+
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCerrar();
     };
     window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
   }, [onCerrar]);

@@ -2,9 +2,12 @@
 
 import { Button, Card, Field, Input, Select, Textarea } from "@/components/ui";
 import { COMPLEJIDADES } from "@/lib/catalogos";
+import { useBodyScrollLock } from "@/lib/body-scroll-lock";
 import type { Complejidad, PeticionConsultaDto } from "@/lib/types";
-import { X } from "lucide-react";
+import { Check, ChevronDown, X } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
+
+type Decision = "cumplida" | "no_procede" | null;
 
 export function AccionCumplimiento({
   peticion,
@@ -15,6 +18,7 @@ export function AccionCumplimiento({
   onCerrar: () => void;
   onActualizada: (p: PeticionConsultaDto) => void;
 }) {
+  const [decision, setDecision] = useState<Decision>(null);
   const [fecha, setFecha] = useState(
     peticion.fechaCumplimiento ?? new Date().toISOString().slice(0, 10),
   );
@@ -28,16 +32,16 @@ export function AccionCumplimiento({
   const [evidencias, setEvidencias] = useState<string[]>(peticion.evidenciaUrls);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState("");
+  const [reclasificarAbierto, setReclasificarAbierto] = useState(false);
+
+  useBodyScrollLock(true);
 
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCerrar();
     };
     window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
   }, [onCerrar]);
@@ -105,13 +109,17 @@ export function AccionCumplimiento({
     });
   }
 
+  function onNoProcede(e: FormEvent) {
+    e.preventDefault();
+    void postAccion({ accion: "no_procede", motivo });
+  }
+
   const pipeline =
     peticion.complejidad === "simple" || peticion.complejidad === "media";
   const puedeGestion = pipeline && peticion.estatus === "recibida";
-  const puedeCerrar =
+  const puedeDecidir =
     pipeline &&
     (peticion.estatus === "en_gestion" || peticion.estatus === "recibida");
-  const puedeCumplir = pipeline && peticion.estatus === "en_gestion";
 
   return (
     <div
@@ -167,104 +175,163 @@ export function AccionCumplimiento({
             </Button>
           ) : null}
 
-          {puedeCumplir ? (
-            <form onSubmit={onCumplir} className="space-y-3 rounded-2xl border border-zinc-100 p-3">
-              <p className="text-sm font-semibold text-zinc-900">Marcar cumplida</p>
-              <Field label="Fecha de cumplimiento">
-                <Input
-                  type="date"
-                  required
-                  value={fecha}
-                  onChange={(e) => setFecha(e.target.value)}
-                />
-              </Field>
-              <Field label="Cómo se resolvió">
-                <Textarea
-                  required
-                  rows={3}
-                  value={descripcion}
-                  onChange={(e) => setDescripcion(e.target.value)}
-                />
-              </Field>
-              <Field label="Evidencia (mínimo una imagen)">
-                <Input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp,image/heic"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) void subirEvidencia(file);
-                  }}
-                />
-                {evidencias.length > 0 ? (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {evidencias.map((url) => (
-                      <img
-                        key={url}
-                        src={url}
-                        alt="Evidencia"
-                        className="h-16 w-16 rounded-lg object-cover"
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <p className="mt-1 text-xs text-zinc-400">Sin imágenes aún.</p>
-                )}
-              </Field>
-              <Button type="submit" disabled={enviando || evidencias.length === 0}>
-                Confirmar cumplida
-              </Button>
-            </form>
+          {puedeDecidir ? (
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-zinc-900">
+                ¿Cómo se resuelve?
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setDecision((d) => (d === "cumplida" ? null : "cumplida"))
+                  }
+                  aria-pressed={decision === "cumplida"}
+                  className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold transition-colors ${
+                    decision === "cumplida"
+                      ? "border-emerald-600 bg-emerald-600 text-white shadow-[0_8px_20px_-8px_rgba(5,150,105,0.55)]"
+                      : "border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50"
+                  }`}
+                >
+                  <Check size={16} /> Procede
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setDecision((d) =>
+                      d === "no_procede" ? null : "no_procede",
+                    )
+                  }
+                  aria-pressed={decision === "no_procede"}
+                  className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold transition-colors ${
+                    decision === "no_procede"
+                      ? "border-guinda bg-guinda text-white shadow-[0_8px_20px_-8px_rgba(122,18,51,0.55)]"
+                      : "border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50"
+                  }`}
+                >
+                  <X size={16} /> No procede
+                </button>
+              </div>
+
+              {decision === "cumplida" ? (
+                <form
+                  onSubmit={onCumplir}
+                  className="space-y-3 rounded-2xl border border-emerald-100 bg-emerald-50/40 p-3"
+                >
+                  <Field label="Fecha de cumplimiento">
+                    <Input
+                      type="date"
+                      required
+                      value={fecha}
+                      onChange={(e) => setFecha(e.target.value)}
+                    />
+                  </Field>
+                  <Field label="Cómo se resolvió">
+                    <Textarea
+                      required
+                      rows={3}
+                      value={descripcion}
+                      onChange={(e) => setDescripcion(e.target.value)}
+                    />
+                  </Field>
+                  <Field label="Evidencia (opcional)">
+                    <Input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/heic"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) void subirEvidencia(file);
+                      }}
+                    />
+                    {evidencias.length > 0 ? (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {evidencias.map((url) => (
+                          <img
+                            key={url}
+                            src={url}
+                            alt="Evidencia"
+                            className="h-16 w-16 rounded-lg object-cover"
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="mt-1 text-xs text-zinc-400">
+                        Sin imágenes aún.
+                      </p>
+                    )}
+                  </Field>
+                  <Button
+                    type="submit"
+                    className="w-full !bg-emerald-600 hover:!bg-emerald-700 !shadow-[0_8px_20px_-8px_rgba(5,150,105,0.55)]"
+                    disabled={enviando}
+                  >
+                    Confirmar cumplida
+                  </Button>
+                </form>
+              ) : null}
+
+              {decision === "no_procede" ? (
+                <form
+                  onSubmit={onNoProcede}
+                  className="space-y-3 rounded-2xl border border-guinda/15 bg-guinda/[0.03] p-3"
+                >
+                  <Field label="Motivo">
+                    <Textarea
+                      required
+                      rows={3}
+                      value={motivo}
+                      onChange={(e) => setMotivo(e.target.value)}
+                      placeholder="Explica por qué no procede esta petición…"
+                    />
+                  </Field>
+                  <Button type="submit" className="w-full" disabled={enviando}>
+                    Confirmar no procede
+                  </Button>
+                </form>
+              ) : null}
+            </div>
           ) : null}
 
-          {puedeCerrar ? (
-            <form
-              className="space-y-3 rounded-2xl border border-zinc-100 p-3"
-              onSubmit={(e) => {
-                e.preventDefault();
-                void postAccion({ accion: "no_procede", motivo });
-              }}
+          <div className="border-t border-zinc-100 pt-3">
+            <button
+              type="button"
+              onClick={() => setReclasificarAbierto((v) => !v)}
+              className="flex w-full items-center justify-between text-xs font-medium text-zinc-500 hover:text-zinc-700"
             >
-              <p className="text-sm font-semibold text-zinc-900">No procede</p>
-              <Field label="Motivo">
-                <Textarea
-                  required
-                  rows={2}
-                  value={motivo}
-                  onChange={(e) => setMotivo(e.target.value)}
-                />
-              </Field>
-              <Button type="submit" variant="secondary" disabled={enviando}>
-                Registrar no procede
-              </Button>
-            </form>
-          ) : null}
-
-          <form
-            className="space-y-3 rounded-2xl border border-zinc-100 p-3"
-            onSubmit={(e) => {
-              e.preventDefault();
-              void postAccion({ accion: "reclasificar", complejidad });
-            }}
-          >
-            <p className="text-sm font-semibold text-zinc-900">
               Reclasificar complejidad
-            </p>
-            <Field label="Complejidad">
-              <Select
-                value={complejidad}
-                onChange={(e) => setComplejidad(e.target.value as Complejidad)}
+              <ChevronDown
+                size={14}
+                className={`transition-transform ${reclasificarAbierto ? "rotate-180" : ""}`}
+              />
+            </button>
+            {reclasificarAbierto ? (
+              <form
+                className="mt-3 space-y-3"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void postAccion({ accion: "reclasificar", complejidad });
+                }}
               >
-                {COMPLEJIDADES.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.nombre}
-                  </option>
-                ))}
-              </Select>
-            </Field>
-            <Button type="submit" variant="ghost" disabled={enviando}>
-              Guardar reclasificación
-            </Button>
-          </form>
+                <Field label="Complejidad">
+                  <Select
+                    value={complejidad}
+                    onChange={(e) =>
+                      setComplejidad(e.target.value as Complejidad)
+                    }
+                  >
+                    {COMPLEJIDADES.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.nombre}
+                      </option>
+                    ))}
+                  </Select>
+                </Field>
+                <Button type="submit" variant="ghost" disabled={enviando}>
+                  Guardar reclasificación
+                </Button>
+              </form>
+            ) : null}
+          </div>
         </div>
       </Card>
     </div>

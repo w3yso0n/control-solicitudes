@@ -78,6 +78,31 @@ Referencia de código: `components/MunicipioSelect.tsx`, `components/FilterCombo
 
 Cuando hay más de tres filtros, no van al lado del `h1`. El título ocupa su fila (eyebrow + conteo). Debajo: búsqueda a la izquierda y, en una grilla aparte, los combobox a todo el ancho (`grid-cols-2` / `lg:grid-cols-4` / `xl:grid-cols-7`). Referencia: Consulta de peticiones.
 
+### WhatsApp desde Consulta
+
+Atajo a WhatsApp Web/app (`wa.me`), no Twilio. Icono SVG color `#128C7E` (no emerald). En la columna Teléfono y junto al teléfono del detalle.
+
+- En Consulta (lista): píldora compacta `rounded-[999px]`, degradado `135deg` `#25D366` → `#128C7E`, texto blanco 13px/500 con el teléfono y el ícono al final, padding `6px 14px`, sombra `0 3px 8px rgba(18,140,126,0.3)`. Si el escenario es D o no hay número, se muestra el texto “Sin teléfono” sin botón.
+- En el detalle: botón circular `h-8 w-8`, hover `bg-[#128C7E]/10`.
+- Modal `z-[60]` en portal a `document.body` (no vive dentro de la fila de la tabla: si no, el clic del combobox abre el detalle). Overlay tinta, Card `max-w-lg`, combobox de plantilla A/B/C (canon FilterCombobox). Las plantillas disponibles siguen el escenario de captura: A solo A; B permite A y B; C solo C. Si solo hay una opción, el combobox va bloqueado (como en bandeja cuando quien envía es el peticionario).
+- Placeholders `{nombre}` `{folio}` `{tema}` `{remitente}` de Configuración → Acuses. El destinatario (peticionario / remitente / ambos) ya no es editable ahí: A y C son un solo textarea, B siempre son dos (peticionario y remitente), D no tiene editor porque no abre chat.
+
+Implementación: `components/peticiones/ModalWhatsApp.tsx`, `lib/whatsapp-acuse.ts`.
+
+### Scroll del body con modales
+
+Los overlays (aviso de éxito, detalle, documento ampliado) bloquean el scroll con un contador (`lib/body-scroll-lock.ts`), no con `overflow: hidden` suelto. Así un modal encima de otro no deja el `body` trabado. Al cambiar de ruta, `AppShell` llama `resetBodyScroll()`. Un overlay que está saliendo (fade 450ms) usa `pointer-events-none` para no comerse la rueda.
+
+### Decisión binaria en modal (Procede / No procede)
+
+Cuando un modal pide elegir entre dos desenlaces excluyentes de una acción (ej. pipeline de campaña: marcar cumplida vs. no procede), no se apilan dos formularios completos uno tras otro. Referencia: `components/cumplimientos/AccionCumplimiento.tsx`.
+
+- Paso 1: dos botones grandes lado a lado (`grid-cols-2`), mismo tamaño, `rounded-2xl border px-4 py-3 text-sm font-semibold`. Icono `Check`/`X` de `lucide-react` + label corto ("Procede" / "No procede"). Sin seleccionar: `border-zinc-200 bg-white text-zinc-700`. Al elegir uno, ese botón toma color de estado (`emerald-600` para la opción positiva, `guinda` para la negativa) con `aria-pressed`; el otro se queda neutro. Tocar el botón activo de nuevo lo deselecciona (colapsa el formulario).
+- Paso 2: solo el formulario de la opción elegida aparece debajo, envuelto en una card sutil con el tinte del estado (`border-emerald-100 bg-emerald-50/40` o `border-guinda/15 bg-guinda/[0.03]`). Nunca se muestran los dos formularios a la vez.
+- El botón de confirmar del formulario hereda el color de la decisión (verde para cumplida, guinda para no procede), `w-full`, para que quede clara la relación con el botón elegido arriba.
+- Acciones previas al paso de decisión (ej. "Pasar a en gestión") van solas, arriba, como un único botón — son un paso distinto, no compiten con la decisión binaria.
+- Acciones secundarias que no son parte del desenlace (ej. "Reclasificar complejidad") van colapsadas al fondo del modal detrás de un disclosure discreto (`text-xs text-zinc-500` + `ChevronDown` que rota), fuera del flujo principal.
+
 ### Sidebar / scrollbar overlay
 
 - Nativo oculto. Thumb propio, 4px, blanco semitransparente sobre guinda.

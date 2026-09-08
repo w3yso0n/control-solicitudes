@@ -36,12 +36,13 @@ import type { PeticionConsultaDto } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 
-type Vista = "sin_cumplir" | "cumplidas" | "balance";
+type Vista = "sin_cumplir" | "cumplidas" | "no_procede" | "balance";
 type SubCumplidas = "mosaico" | "mapa" | "evento";
 
 const VISTAS: { id: Vista; label: string }[] = [
   { id: "sin_cumplir", label: "Sin cumplir" },
   { id: "cumplidas", label: "Cumplidas" },
+  { id: "no_procede", label: "No procede" },
   { id: "balance", label: "Panel de balance" },
 ];
 
@@ -150,6 +151,7 @@ function CumplimientosContent() {
 
   const pendientes = filtradasBase.filter((p) => esPendientePipeline(p));
   const cumplidas = filtradasBase.filter((p) => p.estatus === "cumplida");
+  const noProcede = filtradasBase.filter((p) => p.estatus === "no_procede");
   const balance = useMemo(
     () => balanceDe(filtradasBase.map(peticionDesdeConsulta)),
     [filtradasBase],
@@ -223,7 +225,8 @@ function CumplimientosContent() {
     }
   }
 
-  const listaVista = vista === "cumplidas" ? cumplidas : pendientes;
+  const listaVista =
+    vista === "cumplidas" ? cumplidas : vista === "no_procede" ? noProcede : pendientes;
 
   return (
     <div className="space-y-4">
@@ -259,7 +262,6 @@ function CumplimientosContent() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <NivelGeografiaToggle value={nivel} onChange={setNivel} />
         <div className="w-full sm:w-48">
           <FilterCombobox
             value={cveMun}
@@ -360,9 +362,12 @@ function CumplimientosContent() {
           <BalanceBar balance={balance} titulo="Panel de balance" />
           <div className="grid gap-3 lg:grid-cols-2">
             <Card className="p-4">
-              <p className="text-sm font-semibold">
-                {NIVEL_LABEL[nivel]}s con más avance
-              </p>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-sm font-semibold">
+                  {NIVEL_LABEL[nivel]}s con más avance
+                </p>
+                <NivelGeografiaToggle value={nivel} onChange={setNivel} />
+              </div>
               <ul className="mt-3 space-y-1">
                 {ranking.length === 0 ? (
                   <li className="text-sm text-zinc-500">Sin gestionables.</li>
@@ -548,9 +553,9 @@ function CumplimientosContent() {
         </div>
       ) : null}
 
-      {vista === "sin_cumplir" ? (
+      {vista === "sin_cumplir" || vista === "no_procede" ? (
         <div className="space-y-3">
-          {puedeOperar && seleccion.size > 0 ? (
+          {vista === "sin_cumplir" && puedeOperar && seleccion.size > 0 ? (
             <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-zinc-100 bg-white px-3 py-2">
               <p className="text-sm text-zinc-600">
                 {seleccion.size} seleccionadas
@@ -580,15 +585,23 @@ function CumplimientosContent() {
             <table className="w-full min-w-[960px] text-left text-sm">
               <thead className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase text-zinc-500">
                 <tr>
-                  {puedeOperar ? <th className="w-10 px-3 py-3" /> : null}
+                  {vista === "sin_cumplir" && puedeOperar ? (
+                    <th className="w-10 px-3 py-3" />
+                  ) : null}
                   <th className="px-3 py-3">Folio</th>
                   <th className="px-3 py-3">Ciudadano</th>
                   <th className="px-3 py-3">Zona</th>
                   <th className="px-3 py-3">Categoría</th>
                   <th className="px-3 py-3">Complejidad</th>
                   <th className="px-3 py-3">Estatus</th>
-                  <th className="px-3 py-3">Asignado</th>
-                  {puedeOperar ? <th className="px-3 py-3" /> : null}
+                  {vista === "no_procede" ? (
+                    <th className="px-3 py-3">Motivo</th>
+                  ) : (
+                    <th className="px-3 py-3">Asignado</th>
+                  )}
+                  {vista === "sin_cumplir" && puedeOperar ? (
+                    <th className="px-3 py-3" />
+                  ) : null}
                 </tr>
               </thead>
               <tbody>
@@ -597,7 +610,7 @@ function CumplimientosContent() {
                     key={p.id}
                     className="border-b border-zinc-100 hover:bg-zinc-50"
                   >
-                    {puedeOperar ? (
+                    {vista === "sin_cumplir" && puedeOperar ? (
                       <td className="px-3 py-2">
                         <input
                           type="checkbox"
@@ -641,10 +654,16 @@ function CumplimientosContent() {
                       {ESTATUS_PETICION.find((e) => e.id === p.estatus)
                         ?.nombre ?? p.estatus}
                     </td>
-                    <td className="px-3 py-2 text-zinc-500">
-                      {nombreOperador(p.responsableAsignado)}
-                    </td>
-                    {puedeOperar ? (
+                    {vista === "no_procede" ? (
+                      <td className="px-3 py-2 text-zinc-500">
+                        {p.motivoNoProcede || "—"}
+                      </td>
+                    ) : (
+                      <td className="px-3 py-2 text-zinc-500">
+                        {nombreOperador(p.responsableAsignado)}
+                      </td>
+                    )}
+                    {vista === "sin_cumplir" && puedeOperar ? (
                       <td className="px-3 py-2">
                         <Button
                           type="button"
@@ -662,7 +681,9 @@ function CumplimientosContent() {
             </table>
             {listaVista.length === 0 && !cargando ? (
               <p className="px-4 py-8 text-center text-sm text-zinc-500">
-                No hay peticiones en el pipeline con estos filtros.
+                {vista === "no_procede"
+                  ? "No hay peticiones marcadas como no procede con estos filtros."
+                  : "No hay peticiones en el pipeline con estos filtros."}
               </p>
             ) : null}
           </Card>

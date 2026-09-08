@@ -1,6 +1,7 @@
 "use client";
 
 import { Button, Card } from "@/components/ui";
+import { useBodyScrollLock } from "@/lib/body-scroll-lock";
 import { useEffect, useState } from "react";
 
 export function AvisoExito({
@@ -37,19 +38,18 @@ export function AvisoExito({
 
   useEffect(() => {
     if (!abierto) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCerrar();
     };
     window.addEventListener("keydown", onKey);
     const auto = window.setTimeout(onCerrar, 3200);
     return () => {
-      document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
       window.clearTimeout(auto);
     };
   }, [abierto, onCerrar]);
+
+  useBodyScrollLock(abierto);
 
   if (!montado) return null;
 
@@ -58,7 +58,7 @@ export function AvisoExito({
       className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 transition-opacity ease-out ${
         visible
           ? "opacity-100 duration-150"
-          : "opacity-0 duration-[450ms]"
+          : "pointer-events-none opacity-0 duration-[450ms]"
       }`}
       role="status"
       aria-live="polite"

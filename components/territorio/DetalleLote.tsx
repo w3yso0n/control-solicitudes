@@ -2,6 +2,7 @@
 
 import { Button, Card } from "@/components/ui";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
+import { useBodyScrollLock } from "@/lib/body-scroll-lock";
 import type { LoteDocumentoDto, LoteDto } from "@/lib/types";
 import { etiquetaEvento } from "@/components/territorio/EventoOrigenField";
 import { FileText, X } from "lucide-react";
@@ -96,15 +97,14 @@ export function DetalleLote({
   const [confirmando, setConfirmando] = useState(false);
   const [eliminando, setEliminando] = useState(false);
   const [error, setError] = useState("");
+  useBodyScrollLock(true);
+
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onCerrar();
     };
     window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
   }, [onCerrar]);
