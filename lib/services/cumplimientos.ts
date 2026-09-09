@@ -1,9 +1,19 @@
 import { db } from "@/lib/db";
 import { peticiones, users } from "@/lib/db/schema";
+import {
+  esGestionable,
+  esPendientePipeline,
+  puedeAdjuntarEvidencia,
+  transicionEstatusValida,
+} from "@/lib/cumplimiento";
 import { registrarAuditoria } from "@/lib/services/auditoria";
 import { getPeticionConsultaById } from "@/lib/services/peticiones";
 import type { Complejidad, EstatusPeticion, PeticionConsultaDto } from "@/lib/types";
-import { publicUploadUrl } from "@/lib/uploads";
+import {
+  claveEvidencia,
+  publicUploadUrl,
+  removeUploadByStorageKey,
+} from "@/lib/uploads";
 import { and, eq, inArray } from "drizzle-orm";
 
 const UUID_RE =
@@ -11,19 +21,6 @@ const UUID_RE =
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
-function esGestionable(complejidad: Complejidad) {
-  return complejidad === "simple" || complejidad === "media";
-}
-
-function transicionValida(
-  desde: EstatusPeticion,
-  hacia: EstatusPeticion,
-): boolean {
-  if (hacia === "en_gestion") return desde === "recibida";
-  if (hacia === "cumplida") return desde === "en_gestion";
-  if (hacia === "no_procede") return desde === "recibida" || desde === "en_gestion";
-  return false;
-}
 
 export async function listarOperadores() {
   const rows = await db
@@ -120,13 +117,25 @@ async function cambiarEstatus(
   const row = rows[0];
   if (!row) return { error: "Petición no encontrada", status: 404 as const };
 
-  if (!esGestionable(row.complejidad)) {
+  if (!esGestionable(row)) {
     return {
       error: "Las estructurales no entran al pipeline de campaña",
       status: 400 as const,
     };
   }
-  if (!transicionValida(row.estatus, hacia)) {
+  if (!transicionEstatusValida(row.estatus, hacia)) {
+    if (hacia === "cumplida" && row.estatus === "recibida") {
+      return {
+        error: "Para marcarla cumplida, primero pásala a en gestión",
+        status: 400 as const,
+      };
+    }
+    if (hacia === "en_gestion" && row.estatus !== "recibida") {
+      return {
+        error: "Solo se puede tomar en gestión una petición recibida",
+        status: 400 as const,
+      };
+    }
     return {
       error: `No se puede pasar de ${row.estatus} a ${hacia}`,
       status: 400 as const,
@@ -175,8 +184,14 @@ export async function agregarEvidencia(
     .limit(1);
   const row = rows[0];
   if (!row) return { error: "Petición no encontrada", status: 404 };
-  if (!esGestionable(row.complejidad)) {
-    return { error: "Esta petición no admite evidencia de campaña", status: 400 };
+  if (!puedeAdjuntarEvidencia(row)) {
+    return {
+      error:
+        row.estatus === "recibida"
+          ? "Para adjuntar evidencia, primero pásala a en gestión"
+          : "Esta petición no admite evidencia de campaña",
+      status: 400,
+    };
   }
   const actuales = Array.isArray(row.evidenciaUrls) ? row.evidenciaUrls : [];
   const siguiente = [...actuales, storageKey];
@@ -193,6 +208,52 @@ export async function agregarEvidencia(
     detalle: `Adjuntó evidencia (${siguiente.length})`,
   });
   return { urls: siguiente.map(publicUploadUrl) };
+}
+
+export async function eliminarEvidencia(
+  userId: string,
+  peticionId: string,
+  url: string,
+): Promise<{ error: string; status: 400 | 404 } | { urls: string[] }> {
+  if (!UUID_RE.test(peticionId)) return { error: "ID inválido", status: 400 };
+  const objetivo = claveEvidencia(url);
+  if (!objetivo) return { error: "Evidencia inválida", status: 400 };
+
+  const rows = await db
+    .select()
+    .from(peticiones)
+    .where(eq(peticiones.id, peticionId))
+    .limit(1);
+  const row = rows[0];
+  if (!row) return { error: "Petición no encontrada", status: 404 };
+  if (!esPendientePipeline(row)) {
+    return { error: "Ya no se puede quitar evidencia de una petición cerrada", status: 400 };
+  }
+
+  const actuales = Array.isArray(row.evidenciaUrls) ? row.evidenciaUrls : [];
+  const quitada = actuales.find((item) => claveEvidencia(item) === objetivo);
+  if (!quitada) return { error: "Esa evidencia ya no está adjunta", status: 404 };
+
+  const siguiente = actuales.filter((item) => claveEvidencia(item) !== objetivo);
+  await db
+    .update(peticiones)
+    .set({ evidenciaUrls: siguiente, updatedAt: new Date() })
+    .where(eq(peticiones.id, peticionId));
+
+  const storageKey = claveEvidencia(quitada);
+  if (storageKey.startsWith("cumplimientos/")) {
+    await removeUploadByStorageKey(storageKey);
+  }
+
+  await registrarAuditoria({
+    actor: await actorDe(userId),
+    accion: "evidencia",
+    entidad: "peticion",
+    entidadId: peticionId,
+    folio: row.folio,
+    detalle: `Quitó evidencia (${siguiente.length})`,
+  });
+  return { urls: siguiente.map((item) => publicUploadUrl(claveEvidencia(item))) };
 }
 
 export async function asignarOperador(

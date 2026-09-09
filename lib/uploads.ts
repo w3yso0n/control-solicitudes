@@ -162,3 +162,36 @@ export async function saveEvidenciaFile(
 export function publicUploadUrl(storageKey: string): string {
   return `/api/uploads/${storageKey.split("/").map(encodeURIComponent).join("/")}`;
 }
+
+export function storageKeyFromPublicUrl(url: string): string | null {
+  const raw = url.trim();
+  if (!raw) return null;
+  let pathname = raw;
+  try {
+    if (/^https?:\/\//i.test(raw)) {
+      pathname = new URL(raw).pathname;
+    }
+  } catch {
+    return null;
+  }
+  const prefix = "/api/uploads/";
+  if (!pathname.startsWith(prefix)) return null;
+  const key = pathname
+    .slice(prefix.length)
+    .split("/")
+    .filter(Boolean)
+    .map((s) => decodeURIComponent(s))
+    .join("/");
+  if (!key || key.includes("..") || key.includes("\0")) return null;
+  return key;
+}
+
+export function claveEvidencia(valor: string): string {
+  return storageKeyFromPublicUrl(valor) ?? valor.replace(/\\/g, "/");
+}
+
+export async function removeUploadByStorageKey(storageKey: string) {
+  const absolute = absolutePathForStorageKey(storageKey);
+  if (!absolute) return;
+  await unlink(absolute).catch(() => undefined);
+}

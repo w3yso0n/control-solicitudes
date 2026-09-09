@@ -1,5 +1,5 @@
 import { requireOperador } from "@/lib/auth";
-import { agregarEvidencia } from "@/lib/services/cumplimientos";
+import { agregarEvidencia, eliminarEvidencia } from "@/lib/services/cumplimientos";
 import { saveEvidenciaFile } from "@/lib/uploads";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -37,6 +37,40 @@ export async function POST(
     console.error("[API] POST /api/cumplimientos/[id]/evidencia:", error);
     return NextResponse.json(
       { error: "Error al subir la evidencia" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const authz = await requireOperador();
+    if ("error" in authz) {
+      return NextResponse.json({ error: authz.error }, { status: authz.status });
+    }
+
+    const id = (await params).id;
+    const body = (await request.json()) as { url?: unknown };
+    const url = typeof body.url === "string" ? body.url : "";
+    if (!url) {
+      return NextResponse.json(
+        { error: "Indica la evidencia a eliminar" },
+        { status: 400 },
+      );
+    }
+
+    const result = await eliminarEvidencia(authz.user.id, id, url);
+    if ("error" in result) {
+      return NextResponse.json({ error: result.error }, { status: result.status });
+    }
+    return NextResponse.json({ success: true, urls: result.urls });
+  } catch (error) {
+    console.error("[API] DELETE /api/cumplimientos/[id]/evidencia:", error);
+    return NextResponse.json(
+      { error: "Error al eliminar la evidencia" },
       { status: 500 },
     );
   }

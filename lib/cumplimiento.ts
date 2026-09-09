@@ -17,6 +17,60 @@ export function esPendientePipeline(p: {
   );
 }
 
+export function transicionEstatusValida(
+  desde: EstatusPeticion,
+  hacia: EstatusPeticion,
+): boolean {
+  if (hacia === "en_gestion") return desde === "recibida";
+  if (hacia === "cumplida") return desde === "en_gestion";
+  if (hacia === "no_procede") return desde === "recibida" || desde === "en_gestion";
+  return false;
+}
+
+export function puedePasarAEnGestion(p: {
+  complejidad?: Complejidad;
+  estatus: EstatusPeticion;
+}) {
+  return esGestionable(p) && transicionEstatusValida(p.estatus, "en_gestion");
+}
+
+export function puedeMarcarCumplida(p: {
+  complejidad?: Complejidad;
+  estatus: EstatusPeticion;
+}) {
+  return esGestionable(p) && transicionEstatusValida(p.estatus, "cumplida");
+}
+
+export function puedeMarcarNoProcede(p: {
+  complejidad?: Complejidad;
+  estatus: EstatusPeticion;
+}) {
+  return esGestionable(p) && transicionEstatusValida(p.estatus, "no_procede");
+}
+
+export function puedeAdjuntarEvidencia(p: {
+  complejidad?: Complejidad;
+  estatus: EstatusPeticion;
+}) {
+  return puedeMarcarCumplida(p);
+}
+
+export function motivoSiNoPuedeCumplir(p: {
+  complejidad?: Complejidad;
+  estatus: EstatusPeticion;
+}): string | null {
+  if (!esGestionable(p)) {
+    return "Las estructurales no entran al pipeline de campaña.";
+  }
+  if (p.estatus === "recibida") {
+    return "Para marcarla cumplida, primero pásala a en gestión.";
+  }
+  if (p.estatus !== "en_gestion") {
+    return "Esta petición ya no se puede marcar como cumplida.";
+  }
+  return null;
+}
+
 export type BalanceCumplimiento = {
   cumplidas: number;
   enGestion: number;
