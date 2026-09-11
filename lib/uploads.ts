@@ -1,8 +1,14 @@
 import { mkdir, rm, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
+import {
+  EVIDENCIA_VIDEO_EXT,
+  EVIDENCIA_VIDEO_MIME,
+  MAX_EVIDENCIA_IMAGEN_BYTES,
+  MAX_EVIDENCIA_VIDEO_BYTES,
+} from "@/lib/evidencia-media";
 
-export const MAX_FILE_BYTES = 8 * 1024 * 1024;
+export const MAX_FILE_BYTES = MAX_EVIDENCIA_IMAGEN_BYTES;
 export const MAX_FILES_PER_LOTE = 20;
 
 const ALLOWED_MIME = new Set([
@@ -22,6 +28,7 @@ const MIME_BY_EXT: Record<string, string> = {
   heic: "image/heic",
   heif: "image/heif",
   pdf: "application/pdf",
+  ...EVIDENCIA_VIDEO_EXT,
 };
 
 export type SavedUpload = {
@@ -51,6 +58,21 @@ export function resolveMimeType(file: File): string | null {
   if (ALLOWED_MIME.has(file.type)) return file.type;
   const mapped = MIME_BY_EXT[extensionOf(file.name)];
   return mapped && ALLOWED_MIME.has(mapped) ? mapped : null;
+}
+
+export function resolveEvidenciaMimeType(file: File): string | null {
+  if (file.type === "image/svg+xml" || file.type === "application/pdf") {
+    return null;
+  }
+  if (ALLOWED_MIME.has(file.type) || EVIDENCIA_VIDEO_MIME.has(file.type)) {
+    return file.type;
+  }
+  const mapped = MIME_BY_EXT[extensionOf(file.name)];
+  if (!mapped || mapped === "application/pdf") return null;
+  if (ALLOWED_MIME.has(mapped) || EVIDENCIA_VIDEO_MIME.has(mapped)) {
+    return mapped;
+  }
+  return null;
 }
 
 function sanitizeFilename(name: string): string {
@@ -129,14 +151,20 @@ export async function saveEvidenciaFile(
   if (file.size <= 0) {
     return { error: `El archivo ${file.name} está vacío` };
   }
-  if (file.size > MAX_FILE_BYTES) {
-    return { error: `${file.name} supera el límite de 8 MB` };
+
+  const mimeType = resolveEvidenciaMimeType(file);
+  if (!mimeType) {
+    return {
+      error: `${file.name}: la evidencia debe ser imagen (JPG, PNG, WebP) o video (MP4, WebM, MOV)`,
+    };
   }
 
-  const mimeType = resolveMimeType(file);
-  if (!mimeType || mimeType === "application/pdf") {
+  const esVideo = EVIDENCIA_VIDEO_MIME.has(mimeType);
+  const maxBytes = esVideo ? MAX_EVIDENCIA_VIDEO_BYTES : MAX_FILE_BYTES;
+  if (file.size > maxBytes) {
+    const limiteMb = Math.round(maxBytes / (1024 * 1024));
     return {
-      error: `${file.name}: la evidencia debe ser una imagen (JPG, PNG o WebP)`,
+      error: `${file.name} supera el límite de ${limiteMb} MB${esVideo ? " para video" : ""}`,
     };
   }
 

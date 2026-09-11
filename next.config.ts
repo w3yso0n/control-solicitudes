@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   serverExternalPackages: ["postgres"],
+  experimental: {
+    proxyClientMaxBodySize: "52mb",
+  },
   async redirects() {
     return [
       { source: "/cuantiva", destination: "/bandeja", permanent: false },

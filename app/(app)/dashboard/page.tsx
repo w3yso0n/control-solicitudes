@@ -1,6 +1,7 @@
 "use client";
 
 import { BalanceBar } from "@/components/cumplimientos/BalanceBar";
+import { EvidenciaMedia } from "@/components/cumplimientos/EvidenciaMedia";
 import { ZonasEnBlanco } from "@/components/dashboard/ZonasEnBlanco";
 import { NivelGeografiaToggle } from "@/components/geo/NivelGeografiaToggle";
 import GuerreroMapLoader from "@/components/map/GuerreroMapLoader";
@@ -746,10 +747,8 @@ export default function DashboardPage() {
                     className="flex w-full gap-3 rounded-xl border border-zinc-100 p-2 text-left hover:bg-zinc-50"
                   >
                     {p.evidenciaUrls?.[0] ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={p.evidenciaUrls[0]}
-                        alt=""
+                      <EvidenciaMedia
+                        url={p.evidenciaUrls[0]}
                         className="h-14 w-14 shrink-0 rounded-lg object-cover"
                       />
                     ) : (

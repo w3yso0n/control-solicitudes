@@ -7,7 +7,7 @@ import { absolutePathForStorageKey, mimeFromStorageKey } from "@/lib/uploads";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ path: string[] }> },
 ) {
   try {
@@ -51,15 +51,66 @@ export async function GET(
       );
     }
 
-    const stream = Readable.toWeb(createReadStream(absolute)) as ReadableStream;
+    const size = fileStat.size;
     const mimeType = doc?.mimeType ?? mimeFromStorageKey(storageKey);
     const nombreArchivo = doc?.nombreArchivo ?? storageKey.split("/").pop() ?? "evidencia";
+    const disposition = `inline; filename="${encodeURIComponent(nombreArchivo)}"`;
+    const rangeHeader = request.headers.get("range");
+
+    if (rangeHeader) {
+      const match = /^bytes=(\d*)-(\d*)$/.exec(rangeHeader.trim());
+      if (!match) {
+        return new NextResponse(null, {
+          status: 416,
+          headers: { "Content-Range": `bytes */${size}` },
+        });
+      }
+      const startRaw = match[1];
+      const endRaw = match[2];
+      let start = startRaw ? Number(startRaw) : Number.NaN;
+      let end = endRaw ? Number(endRaw) : Number.NaN;
+      if (Number.isNaN(start) && Number.isNaN(end)) {
+        return new NextResponse(null, {
+          status: 416,
+          headers: { "Content-Range": `bytes */${size}` },
+        });
+      }
+      if (Number.isNaN(start)) {
+        start = Math.max(size - end, 0);
+        end = size - 1;
+      } else if (Number.isNaN(end) || end >= size) {
+        end = size - 1;
+      }
+      if (start >= size || start > end) {
+        return new NextResponse(null, {
+          status: 416,
+          headers: { "Content-Range": `bytes */${size}` },
+        });
+      }
+      const stream = Readable.toWeb(
+        createReadStream(absolute, { start, end }),
+      ) as ReadableStream;
+      return new NextResponse(stream, {
+        status: 206,
+        headers: {
+          "Content-Type": mimeType,
+          "Content-Length": String(end - start + 1),
+          "Content-Range": `bytes ${start}-${end}/${size}`,
+          "Accept-Ranges": "bytes",
+          "X-Content-Type-Options": "nosniff",
+          "Content-Disposition": disposition,
+        },
+      });
+    }
+
+    const stream = Readable.toWeb(createReadStream(absolute)) as ReadableStream;
     return new NextResponse(stream, {
       headers: {
         "Content-Type": mimeType,
-        "Content-Length": String(fileStat.size),
+        "Content-Length": String(size),
+        "Accept-Ranges": "bytes",
         "X-Content-Type-Options": "nosniff",
-        "Content-Disposition": `inline; filename="${encodeURIComponent(nombreArchivo)}"`,
+        "Content-Disposition": disposition,
       },
     });
   } catch (error) {

@@ -1,8 +1,10 @@
 "use client";
 
+import { EvidenciaMedia } from "@/components/cumplimientos/EvidenciaMedia";
 import { Button, Card, Field, Input, Select, Textarea } from "@/components/ui";
 import { COMPLEJIDADES } from "@/lib/catalogos";
 import { useBodyScrollLock } from "@/lib/body-scroll-lock";
+import { ACCEPT_EVIDENCIA, limiteEvidenciaBytes } from "@/lib/evidencia-media";
 import {
   puedeAdjuntarEvidencia,
   puedeMarcarCumplida,
@@ -124,6 +126,13 @@ export function AccionCumplimiento({
       if (fileRef.current) fileRef.current.value = "";
       return;
     }
+    const maxBytes = limiteEvidenciaBytes(file);
+    if (file.size > maxBytes) {
+      const limiteMb = Math.round(maxBytes / (1024 * 1024));
+      mostrarError(`El archivo supera el límite de ${limiteMb} MB.`);
+      if (fileRef.current) fileRef.current.value = "";
+      return;
+    }
     setEnviando(true);
     setError("");
     try {
@@ -135,12 +144,12 @@ export function AccionCumplimiento({
       });
       const data = (await res.json()) as { urls?: string[]; error?: string };
       if (!res.ok || !data.urls) {
-        mostrarError(data.error ?? "No se pudo subir la imagen");
+        mostrarError(data.error ?? "No se pudo subir la evidencia");
         return;
       }
       aplicarEvidencias(data.urls);
     } catch {
-      mostrarError("No se pudo subir la imagen");
+      mostrarError("No se pudo subir la evidencia");
     } finally {
       setEnviando(false);
       if (fileRef.current) fileRef.current.value = "";
@@ -394,13 +403,17 @@ export function AccionCumplimiento({
                     <Input
                       ref={fileRef}
                       type="file"
-                      accept="image/jpeg,image/png,image/webp,image/heic"
+                      accept={ACCEPT_EVIDENCIA}
                       disabled={enviando || !puedeEvidencia}
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) void subirEvidencia(file);
                       }}
                     />
+                    <p className="mt-1 text-xs text-zinc-400">
+                      Foto o video (JPG, PNG, WebP, MP4, WebM o MOV). Video hasta
+                      50 MB.
+                    </p>
                     {evidencias.length > 0 ? (
                       <ul className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
                         {evidencias.map((url) => (
@@ -414,9 +427,8 @@ export function AccionCumplimiento({
                               className="block w-full cursor-zoom-in"
                               aria-label="Ver evidencia en grande"
                             >
-                              <img
-                                src={url}
-                                alt="Evidencia"
+                              <EvidenciaMedia
+                                url={url}
                                 className="h-28 w-full object-cover sm:h-32"
                               />
                               <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-center gap-1 bg-tinta/55 py-1 text-[11px] font-medium text-white sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
@@ -437,7 +449,7 @@ export function AccionCumplimiento({
                       </ul>
                     ) : (
                       <p className="mt-1 text-xs text-zinc-400">
-                        Sin imágenes aún.
+                        Sin evidencias aún.
                       </p>
                     )}
                   </Field>
@@ -543,7 +555,7 @@ export function AccionCumplimiento({
           <button
             type="button"
             className="absolute inset-0 bg-tinta/70"
-            aria-label="Cerrar foto"
+            aria-label="Cerrar evidencia"
             onClick={() => setPreviewUrl(null)}
           />
           <div className="relative z-10 flex max-h-[92dvh] w-full max-w-3xl flex-col">
@@ -560,14 +572,15 @@ export function AccionCumplimiento({
                 type="button"
                 onClick={() => setPreviewUrl(null)}
                 className="rounded-full bg-white p-1.5 text-zinc-700 shadow-sm hover:bg-zinc-100"
-                aria-label="Cerrar foto"
+                aria-label="Cerrar evidencia"
               >
                 <X size={16} />
               </button>
             </div>
-            <img
-              src={previewUrl}
+            <EvidenciaMedia
+              url={previewUrl}
               alt="Evidencia ampliada"
+              mode="preview"
               className="max-h-[min(82dvh,860px)] w-full rounded-2xl object-contain bg-zinc-950"
             />
           </div>

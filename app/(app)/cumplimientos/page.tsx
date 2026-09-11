@@ -2,6 +2,7 @@
 
 import { AccionCumplimiento } from "@/components/cumplimientos/AccionCumplimiento";
 import { BalanceBar } from "@/components/cumplimientos/BalanceBar";
+import { EvidenciaMedia } from "@/components/cumplimientos/EvidenciaMedia";
 import { FilterCombobox } from "@/components/FilterCombobox";
 import { NivelGeografiaToggle } from "@/components/geo/NivelGeografiaToggle";
 import GuerreroMapLoader from "@/components/map/GuerreroMapLoader";
@@ -521,9 +522,8 @@ function CumplimientosContent() {
                   className="overflow-hidden rounded-2xl border border-zinc-100 bg-white text-left shadow-[0_1px_2px_rgba(28,10,18,0.04)] hover:ring-1 hover:ring-guinda/30"
                 >
                   {p.evidenciaUrls[0] ? (
-                    <img
-                      src={p.evidenciaUrls[0]}
-                      alt=""
+                    <EvidenciaMedia
+                      url={p.evidenciaUrls[0]}
                       className="h-36 w-full object-cover"
                     />
                   ) : (

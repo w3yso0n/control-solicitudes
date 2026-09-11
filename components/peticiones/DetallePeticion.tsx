@@ -2,6 +2,7 @@
 
 import { ModalDocumento } from "@/components/cuantiva/ModalDocumento";
 import { esImagenPreview } from "@/components/cuantiva/DocumentoPreview";
+import { EvidenciaMedia } from "@/components/cumplimientos/EvidenciaMedia";
 import { BotonWhatsApp } from "@/components/peticiones/ModalWhatsApp";
 import { Button, Card } from "@/components/ui";
 import {
@@ -426,9 +427,8 @@ export function DetallePeticion({
                         rel="noreferrer"
                         className="block"
                       >
-                        <img
-                          src={url}
-                          alt="Evidencia"
+                        <EvidenciaMedia
+                          url={url}
                           className="h-20 w-20 rounded-lg object-cover"
                         />
                       </a>

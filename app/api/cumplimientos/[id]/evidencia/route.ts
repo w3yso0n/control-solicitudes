@@ -3,6 +3,8 @@ import { agregarEvidencia, eliminarEvidencia } from "@/lib/services/cumplimiento
 import { saveEvidenciaFile } from "@/lib/uploads";
 import { NextRequest, NextResponse } from "next/server";
 
+export const maxDuration = 60;
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -18,7 +20,7 @@ export async function POST(
     const file = form.get("file");
     if (!(file instanceof File)) {
       return NextResponse.json(
-        { error: "Adjunta una imagen de evidencia" },
+        { error: "Adjunta una imagen o un video de evidencia" },
         { status: 400 },
       );
     }
