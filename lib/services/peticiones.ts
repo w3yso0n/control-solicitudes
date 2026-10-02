@@ -40,7 +40,10 @@ const TIPOS = new Set<string>(TIPOS_PETICION.map((t) => t.id));
 const URGENCIA_IDS = new Set<string>(URGENCIAS.map((u) => u.id));
 const ALCANCE_IDS = new Set<string>(ALCANCES.map((a) => a.id));
 const COMPLEJIDAD_IDS = new Set<string>(COMPLEJIDADES.map((c) => c.id));
-const RELACION_IDS = new Set<string>(RELACIONES_REMITENTE.map((r) => r.id));
+const RELACION_IDS = new Set<string>([
+  ...RELACIONES_REMITENTE.map((r) => r.id),
+  "grupo",
+]);
 const ESCENARIO_IDS = new Set<string>(ESCENARIOS_ACUSE.map((e) => e.id));
 const COLONIA_IDS = new Set(COLONIAS_ACAPULCO.map((c) => c.id));
 const UUID_RE =
@@ -167,7 +170,7 @@ type UbicacionValidada = {
   ubicacionLabel: string | null;
 };
 
-async function resolverUbicacionCaptura(
+export async function resolverUbicacionCaptura(
   input: CapturarDocumentoInput,
 ): Promise<{ error: string; status: 400 } | UbicacionValidada> {
   const metodo = asString(input.metodoUbicacion);
@@ -202,7 +205,7 @@ async function resolverUbicacionCaptura(
   };
 }
 
-function validarCampos(
+export function validarCampos(
   input: CapturarDocumentoInput,
   extrasCatalogo: string[] = [],
 ): { error: string; status: 400 } | CamposValidados {
@@ -211,13 +214,24 @@ function validarCampos(
     return { error: "Municipio inválido", status: 400 };
   }
 
+  const relacionRaw = asString(input.remitenteRelacion) || "mismo";
+  const esGrupo = relacionRaw === "grupo";
+  if (!RELACION_IDS.has(relacionRaw)) {
+    return { error: "Relación del remitente inválida", status: 400 };
+  }
+
   const ciudadanoNombre = asString(input.ciudadanoNombre);
   if (!ciudadanoNombre) {
-    return { error: "El nombre del peticionario es obligatorio", status: 400 };
+    return {
+      error: esGrupo
+        ? "El nombre del comité, colonia o grupo es obligatorio"
+        : "El nombre del peticionario es obligatorio",
+      status: 400,
+    };
   }
 
   const ciudadanoDomicilio = asString(input.ciudadanoDomicilio);
-  if (!ciudadanoDomicilio) {
+  if (!esGrupo && !ciudadanoDomicilio) {
     return { error: "El domicilio es obligatorio", status: 400 };
   }
 
@@ -264,7 +278,7 @@ function validarCampos(
   if (!URGENCIA_IDS.has(urgencia)) {
     return { error: "Urgencia inválida", status: 400 };
   }
-  if (!ALCANCE_IDS.has(alcance)) {
+  if (!esGrupo && !ALCANCE_IDS.has(alcance)) {
     return { error: "Alcance inválido", status: 400 };
   }
 
@@ -275,34 +289,35 @@ function validarCampos(
 
   const firmantesRaw =
     typeof input.firmantes === "number" ? input.firmantes : null;
-  const firmantes =
-    alcance === "colectivo"
+  const alcanceFinal: Alcance = esGrupo ? "colectivo" : (alcance as Alcance);
+  const firmantes = esGrupo
+    ? null
+    : alcanceFinal === "colectivo"
       ? Math.max(1, Math.floor(firmantesRaw ?? 1))
       : null;
 
-  const relacionRaw = asString(input.remitenteRelacion) || "mismo";
-  if (!RELACION_IDS.has(relacionRaw)) {
-    return { error: "Relación del remitente inválida", status: 400 };
-  }
   const remitenteRelacion = relacionRaw as RelacionRemitente;
   const ciudadanoTelefono = telefonoLimpio(input.ciudadanoTelefono);
   const remitenteTelefono =
-    remitenteRelacion === "mismo"
+    esGrupo || remitenteRelacion === "mismo"
       ? null
       : telefonoLimpio(input.remitenteTelefono);
   const remitenteNombre =
-    remitenteRelacion === "mismo"
+    esGrupo || remitenteRelacion === "mismo"
       ? null
       : asString(input.remitenteNombre) || null;
 
   const escenarioDerivado = derivarEscenarioAcuse({
-    relacion: remitenteRelacion,
+    relacion: remitenteRelacion === "grupo" ? "mismo" : remitenteRelacion,
     telefonoPeticionario: ciudadanoTelefono,
     telefonoRemitente: remitenteTelefono,
   });
   const escenarioRaw = asString(input.escenarioAcuse);
-  const escenarioAcuse =
-    remitenteRelacion === "mismo"
+  const escenarioAcuse = esGrupo
+    ? ciudadanoTelefono
+      ? "A"
+      : "D"
+    : remitenteRelacion === "mismo"
       ? "A"
       : ESCENARIO_IDS.has(escenarioRaw)
         ? (escenarioRaw as EscenarioAcuse)
@@ -321,7 +336,7 @@ function validarCampos(
     subcategorias,
     tipo: tipo as TipoPeticion,
     urgencia: urgencia as Urgencia,
-    alcance: alcance as Alcance,
+    alcance: alcanceFinal,
     complejidad: complejidad as Complejidad,
     firmantes,
     cveMun,
@@ -454,35 +469,37 @@ export async function capturarDocumento(
       );
       if ("error" in campos) return campos;
 
-      const coincidencias = await buscarCoincidenciasIdentidad({
-        nombre: campos.ciudadanoNombre,
-        domicilio: campos.ciudadanoDomicilio,
-        telefono: campos.ciudadanoTelefono,
-        fechaEntrega: lote.fechaEntrega,
-        categoriaId: campos.categoriaId,
-        excluirId: existente?.id,
-      });
-      const duplicadoExacto = coincidencias.coincidencias.find(
-        (c) => c.mismoDiaMismoTema,
-      );
-      if (duplicadoExacto) {
-        return {
-          error: `Duplicado: el peticionario ya tiene el folio ${duplicadoExacto.folio} el mismo día y tema.`,
-          status: 409 as const,
-          coincidencias: coincidencias.coincidencias,
-        };
-      }
-      if (
-        coincidencias.coincidencias.length > 0 &&
-        !input.confirmarDuplicado &&
-        !existente
-      ) {
-        return {
-          error:
-            "Este peticionario ya tiene peticiones registradas. Confirma para agruparlas.",
-          status: 409 as const,
-          coincidencias: coincidencias.coincidencias,
-        };
+      if (campos.remitenteRelacion !== "grupo") {
+        const coincidencias = await buscarCoincidenciasIdentidad({
+          nombre: campos.ciudadanoNombre,
+          domicilio: campos.ciudadanoDomicilio,
+          telefono: campos.ciudadanoTelefono,
+          fechaEntrega: lote.fechaEntrega,
+          categoriaId: campos.categoriaId,
+          excluirId: existente?.id,
+        });
+        const duplicadoExacto = coincidencias.coincidencias.find(
+          (c) => c.mismoDiaMismoTema,
+        );
+        if (duplicadoExacto) {
+          return {
+            error: `Duplicado: el peticionario ya tiene el folio ${duplicadoExacto.folio} el mismo día y tema.`,
+            status: 409 as const,
+            coincidencias: coincidencias.coincidencias,
+          };
+        }
+        if (
+          coincidencias.coincidencias.length > 0 &&
+          !input.confirmarDuplicado &&
+          !existente
+        ) {
+          return {
+            error:
+              "Este peticionario ya tiene peticiones registradas. Confirma para agruparlas.",
+            status: 409 as const,
+            coincidencias: coincidencias.coincidencias,
+          };
+        }
       }
 
       const ahora = new Date();

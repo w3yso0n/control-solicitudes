@@ -100,6 +100,7 @@ export const peticiones = pgTable(
         "representante",
         "promotor",
         "no_especificada",
+        "grupo",
       ],
     }),
     descripcion: text("descripcion").notNull(),
@@ -140,7 +141,7 @@ export const peticiones = pgTable(
     fechaEntrega: text("fecha_entrega").notNull(),
     fechaCaptura: timestamp("fecha_captura").defaultNow().notNull(),
     origenCaptura: text("origen_captura", {
-      enum: ["escaneado_territorio", "whatsapp_ciudadano"],
+      enum: ["escaneado_territorio", "whatsapp_ciudadano", "portal_ciudadano"],
     })
       .notNull()
       .default("escaneado_territorio"),
@@ -186,6 +187,41 @@ export const peticiones = pgTable(
     index("peticiones_identidad_hash_idx").on(table.identidadHash),
     index("peticiones_estatus_idx").on(table.estatus),
     index("peticiones_complejidad_idx").on(table.complejidad),
+  ],
+);
+
+export const solicitudesPublicas = pgTable(
+  "solicitudes_publicas",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    esGrupo: boolean("es_grupo").notNull().default(false),
+    nombre: text("nombre").notNull(),
+    telefono: text("telefono"),
+    cveMun: text("cve_mun").notNull(),
+    descripcion: text("descripcion").notNull(),
+    fotoStorageKey: text("foto_storage_key"),
+    fotoNombre: text("foto_nombre"),
+    fotoMime: text("foto_mime"),
+    estatus: text("estatus", {
+      enum: ["pendiente", "aceptada", "descartada"],
+    })
+      .notNull()
+      .default("pendiente"),
+    motivoDescarte: text("motivo_descarte", {
+      enum: ["spam", "duplicada", "fuera_de_alcance", "incompleta"],
+    }),
+    peticionId: uuid("peticion_id").references(() => peticiones.id, {
+      onDelete: "set null",
+    }),
+    revisadoPor: uuid("revisado_por").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("solicitudes_publicas_estatus_idx").on(table.estatus),
+    index("solicitudes_publicas_peticion_id_idx").on(table.peticionId),
   ],
 );
 

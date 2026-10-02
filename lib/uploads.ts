@@ -117,6 +117,31 @@ export async function saveLoteFile(
   };
 }
 
+export async function savePublicFoto(
+  file: File,
+): Promise<{ error: string } | SavedUpload> {
+  if (file.size <= 0) return { error: "La foto está vacía" };
+  if (file.size > MAX_FILE_BYTES) return { error: "La foto supera el límite de 8 MB" };
+  const mimeType = resolveMimeType(file);
+  if (!mimeType || mimeType === "application/pdf") {
+    return { error: "La foto debe ser JPG, PNG, WebP o HEIC" };
+  }
+  const nombreArchivo = sanitizeFilename(file.name);
+  const ext = extensionOf(nombreArchivo);
+  const unique = `${randomUUID()}${ext ? `.${ext}` : ""}`;
+  const storageKey = path.posix.join("publico", unique);
+  const absolutePath = path.join(uploadRoot(), "publico", unique);
+  await mkdir(path.dirname(absolutePath), { recursive: true });
+  await writeFile(absolutePath, Buffer.from(await file.arrayBuffer()));
+  return {
+    storageKey,
+    absolutePath,
+    nombreArchivo,
+    mimeType,
+    sizeBytes: file.size,
+  };
+}
+
 export async function removeSavedUploads(files: SavedUpload[]) {
   await Promise.all(
     files.map((f) => unlink(f.absolutePath).catch(() => undefined)),

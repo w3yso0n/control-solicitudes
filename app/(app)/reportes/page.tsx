@@ -365,7 +365,11 @@ export default function ReportesPage() {
   );
   const intermediarios = actual.filter((p) => {
     const dto = consultasPorId.get(p.id);
-    return dto?.remitenteRelacion && dto.remitenteRelacion !== "mismo";
+    return (
+      dto?.remitenteRelacion &&
+      dto.remitenteRelacion !== "mismo" &&
+      dto.remitenteRelacion !== "grupo"
+    );
   });
 
   const distritosTop = [...conteoPor(

@@ -9,6 +9,7 @@ import {
   BadgeCheck,
   ClipboardList,
   FolderOpen,
+  Globe,
   Inbox,
   LayoutDashboard,
   LogOut,
@@ -29,6 +30,7 @@ const ICONS: Record<string, typeof LayoutDashboard> = {
   "/reportes": BarChart3,
   "/territorio": FolderOpen,
   "/bandeja": Inbox,
+  "/digitales": Globe,
   "/cumplimientos": BadgeCheck,
   "/peticiones": ClipboardList,
   "/usuarios": Users,
@@ -65,6 +67,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+  const [digitalesPendientes, setDigitalesPendientes] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const navWrapRef = useRef<HTMLDivElement>(null);
@@ -105,6 +108,22 @@ export function AppShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     resetBodyScroll();
   }, [pathname]);
+
+  useEffect(() => {
+    if (!ready || (rol !== "cuantiva" && rol !== "admin")) return;
+    let vivo = true;
+    fetch("/api/digitales/conteo")
+      .then((r) => r.json())
+      .then((d: { pendientes?: number }) => {
+        if (vivo && typeof d.pendientes === "number") {
+          setDigitalesPendientes(d.pendientes);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      vivo = false;
+    };
+  }, [ready, rol, pathname]);
 
   useEffect(() => {
     return () => {
@@ -221,8 +240,28 @@ export function AppShell({ children }: { children: ReactNode }) {
                           : "text-white/80 hover:bg-white/10 hover:text-white"
                       }`}
                     >
-                      <Icon size={20} />
+                      <span className="relative">
+                        <Icon size={20} />
+                        {item.href === "/digitales" &&
+                        collapsed &&
+                        digitalesPendientes > 0 ? (
+                          <span className="absolute -right-2 -top-2 min-w-4 rounded-full bg-white px-1 text-center text-[10px] font-semibold leading-4 text-guinda">
+                            {digitalesPendientes}
+                          </span>
+                        ) : null}
+                      </span>
                       {collapsed ? null : <span>{item.label}</span>}
+                      {item.href === "/digitales" &&
+                      !collapsed &&
+                      digitalesPendientes > 0 ? (
+                        <span
+                          className={`ml-auto rounded-full px-2 py-0.5 text-xs font-semibold ${
+                            active ? "bg-guinda text-white" : "bg-white text-guinda"
+                          }`}
+                        >
+                          {digitalesPendientes}
+                        </span>
+                      ) : null}
                     </Link>
                   );
                 })}

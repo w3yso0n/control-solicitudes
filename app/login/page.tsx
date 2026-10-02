@@ -4,6 +4,7 @@ import { Button, Field, Input } from "@/components/ui";
 import { signIn } from "next-auth/react";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -121,6 +122,11 @@ export default function LoginPage() {
             <Button type="submit" className="w-full py-2.5" disabled={enviando}>
               {enviando ? "Entrando…" : "Entrar"}
             </Button>
+            <p className="text-center text-sm text-zinc-500">
+              <Link href="/solicitar" className="text-guinda hover:underline">
+                Levantar una solicitud sin cuenta
+              </Link>
+            </p>
           </form>
         </div>
       </div>

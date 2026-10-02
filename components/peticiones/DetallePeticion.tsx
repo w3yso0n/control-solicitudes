@@ -251,7 +251,14 @@ export function DetallePeticion({
               </span>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <Dato label="Ciudadano" value={peticion.ciudadanoNombre} />
+              <Dato
+                label={
+                  peticion.remitenteRelacion === "grupo"
+                    ? "Comité, colonia o grupo"
+                    : "Ciudadano"
+                }
+                value={peticion.ciudadanoNombre}
+              />
               <div>
                 <p className="text-[11px] uppercase tracking-wide text-zinc-400">
                   Teléfono
@@ -352,22 +359,25 @@ export function DetallePeticion({
               <Dato
                 label="Firmantes"
                 value={
-                  peticion.alcance === "colectivo"
-                    ? String(peticion.firmantes ?? 1)
-                    : "—"
+                  peticion.remitenteRelacion === "grupo" ||
+                  peticion.alcance !== "colectivo"
+                    ? "—"
+                    : String(peticion.firmantes ?? 1)
                 }
               />
               <Dato
                 label="Remitente"
                 value={
-                  peticion.remitenteRelacion &&
-                  peticion.remitenteRelacion !== "mismo"
-                    ? `${etiqueta(RELACIONES_REMITENTE, peticion.remitenteRelacion)}${
-                        peticion.remitenteNombre
-                          ? ` · ${peticion.remitenteNombre}`
-                          : ""
-                      }`
-                    : "El peticionario"
+                  peticion.remitenteRelacion === "grupo"
+                    ? "La comunidad o el grupo"
+                    : peticion.remitenteRelacion &&
+                        peticion.remitenteRelacion !== "mismo"
+                      ? `${etiqueta(RELACIONES_REMITENTE, peticion.remitenteRelacion)}${
+                          peticion.remitenteNombre
+                            ? ` · ${peticion.remitenteNombre}`
+                            : ""
+                        }`
+                      : "El peticionario"
                 }
               />
               <div>

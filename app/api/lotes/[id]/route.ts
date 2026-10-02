@@ -20,7 +20,10 @@ export async function DELETE(
       return NextResponse.json({ error: "No autenticado" }, { status: 401 });
     }
 
-    const result = await deleteLote(user.id, id, { admin: user.role === "admin" });
+    const result = await deleteLote(user.id, id, {
+      admin: user.role === "admin",
+      bandeja: user.role === "cuantiva",
+    });
     if ("error" in result) {
       const status =
         result.error === "No autorizado"

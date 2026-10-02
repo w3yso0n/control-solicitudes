@@ -407,6 +407,14 @@ export const ESCENARIOS_ACUSE = [
 export const ORIGENES_CAPTURA = [
   { id: "escaneado_territorio", nombre: "Escaneado Territorio" },
   { id: "whatsapp_ciudadano", nombre: "WhatsApp ciudadano" },
+  { id: "portal_ciudadano", nombre: "Portal ciudadano" },
+] as const;
+
+export const MOTIVOS_DESCARTE_PUBLICO = [
+  { id: "spam", nombre: "Spam" },
+  { id: "duplicada", nombre: "Duplicada" },
+  { id: "fuera_de_alcance", nombre: "Fuera de alcance" },
+  { id: "incompleta", nombre: "Incompleta" },
 ] as const;
 
 export const ESTATUS_PETICION = [

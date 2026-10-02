@@ -56,6 +56,7 @@ export default function CapturaPage() {
   const [errorEnvio, setErrorEnvio] = useState("");
   const [enviando, setEnviando] = useState(false);
 
+  const [comunitaria, setComunitaria] = useState(false);
   const [nombre, setNombre] = useState("");
   const [domicilio, setDomicilio] = useState("");
   const [telefono, setTelefono] = useState("");
@@ -132,6 +133,10 @@ export default function CapturaPage() {
   const esIntermediario = relacion !== "mismo";
 
   useEffect(() => {
+    if (comunitaria) {
+      setEscenario(telefono.trim() ? "A" : "D");
+      return;
+    }
     setEscenario(
       derivarEscenarioAcuse({
         relacion,
@@ -139,7 +144,7 @@ export default function CapturaPage() {
         telefonoRemitente: esIntermediario ? remitenteTelefono : null,
       }),
     );
-  }, [relacion, telefono, remitenteTelefono, esIntermediario]);
+  }, [comunitaria, relacion, telefono, remitenteTelefono, esIntermediario]);
 
   const cargar = useCallback(async () => {
     setErrorCarga("");
@@ -163,10 +168,14 @@ export default function CapturaPage() {
       setCoincidencias([]);
       setAvisarAgrupar(false);
       if (pet) {
+        const esGrupo = pet.remitenteRelacion === "grupo";
+        setComunitaria(esGrupo);
         setNombre(pet.ciudadanoNombre);
         setDomicilio(pet.ciudadanoDomicilio);
         setTelefono(pet.ciudadanoTelefono ?? "");
-        setRelacion(pet.remitenteRelacion ?? "mismo");
+        setRelacion(
+          esGrupo ? "mismo" : (pet.remitenteRelacion ?? "mismo"),
+        );
         setRemitenteNombre(pet.remitenteNombre ?? "");
         setRemitenteTelefono(pet.remitenteTelefono ?? "");
         setEscenario(pet.escenarioAcuse);
@@ -208,6 +217,7 @@ export default function CapturaPage() {
           label: pet.ubicacionLabel ?? "",
         });
       } else {
+        setComunitaria(false);
         setNombre("");
         setDomicilio("");
         setTelefono("");
@@ -285,6 +295,18 @@ export default function CapturaPage() {
   async function confirmar(e?: React.SyntheticEvent, forzar = false) {
     e?.preventDefault();
     if (!doc || enviando) return;
+    if (!nombre.trim()) {
+      setErrorEnvio(
+        comunitaria
+          ? "Escribe el nombre del comité, colonia o grupo."
+          : "Escribe el nombre del peticionario.",
+      );
+      return;
+    }
+    if (!comunitaria && !domicilio.trim()) {
+      setErrorEnvio("Escribe el domicilio.");
+      return;
+    }
     if (!complejidad) {
       setErrorEnvio("Asigna la complejidad antes de confirmar.");
       return;
@@ -316,20 +338,25 @@ export default function CapturaPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ciudadanoNombre: nombre,
-          ciudadanoDomicilio: domicilio,
+          ciudadanoDomicilio: comunitaria ? "" : domicilio,
           ciudadanoTelefono: telefono,
-          remitenteNombre: esIntermediario ? remitenteNombre : null,
-          remitenteTelefono: esIntermediario ? remitenteTelefono : null,
-          remitenteRelacion: relacion,
+          remitenteNombre:
+            comunitaria || !esIntermediario ? null : remitenteNombre,
+          remitenteTelefono:
+            comunitaria || !esIntermediario ? null : remitenteTelefono,
+          remitenteRelacion: comunitaria ? "grupo" : relacion,
           descripcion,
           transcripcion,
           categoriaId,
           subcategorias: subs,
           tipo,
           urgencia,
-          alcance,
+          alcance: comunitaria ? "colectivo" : alcance,
           complejidad,
-          firmantes: alcance === "colectivo" ? Number(firmantes) || 1 : null,
+          firmantes:
+            !comunitaria && alcance === "colectivo"
+              ? Number(firmantes) || 1
+              : null,
           cveMun: ubicacion.cveMun,
           lat: ubicacion.lat,
           lng: ubicacion.lng,
@@ -521,14 +548,77 @@ export default function CapturaPage() {
                 <ChevronRight size={20} />
               </button>
             </div>
-            <Field label="Nombre del peticionario">
+            <div className="space-y-2">
+              <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+                ¿De quién es la solicitud?
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  aria-pressed={!comunitaria}
+                  onClick={() => setComunitaria(false)}
+                  className={`rounded-2xl border px-3 py-3 text-sm font-semibold transition-colors ${
+                    !comunitaria
+                      ? "border-guinda bg-guinda text-white shadow-[0_8px_20px_-8px_rgba(122,18,51,0.55)]"
+                      : "border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50"
+                  }`}
+                >
+                  De una persona
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={comunitaria}
+                  onClick={() => {
+                    setComunitaria(true);
+                    setCoincidencias([]);
+                    setAvisarAgrupar(false);
+                  }}
+                  className={`rounded-2xl border px-3 py-3 text-sm font-semibold transition-colors ${
+                    comunitaria
+                      ? "border-guinda bg-guinda text-white shadow-[0_8px_20px_-8px_rgba(122,18,51,0.55)]"
+                      : "border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50"
+                  }`}
+                >
+                  Comunitaria
+                </button>
+              </div>
+              <p className="text-[11px] leading-4 text-zinc-400">
+                {comunitaria
+                  ? "Comité, colonia, club o grupo. Basta el nombre; no hace falta una persona."
+                  : "Una persona. Si alguien más entrega el formato, indícalo abajo."}
+              </p>
+            </div>
+            <Field
+              label={
+                comunitaria
+                  ? "Nombre del comité, colonia o grupo"
+                  : "Nombre del peticionario"
+              }
+            >
               <Input
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
-                onBlur={() => void consultarIdentidad()}
+                onBlur={() => {
+                  if (!comunitaria) void consultarIdentidad();
+                }}
+                placeholder={
+                  comunitaria
+                    ? "Ej. Comité de desarrollo colonia del PRI"
+                    : undefined
+                }
                 required
               />
             </Field>
+            {comunitaria ? (
+              <Field label="Teléfono de contacto (opcional)">
+                <Input
+                  value={telefono}
+                  onChange={(e) => setTelefono(e.target.value)}
+                  placeholder="Para avisar al comité, colonia o grupo"
+                />
+              </Field>
+            ) : null}
+            {comunitaria ? null : (
             <Field label="Domicilio (colonia, localidad, municipio)">
               <Input
                 value={domicilio}
@@ -537,7 +627,8 @@ export default function CapturaPage() {
                 required
               />
             </Field>
-            {coincidencias.length > 0 ? (
+            )}
+            {!comunitaria && coincidencias.length > 0 ? (
               <div className="rounded-xl border border-ambar/40 bg-ambar/10 px-3 py-2 text-sm text-[#a05a10]">
                 <p className="font-medium">
                   {avisarAgrupar
@@ -560,6 +651,8 @@ export default function CapturaPage() {
                 </ul>
               </div>
             ) : null}
+            {comunitaria ? null : (
+              <>
             <Field label="Teléfono del peticionario (opcional)">
               <Input
                 value={telefono}
@@ -614,6 +707,8 @@ export default function CapturaPage() {
                 </p>
               ) : null}
             </Field>
+              </>
+            )}
             <Field label="Descripción">
               <Textarea
                 rows={3}
@@ -697,7 +792,9 @@ export default function CapturaPage() {
               emptyLabel="Ninguna"
               searchPlaceholder="Buscar subcategoría…"
             />
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div
+              className={`grid gap-3 ${comunitaria ? "sm:grid-cols-2" : "sm:grid-cols-3"}`}
+            >
               <Field label="Tipo">
                 <FilterCombobox
                   value={tipo}
@@ -722,6 +819,7 @@ export default function CapturaPage() {
                   searchPlaceholder="Buscar…"
                 />
               </Field>
+              {comunitaria ? null : (
               <Field label="Alcance">
                 <FilterCombobox
                   value={alcance}
@@ -734,8 +832,9 @@ export default function CapturaPage() {
                   searchPlaceholder="Buscar…"
                 />
               </Field>
+              )}
             </div>
-            {alcance === "colectivo" ? (
+            {!comunitaria && alcance === "colectivo" ? (
               <Field label="Número de firmantes">
                 <Input
                   type="number"

@@ -16,7 +16,7 @@ import {
   saveLoteFile,
   type SavedUpload,
 } from "@/lib/uploads";
-import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, ne } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -147,6 +147,7 @@ export async function getLotesBandeja(): Promise<LoteDto[]> {
     })
     .from(lotes)
     .innerJoin(users, eq(lotes.userId, users.id))
+    .where(ne(lotes.eventoOrigen, "Portal ciudadano"))
     .orderBy(asc(lotes.createdAt));
   const byLote = await documentosPorLoteIds(rows.map((r) => r.lote.id));
   return ensamblarLotes(rows, byLote);
@@ -312,11 +313,11 @@ export async function getLoteById(id: string) {
 export async function deleteLote(
   userId: string,
   id: string,
-  opts?: { admin?: boolean },
+  opts?: { admin?: boolean; bandeja?: boolean },
 ) {
   const existing = await getLoteById(id);
   if (!existing) return { error: "Lote no encontrado" };
-  if (!opts?.admin && existing.userId !== userId) {
+  if (!opts?.admin && !opts?.bandeja && existing.userId !== userId) {
     return { error: "No autorizado" };
   }
 

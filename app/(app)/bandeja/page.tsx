@@ -1,30 +1,17 @@
 "use client";
 
 import { esImagenPreview } from "@/components/cuantiva/DocumentoPreview";
+import { EliminarLoteButton } from "@/components/cuantiva/EliminarLoteButton";
+import { PreviewLoteBandeja } from "@/components/cuantiva/PreviewLoteBandeja";
 import { FilterCombobox } from "@/components/FilterCombobox";
 import { etiquetaEvento } from "@/components/territorio/EventoOrigenField";
 import { Button, Card } from "@/components/ui";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { nombreMunicipio, tituloLote } from "@/lib/lote-titulo";
-import type { LoteDocumentoDto, LoteDto } from "@/lib/types";
+import type { LoteDto } from "@/lib/types";
 import { FileText } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
-
-function EstadoDoc({ doc }: { doc: LoteDocumentoDto }) {
-  if (doc.estatus === "capturado") {
-    return (
-      <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium text-emerald-800">
-        Capturado{doc.folio ? ` · ${doc.folio}` : ""}
-      </span>
-    );
-  }
-  return (
-    <span className="shrink-0 rounded-full bg-magenta/10 px-2 py-0.5 text-[11px] font-medium text-magenta">
-      Pendiente
-    </span>
-  );
-}
 
 export default function CuantivaBandejaPage() {
   const [lotes, setLotes] = useState<LoteDto[]>([]);
@@ -32,6 +19,10 @@ export default function CuantivaBandejaPage() {
   const [error, setError] = useState("");
   const [cveMun, setCveMun] = useState("");
   const [evento, setEvento] = useState("");
+  const [preview, setPreview] = useState<{
+    loteId: string;
+    docId?: string;
+  } | null>(null);
 
   const cargar = useCallback(async () => {
     setError("");
@@ -89,6 +80,9 @@ export default function CuantivaBandejaPage() {
   }, [lotes, cveMun, evento]);
 
   const hayFiltros = cveMun !== "" || evento !== "";
+  const lotePreview = preview
+    ? (lotes.find((lote) => lote.id === preview.loteId) ?? null)
+    : null;
 
   return (
     <div className="space-y-6">
@@ -100,8 +94,9 @@ export default function CuantivaBandejaPage() {
           Bandeja de captura
         </h1>
         <p className="mt-1 text-sm text-zinc-500">
-          Lotes cerrados, más antiguos primero. Entra al lote para ver y editar
-          cada archivo.
+          Lotes cerrados, más antiguos primero. Clic en una miniatura para ver
+          el archivo sin abrir el lote. El punto magenta está pendiente y el
+          verde ya está capturado.
         </p>
       </div>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -155,8 +150,7 @@ export default function CuantivaBandejaPage() {
               const primero = lote.documentos.find(
                 (d) => d.estatus === "pendiente",
               );
-              const previewDocs = lote.documentos.slice(0, 2);
-              const resto = lote.documentos.length - previewDocs.length;
+              const capturas = lote.documentos.length - pend;
               return (
                 <Card key={lote.id} className="p-4">
                   <div className="flex flex-wrap items-start justify-between gap-3">
@@ -181,61 +175,95 @@ export default function CuantivaBandejaPage() {
                     </span>
                   </div>
 
-                  <ul className="mt-3 divide-y divide-zinc-100 overflow-hidden rounded-xl border border-zinc-100">
-                    {previewDocs.map((doc) => (
-                      <li key={doc.id}>
-                        <Link
-                          href={`/bandeja/${lote.id}/${doc.id}`}
-                          className="flex items-center gap-3 px-3 py-2 hover:bg-zinc-50"
+                  {lote.documentos.length > 0 ? (
+                    <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                      {lote.documentos.map((doc) => (
+                        <button
+                          key={doc.id}
+                          type="button"
+                          onClick={() =>
+                            setPreview({ loteId: lote.id, docId: doc.id })
+                          }
+                          className="w-28 shrink-0 overflow-hidden rounded-xl border border-zinc-200 text-left transition-colors hover:border-guinda/40"
+                          title={`${doc.nombreArchivo} · ${
+                            doc.estatus === "capturado" ? "Capturado" : "Pendiente"
+                          }`}
                         >
-                          {esImagenPreview(doc.mimeType) ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img
-                              src={doc.url}
-                              alt=""
-                              className="h-10 w-10 shrink-0 rounded-md object-cover"
+                          <span className="relative block h-24">
+                            {esImagenPreview(doc.mimeType) ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={doc.url}
+                                alt=""
+                                loading="lazy"
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <span className="flex h-full w-full flex-col items-center justify-center bg-zinc-50 text-zinc-400">
+                                <FileText size={18} />
+                                <span className="mt-1 text-[10px] uppercase tracking-wide">
+                                  {doc.mimeType === "application/pdf"
+                                    ? "PDF"
+                                    : "Archivo"}
+                                </span>
+                              </span>
+                            )}
+                            <span
+                              className={`absolute right-1.5 top-1.5 h-2.5 w-2.5 rounded-full ring-2 ring-white ${
+                                doc.estatus === "capturado"
+                                  ? "bg-emerald-500"
+                                  : "bg-magenta"
+                              }`}
                             />
-                          ) : (
-                            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-zinc-100 text-zinc-400">
-                              <FileText size={16} />
-                            </span>
-                          )}
-                          <span className="min-w-0 flex-1 truncate text-sm text-zinc-800">
+                          </span>
+                          <span className="block truncate px-1.5 py-1 text-[11px] text-zinc-600">
                             {doc.nombreArchivo}
                           </span>
-                          <EstadoDoc doc={doc} />
-                        </Link>
-                      </li>
-                    ))}
-                    {resto > 0 ? (
-                      <li>
-                        <Link
-                          href={`/bandeja/${lote.id}`}
-                          className="block px-3 py-2 text-sm text-guinda hover:bg-zinc-50"
-                        >
-                          +{resto} más en el detalle del lote
-                        </Link>
-                      </li>
-                    ) : null}
-                  </ul>
-
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Link href={`/bandeja/${lote.id}`}>
-                      <Button type="button" variant="secondary">
-                        Ver documentos del lote
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="mt-3 text-sm text-zinc-400">
+                      Este lote no tiene archivos.
+                    </p>
+                  )}
+                  <div className="mt-3">
+                    <EliminarLoteButton
+                      loteId={lote.id}
+                      capturas={capturas}
+                      onEliminado={() => {
+                        setLotes((prev) => prev.filter((l) => l.id !== lote.id));
+                        setPreview((actual) =>
+                          actual?.loteId === lote.id ? null : actual,
+                        );
+                      }}
+                    >
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() =>
+                          setPreview({
+                            loteId: lote.id,
+                            docId: primero?.id ?? lote.documentos[0]?.id,
+                          })
+                        }
+                      >
+                        Vista previa
                       </Button>
-                    </Link>
-                    {primero ? (
-                      <Link href={`/bandeja/${lote.id}/${primero.id}`}>
-                        <Button type="button">Continuar captura</Button>
-                      </Link>
-                    ) : lote.documentos[0] ? (
-                      <Link href={`/bandeja/${lote.id}/${lote.documentos[0].id}`}>
-                        <Button type="button" variant="ghost">
-                          Revisar captura
-                        </Button>
-                      </Link>
-                    ) : null}
+                      {primero ? (
+                        <Link href={`/bandeja/${lote.id}/${primero.id}`}>
+                          <Button type="button">Continuar captura</Button>
+                        </Link>
+                      ) : lote.documentos[0] ? (
+                        <Link
+                          href={`/bandeja/${lote.id}/${lote.documentos[0].id}`}
+                        >
+                          <Button type="button" variant="ghost">
+                            Revisar captura
+                          </Button>
+                        </Link>
+                      ) : null}
+                    </EliminarLoteButton>
                   </div>
                 </Card>
               );
@@ -250,6 +278,17 @@ export default function CuantivaBandejaPage() {
           </p>
         ) : null}
       </div>
+      {lotePreview ? (
+        <PreviewLoteBandeja
+          lote={lotePreview}
+          docIdInicial={preview?.docId}
+          onCerrar={() => setPreview(null)}
+          onEliminado={() => {
+            setLotes((prev) => prev.filter((l) => l.id !== lotePreview.id));
+            setPreview(null);
+          }}
+        />
+      ) : null}
     </div>
   );
 }

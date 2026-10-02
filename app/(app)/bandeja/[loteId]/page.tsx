@@ -1,16 +1,18 @@
 "use client";
 
 import { DocumentoPreview } from "@/components/cuantiva/DocumentoPreview";
+import { EliminarLoteButton } from "@/components/cuantiva/EliminarLoteButton";
 import { FilterCombobox } from "@/components/FilterCombobox";
 import { Button, Card } from "@/components/ui";
 import { nombreMunicipio, tituloLote } from "@/lib/lote-titulo";
 import type { LoteDto } from "@/lib/types";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function LoteDocumentosPage() {
   const { loteId } = useParams<{ loteId: string }>();
+  const router = useRouter();
   const [lote, setLote] = useState<LoteDto | null>(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
@@ -80,11 +82,19 @@ export default function LoteDocumentosPage() {
             <p className="mt-1 text-sm text-zinc-600">{lote.notas}</p>
           ) : null}
         </div>
-        {primero ? (
-          <Link href={`/bandeja/${lote.id}/${primero.id}`}>
-            <Button type="button">Continuar captura</Button>
-          </Link>
-        ) : null}
+        <div className="w-full sm:max-w-md">
+          <EliminarLoteButton
+            loteId={lote.id}
+            capturas={lote.documentos.length - pend}
+            onEliminado={() => router.push("/bandeja")}
+          >
+            {primero ? (
+              <Link href={`/bandeja/${lote.id}/${primero.id}`}>
+                <Button type="button">Continuar captura</Button>
+              </Link>
+            ) : null}
+          </EliminarLoteButton>
+        </div>
       </div>
       <div className="w-full sm:max-w-xs">
         <FilterCombobox

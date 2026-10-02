@@ -27,7 +27,36 @@ export default auth((request) => {
   const pathname = request.nextUrl.pathname;
   const isApiRoute = pathname.startsWith("/api/");
   const isPublicPage =
-    pathname.startsWith("/login") || pathname.startsWith("/aviso-privacidad");
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/aviso-privacidad") ||
+    pathname === "/solicitar" ||
+    pathname.startsWith("/solicitar/");
+
+  if (
+    request.method === "POST" &&
+    pathname.startsWith("/api/publico")
+  ) {
+    const origin = request.headers.get("origin");
+    const host = (
+      request.headers.get("x-forwarded-host") ??
+      request.headers.get("host") ??
+      ""
+    )
+      .split(",")[0]
+      .trim();
+    let originHost = "";
+    try {
+      originHost = origin ? new URL(origin).host : "";
+    } catch {
+      originHost = "";
+    }
+    if (!originHost || !host || originHost !== host) {
+      return NextResponse.json(
+        { error: "Origen no permitido" },
+        { status: 403 },
+      );
+    }
+  }
 
   if (isApiRoute) {
     return NextResponse.next();

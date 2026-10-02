@@ -17,7 +17,10 @@ export type Alcance = "individual" | "familiar" | "colectivo";
 
 export type Complejidad = "simple" | "media" | "estructural";
 
-export type OrigenCaptura = "escaneado_territorio" | "whatsapp_ciudadano";
+export type OrigenCaptura =
+  | "escaneado_territorio"
+  | "whatsapp_ciudadano"
+  | "portal_ciudadano";
 
 export type EscenarioAcuse = "A" | "B" | "C" | "D";
 
@@ -27,7 +30,8 @@ export type RelacionRemitente =
   | "vecino"
   | "representante"
   | "promotor"
-  | "no_especificada";
+  | "no_especificada"
+  | "grupo";
 
 export type EstatusPeticion =
   | "recibida"

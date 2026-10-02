@@ -21,6 +21,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/reportes", label: "Reportes", roles: ["candidata", "admin"], grupo: "vision" },
   { href: "/territorio", label: "Captura de lotes", roles: ["territorio", "admin"], grupo: "operacion" },
   { href: "/bandeja", label: "Bandeja", roles: ["cuantiva", "admin"], grupo: "operacion" },
+  { href: "/digitales", label: "Digitales", roles: ["cuantiva", "admin"], grupo: "operacion" },
   {
     href: "/cumplimientos",
     label: "Cumplimientos",
@@ -50,6 +51,7 @@ export function puedeVer(rol: Rol, href: string): boolean {
   if (!item) {
     if (href.startsWith("/territorio")) return rol === "territorio" || rol === "admin";
     if (href.startsWith("/bandeja")) return rol === "cuantiva" || rol === "admin";
+    if (href.startsWith("/digitales")) return rol === "cuantiva" || rol === "admin";
     if (href.startsWith("/cumplimientos")) {
       return rol === "operador" || rol === "candidata" || rol === "admin";
     }
