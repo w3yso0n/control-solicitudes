@@ -8,8 +8,7 @@ export default function AvisoPrivacidadPage() {
       </p>
       <h1 className="mt-2 text-2xl font-semibold">Aviso de privacidad</h1>
       <p className="mt-6 text-sm leading-6 text-zinc-600">
-        Responsable del tratamiento: campaña de Beatriz Mojica. Encargado:
-        Cuantiva, por instrucción del responsable.
+        Responsable del tratamiento: campaña de Beatriz Mojica.
       </p>
       <h2 className="mt-8 text-sm font-semibold">Datos recabados</h2>
       <p className="mt-2 text-sm leading-6 text-zinc-600">

@@ -428,7 +428,7 @@ export const ESTATUS_PETICION = [
 
 export const ROL_LABEL: Record<string, string> = {
   territorio: "Capturista Territorio",
-  cuantiva: "Capturista Cuantiva",
+  cuantiva: "Capturista",
   operador: "Operador de cumplimiento",
   candidata: "Candidata",
   admin: "Administrador",

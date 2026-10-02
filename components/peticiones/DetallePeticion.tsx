@@ -403,7 +403,7 @@ export function DetallePeticion({
               <Dato label="Captura" value={fechaCorta(peticion.fechaCaptura)} />
               <Dato label="Evento" value={etiquetaEvento(peticion.eventoOrigen)} />
               <Dato label="Archivo" value={peticion.documento.nombreArchivo} />
-              <Dato label="Capturista Cuantiva" value={capturista} />
+              <Dato label="Capturista" value={capturista} />
               <Dato label="Subida por Territorio" value={subidaPor} />
             </div>
             {peticion.estatus === "cumplida" ||

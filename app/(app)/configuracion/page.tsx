@@ -303,7 +303,7 @@ export default function ConfiguracionPage() {
         <div className="space-y-3">
           <p className="text-sm text-zinc-500">
             Las 13 categorías base no se borran. Aquí agregas subcategorías
-            extra que Cuantiva verá en captura.
+            extra que se verán en la captura.
           </p>
           {categorias.map((cat) => {
             const extras = subsExtra[cat.id] ?? [];
