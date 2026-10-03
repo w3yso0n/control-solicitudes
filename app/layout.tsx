@@ -23,9 +23,9 @@ export const metadata: Metadata = {
   title: "Nexo Cuantiva",
   description: "Seguimiento ciudadano de Nexo Cuantiva en la Ciudad de México.",
   icons: {
-    icon: [{ url: "/brand/icon-nexo.png", type: "image/png", sizes: "any" }],
-    shortcut: "/brand/icon-nexo.png",
-    apple: "/brand/icon-nexo.png",
+    icon: [{ url: "/brand/foto-perfil.png", type: "image/png", sizes: "any" }],
+    shortcut: "/brand/foto-perfil.png",
+    apple: "/brand/foto-perfil.png",
   },
 };
 

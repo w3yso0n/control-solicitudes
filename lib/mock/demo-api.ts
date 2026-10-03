@@ -345,6 +345,14 @@ function aConsulta(p: Peticion, index: number): PeticionConsultaDto {
   };
 }
 
+const FOTOS_BANDEJA = [
+  { url: "/scans/cartas/baches.png", nombre: "baches-del-carmen.png" },
+  { url: "/scans/cartas/banqueta.jpg", nombre: "banqueta-del-valle.jpg" },
+  { url: "/scans/cartas/semaforo.jpg", nombre: "semaforo-coyoacan.jpg" },
+  { url: "/scans/cartas/arbol.jpg", nombre: "arbol-insurgentes.jpg" },
+  { url: "/scans/cartas/mercado.jpg", nombre: "mercado-meyehualco.jpg" },
+];
+
 function loteSeedADto(lote: Lote, index: number): LoteDto {
   const alcaldia =
     MUNICIPIOS_GUERRERO[index % MUNICIPIOS_GUERRERO.length] ?? MUNICIPIOS_GUERRERO[0];
@@ -358,18 +366,21 @@ function loteSeedADto(lote: Lote, index: number): LoteDto {
     creadoEn: lote.creadoEn,
     subidaPorNombre: "Territorio",
     subidaPorEmail: "territorio@demo.mx",
-    documentos: lote.documentos.map((doc) => ({
-      id: doc.id,
-      loteId: lote.id,
-      nombreArchivo: doc.nombreArchivo,
-      mimeType: "image/jpeg",
-      sizeBytes: 180000,
-      estatus: doc.estatus,
-      url: doc.imagenUrl,
-      peticionId: doc.peticionId ?? null,
-      folio: null,
-      peticion: null,
-    })),
+    documentos: lote.documentos.map((doc, i) => {
+      const foto = FOTOS_BANDEJA[(index * 3 + i) % FOTOS_BANDEJA.length];
+      return {
+        id: doc.id,
+        loteId: lote.id,
+        nombreArchivo: foto?.nombre ?? doc.nombreArchivo,
+        mimeType: foto?.url.endsWith(".png") ? "image/png" : "image/jpeg",
+        sizeBytes: 180000,
+        estatus: doc.estatus,
+        url: foto?.url ?? doc.imagenUrl,
+        peticionId: doc.peticionId ?? null,
+        folio: null,
+        peticion: null,
+      };
+    }),
   };
 }
 
