@@ -1,6 +1,7 @@
 "use client";
 
 import { BalanceBar } from "@/components/cumplimientos/BalanceBar";
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
 import { EvidenciaMedia } from "@/components/cumplimientos/EvidenciaMedia";
 import { ZonasEnBlanco } from "@/components/dashboard/ZonasEnBlanco";
 import { NivelGeografiaToggle } from "@/components/geo/NivelGeografiaToggle";
@@ -65,10 +66,10 @@ const ETIQUETA_CATEGORIA: Record<string, string> = {
 
 function degradadoCategoria(rank: number, total: number) {
   const t = total <= 1 ? 0 : rank / (total - 1);
-  if (t < 0.25) return "linear-gradient(90deg, #7A1233 0%, #C8215F 100%)";
-  if (t < 0.5) return "linear-gradient(90deg, #C8215F 0%, #f43f5e 100%)";
-  if (t < 0.75) return "linear-gradient(90deg, #fb7185 0%, #fdba74 100%)";
-  return "linear-gradient(90deg, #fdba74 0%, #93c5fd 100%)";
+  if (t < 0.25) return "linear-gradient(90deg, #5b21b6 0%, #7c3aed 100%)";
+  if (t < 0.5) return "linear-gradient(90deg, #7c3aed 0%, #a855f7 100%)";
+  if (t < 0.75) return "linear-gradient(90deg, #a855f7 0%, #c4b5fd 100%)";
+  return "linear-gradient(90deg, #c4b5fd 0%, #ddd6fe 100%)";
 }
 
 function KpiCard({
@@ -452,17 +453,17 @@ export default function DashboardPage() {
         <div className="flex items-center gap-3">
           <Image
             src="/brand/foto-perfil.png"
-            alt="Beatriz Mojica"
+            alt="Nexo Cuantiva"
             width={40}
             height={40}
             className="h-10 w-10 rounded-full object-cover ring-2 ring-guinda/20"
           />
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-400">
-              Dashboard ejecutivo
+              Dashboard ejecutivo Nexo Cuantiva
             </p>
             <h1 className="text-2xl font-semibold tracking-tight text-zinc-900">
-              Beatriz Mojica
+              Nexo Cuantiva
             </h1>
           </div>
         </div>
@@ -480,7 +481,7 @@ export default function DashboardPage() {
                 onClick={() => setVista(id)}
                 className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                   vista === id
-                    ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(122,18,51,0.5)]"
+                    ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(109,40,217,0.5)]"
                     : "text-zinc-600 hover:bg-zinc-100"
                 }`}
               >

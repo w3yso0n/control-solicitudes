@@ -1,5 +1,7 @@
 "use client";
 
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
+
 import { Button, Card } from "@/components/ui";
 import { ROL_LABEL } from "@/lib/catalogos";
 import { useBodyScrollLock } from "@/lib/body-scroll-lock";

@@ -35,7 +35,7 @@ export const EVENTOS: Evento[] = [
 
 function transcripcionMock(descripcion: string, nombre: string) {
   return [
-    "C. Beatriz Mojica —",
+    "Nexo Cuantiva —",
     "",
     `Por medio del presente escrito, quien suscribe, ${nombre}, manifiesta:`,
     "",

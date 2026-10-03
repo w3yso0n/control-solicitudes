@@ -1,5 +1,7 @@
 "use client";
 
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
+
 import { ModalDocumento } from "@/components/cuantiva/ModalDocumento";
 import { esImagenPreview } from "@/components/cuantiva/DocumentoPreview";
 import { EvidenciaMedia } from "@/components/cumplimientos/EvidenciaMedia";

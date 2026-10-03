@@ -1,14 +1,14 @@
 import type { Categoria, Colonia, Municipio } from "./types";
 
 export const MUNICIPIOS_FOCO: Municipio[] = [
-  { cveMun: "001", nombre: "Acapulco de Juárez", codigoFolio: "ACA" },
-  { cveMun: "029", nombre: "Chilpancingo de los Bravo", codigoFolio: "CGO" },
-  { cveMun: "038", nombre: "Zihuatanejo de Azueta", codigoFolio: "ZIH" },
-  { cveMun: "055", nombre: "Taxco de Alarcón", codigoFolio: "TAX" },
-  { cveMun: "021", nombre: "Coyuca de Benítez", codigoFolio: "COY" },
-  { cveMun: "028", nombre: "Chilapa de Álvarez", codigoFolio: "CPA" },
-  { cveMun: "035", nombre: "Iguala de la Independencia", codigoFolio: "IGU" },
-  { cveMun: "057", nombre: "Técpan de Galeana", codigoFolio: "TEC" },
+  { cveMun: "015", nombre: "Cuauhtémoc", codigoFolio: "CUA" },
+  { cveMun: "014", nombre: "Benito Juárez", codigoFolio: "BJU" },
+  { cveMun: "017", nombre: "Venustiano Carranza", codigoFolio: "VCA" },
+  { cveMun: "002", nombre: "Azcapotzalco", codigoFolio: "AZC" },
+  { cveMun: "005", nombre: "Gustavo A. Madero", codigoFolio: "GAM" },
+  { cveMun: "016", nombre: "Miguel Hidalgo", codigoFolio: "MHI" },
+  { cveMun: "010", nombre: "Álvaro Obregón", codigoFolio: "AOB" },
+  { cveMun: "003", nombre: "Coyoacán", codigoFolio: "COY" },
 ];
 
 export const MUNICIPIO_POR_CVE = Object.fromEntries(

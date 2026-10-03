@@ -12,7 +12,7 @@ function asRol(value: unknown): Rol {
 
 export const authConfig = {
   trustHost: true,
-  secret: process.env.AUTH_SECRET,
+  secret: process.env.AUTH_SECRET || "demo-control-solicitudes",
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
   providers: [],

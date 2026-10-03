@@ -1,5 +1,7 @@
 "use client";
 
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
+
 import { NivelGeografiaToggle } from "@/components/geo/NivelGeografiaToggle";
 import { Button, Card, Input } from "@/components/ui";
 import { CATEGORIA_POR_ID } from "@/lib/catalogos";
@@ -13,7 +15,6 @@ import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { filtrarPorPeriodo } from "@/lib/itc";
 import { peticionDesdeConsulta } from "@/lib/peticion-from-consulta";
 import type { PeriodoFiltro, Peticion, PeticionConsultaDto } from "@/lib/types";
-import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 type PeriodoReporte = PeriodoFiltro | "personalizado";
@@ -453,7 +454,7 @@ export default function ReportesPage() {
         <div>
           <h1 className="text-xl font-semibold">Reportes</h1>
           <p className="text-sm text-zinc-500">
-            Entregable interno para gabinete de campaña.
+            Entregable interno de Nexo Cuantiva.
           </p>
         </div>
         <div className="flex flex-col items-stretch gap-2 sm:items-end">
@@ -467,7 +468,7 @@ export default function ReportesPage() {
                   onClick={() => elegirPeriodo(p.id)}
                   className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
                     periodo === p.id
-                      ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(122,18,51,0.5)]"
+                      ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(109,40,217,0.5)]"
                       : "text-zinc-600 hover:bg-zinc-100"
                   }`}
                 >
@@ -845,15 +846,11 @@ export default function ReportesPage() {
             fondos por defecto. */}
         <section className="print-cover">
           <div className="print-cover__brand">
-            <Image
-              src="/brand/logo-wordmark-on-light.png"
-              alt="BE4TRIZ MOJICA"
-              width={150}
-              height={150}
-              className="print-cover__logo"
-            />
+            <p className="text-lg font-semibold tracking-tight text-zinc-900">
+              Nexo Cuantiva
+            </p>
             <p className="print-cover__generated">
-              Gabinete de campaña · Guerrero
+              Nexo Cuantiva · Ciudad de México
               <br />
               Generado el {fechaLarga(HOY_FIJO)}
             </p>
@@ -1126,7 +1123,7 @@ export default function ReportesPage() {
         </section>
 
         <footer className="print-report__footer">
-          Beatriz Mojica · Gabinete de campaña · Guerrero
+          Nexo Cuantiva · Ciudad de México
         </footer>
       </div>
     </div>

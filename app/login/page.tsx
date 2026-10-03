@@ -1,6 +1,7 @@
 "use client";
 
 import { Button, Field, Input } from "@/components/ui";
+import { CLAVE_DEMO, USUARIOS_DEMO } from "@/lib/mock/demo-usuarios";
 import { signIn } from "next-auth/react";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
@@ -10,8 +11,8 @@ import { useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(USUARIOS_DEMO[0]?.email ?? "");
+  const [password, setPassword] = useState(CLAVE_DEMO);
   const [mostrarPassword, setMostrarPassword] = useState(false);
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
@@ -42,7 +43,7 @@ export default function LoginPage() {
       <div className="relative hidden bg-guinda lg:block">
         <Image
           src="/brand/foto-perfil.png"
-          alt="Beatriz Mojica"
+          alt="Nexo Cuantiva"
           fill
           className="object-cover opacity-40"
           priority
@@ -50,34 +51,29 @@ export default function LoginPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-guinda via-guinda/70 to-guinda/30" />
         <div className="absolute bottom-10 left-10 right-10 text-white">
           <p className="text-sm uppercase tracking-[0.25em] text-white/70">
-            Guerrero
+            Ciudad de México
           </p>
           <p className="mt-2 max-w-md text-3xl font-semibold leading-tight tracking-tight">
-            La campaña, municipio por municipio
+            Nexo Cuantiva, alcaldía por alcaldía
           </p>
         </div>
       </div>
       <div className="flex flex-col justify-center bg-hueso px-6 py-12">
         <div className="mx-auto w-full max-w-md">
-          <div className="mb-8 rounded-[1.75rem] bg-[#830333] px-10 py-10 text-center shadow-[0_20px_40px_-20px_rgba(131,3,51,0.5)]">
+          <div className="mb-8 rounded-[1.75rem] bg-[#5b21b6] px-10 py-10 text-center shadow-[0_20px_40px_-20px_rgba(91,33,182,0.5)]">
             <Image
               src="/brand/foto-perfil.png"
-              alt="Beatriz Mojica"
+              alt="Nexo Cuantiva"
               width={72}
               height={72}
               className="mx-auto mb-6 h-16 w-16 rounded-full object-cover ring-2 ring-white/40"
               priority
             />
-            <Image
-              src="/brand/logo-wordmark.png"
-              alt="BE4TRIZ MOJICA"
-              width={480}
-              height={480}
-              className="mx-auto w-full max-w-[220px] object-contain"
-              priority
-            />
+            <p className="text-2xl font-semibold tracking-tight text-white">
+              Nexo Cuantiva
+            </p>
             <p className="mt-4 text-[11px] uppercase tracking-[0.3em] text-white/60">
-              Temperatura ciudadana
+              Ciudad de México
             </p>
           </div>
           <form onSubmit={entrar} className="space-y-4">
@@ -127,6 +123,30 @@ export default function LoginPage() {
                 Levantar una solicitud sin cuenta
               </Link>
             </p>
+            <div className="rounded-2xl bg-white/70 px-4 py-3 text-sm text-zinc-600">
+              <p className="font-medium text-zinc-800">Demostración</p>
+              <p className="mt-1">
+                Contraseña <span className="font-medium">{CLAVE_DEMO}</span> para
+                cualquiera de estas cuentas:
+              </p>
+              <ul className="mt-2 space-y-1">
+                {USUARIOS_DEMO.map((cuenta) => (
+                  <li key={cuenta.id}>
+                    <button
+                      type="button"
+                      className="text-left text-guinda hover:underline"
+                      onClick={() => {
+                        setEmail(cuenta.email);
+                        setPassword(CLAVE_DEMO);
+                      }}
+                    >
+                      {cuenta.email}
+                    </button>
+                    <span className="text-zinc-400"> · {cuenta.role}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </form>
         </div>
       </div>

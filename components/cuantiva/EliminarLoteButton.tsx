@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui";
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
 import { useState, type ReactNode } from "react";
 
 export function EliminarLoteButton({

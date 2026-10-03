@@ -40,7 +40,7 @@ export type SavedUpload = {
 };
 
 function uploadRoot(): string {
-  return path.resolve(process.env.UPLOAD_DIR || "./uploads");
+  return path.resolve(/* turbopackIgnore: true */ process.env.UPLOAD_DIR || "./uploads");
 }
 
 function extensionOf(filename: string): string {

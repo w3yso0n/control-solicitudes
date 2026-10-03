@@ -29,16 +29,16 @@ export const DISTRITOS_LOCALES: DistritoInfo[] = CATALOGO_DISTRITOS_LOCALES.map(
 );
 
 export const NIVEL_LABEL: Record<NivelGeografia, string> = {
-  municipio: "Municipio",
+  municipio: "Alcaldía",
   local: "Distrito local",
   federal: "Distrito federal",
 };
 
 export const GUERRERO_BOUNDS = {
-  north: 18.9,
-  south: 16.15,
-  west: -102.25,
-  east: -98.0,
+  north: 19.6,
+  south: 19.05,
+  west: -99.37,
+  east: -98.94,
 };
 
 export type UbicacionResuelta = {

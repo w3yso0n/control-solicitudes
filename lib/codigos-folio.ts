@@ -2,14 +2,14 @@ import { MUNICIPIOS_GUERRERO } from "./geografia-guerrero";
 
 /** Códigos de folio de los 8 municipios de foco (se preservan). */
 const CODIGOS_FOCO: Record<string, string> = {
-  "001": "ACA",
-  "029": "CGO",
-  "038": "ZIH",
-  "055": "TAX",
-  "021": "COY",
-  "028": "CPA",
-  "035": "IGU",
-  "057": "TEC",
+  "015": "CUA",
+  "014": "BJU",
+  "017": "VCA",
+  "002": "AZC",
+  "005": "GAM",
+  "016": "MHI",
+  "010": "AOB",
+  "003": "COY",
 };
 
 function codigoDesdeCorto(corto: string, usados: Set<string>): string {

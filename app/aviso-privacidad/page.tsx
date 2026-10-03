@@ -8,7 +8,7 @@ export default function AvisoPrivacidadPage() {
       </p>
       <h1 className="mt-2 text-2xl font-semibold">Aviso de privacidad</h1>
       <p className="mt-6 text-sm leading-6 text-zinc-600">
-        Responsable del tratamiento: campaña de Beatriz Mojica.
+        Responsable del tratamiento: Nexo Cuantiva, Ciudad de México.
       </p>
       <h2 className="mt-8 text-sm font-semibold">Datos recabados</h2>
       <p className="mt-2 text-sm leading-6 text-zinc-600">
@@ -18,8 +18,7 @@ export default function AvisoPrivacidadPage() {
       <h2 className="mt-8 text-sm font-semibold">Finalidades</h2>
       <p className="mt-2 text-sm leading-6 text-zinc-600">
         Primarias: registro de la petición ciudadana y contacto por WhatsApp
-        para acuse de recibo. No se promete resolución institucional en fase
-        campaña.
+        para acuse de recibo. No se promete resolución institucional.
       </p>
       <h2 className="mt-8 text-sm font-semibold">Baja del canal</h2>
       <p className="mt-2 text-sm leading-6 text-zinc-600">
@@ -29,8 +28,7 @@ export default function AvisoPrivacidadPage() {
       <h2 className="mt-8 text-sm font-semibold">Derechos ARCO</h2>
       <p className="mt-2 text-sm leading-6 text-zinc-600">
         Acceso, rectificación, cancelación y oposición a través del canal que
-        publique la campaña. Este aviso se actualizará si cambia el responsable
-        (transición a gobierno).
+        publique Nexo Cuantiva. Este aviso se actualizará si cambia el responsable.
       </p>
       <p className="mt-10 text-sm">
         <Link href="/login" className="text-guinda hover:underline">

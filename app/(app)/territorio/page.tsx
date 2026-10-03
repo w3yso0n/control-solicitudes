@@ -1,6 +1,7 @@
 "use client";
 
 import { MunicipioSelect } from "@/components/MunicipioSelect";
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
 import { DetalleLote } from "@/components/territorio/DetalleLote";
 import {
   EventoOrigenField,
@@ -49,7 +50,7 @@ export default function TerritorioPage() {
   const [fechaEntrega, setFechaEntrega] = useState(todayDateString);
   const [evento, setEvento] = useState("");
   const [eventosRecientes, setEventosRecientes] = useState<string[]>([]);
-  const [cveMun, setCveMun] = useState("001");
+  const [cveMun, setCveMun] = useState("015");
   const [notas, setNotas] = useState("");
   const [archivos, setArchivos] = useState<ArchivoLocal[]>([]);
   const [arrastrando, setArrastrando] = useState(false);

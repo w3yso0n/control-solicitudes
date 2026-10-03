@@ -1,5 +1,7 @@
 "use client";
 
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
+
 import { FilterCombobox } from "@/components/FilterCombobox";
 import { MunicipioSelect } from "@/components/MunicipioSelect";
 import { Field, Input } from "@/components/ui";
@@ -193,7 +195,7 @@ export function UbicacionCaptura({
           setError(
             "error" in data && data.error
               ? data.error
-              : "No se pudo ubicar el punto en Guerrero",
+              : "No se pudo ubicar el punto en la Ciudad de México",
           );
           return;
         }
@@ -382,14 +384,15 @@ export function UbicacionCaptura({
 
       {value.metodo === "google" ? (
         sinMaps ? (
-          <p className="text-sm text-guinda">
-            Falta GOOGLE_MAPS_API_KEY en el entorno del servidor.
+          <p className="text-sm text-zinc-500">
+            En esta demostración el buscador de Google no está conectado. Usa el
+            catálogo de localidades.
           </p>
         ) : (
           <Field label="Buscar coincidencia">
             <Input
               ref={searchRef}
-              placeholder="Colonia, paraje o domicilio en Guerrero…"
+              placeholder="Colonia o domicilio en la Ciudad de México…"
             />
           </Field>
         )
@@ -397,8 +400,9 @@ export function UbicacionCaptura({
 
       {value.metodo === "mapa" ? (
         sinMaps ? (
-          <p className="text-sm text-guinda">
-            Falta GOOGLE_MAPS_API_KEY en el entorno del servidor.
+          <p className="text-sm text-zinc-500">
+            En esta demostración el mapa de Google no está conectado. Usa el
+            catálogo de localidades.
           </p>
         ) : (
           <div

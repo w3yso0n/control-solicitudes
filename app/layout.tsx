@@ -20,15 +20,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Beatriz Mojica",
-  description: "Temperatura ciudadana en tiempo real. Fase campaña.",
+  title: "Nexo Cuantiva",
+  description: "Seguimiento ciudadano de Nexo Cuantiva en la Ciudad de México.",
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/brand/logo-wordmark_og.png", type: "image/png" },
-    ],
-    shortcut: "/favicon.ico",
-    apple: "/brand/logo-wordmark_og.png",
+    icon: [{ url: "/brand/icon-nexo.png", type: "image/png", sizes: "any" }],
+    shortcut: "/brand/icon-nexo.png",
+    apple: "/brand/icon-nexo.png",
   },
 };
 

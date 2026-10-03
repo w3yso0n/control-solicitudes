@@ -60,7 +60,7 @@ export function motivoSiNoPuedeCumplir(p: {
   estatus: EstatusPeticion;
 }): string | null {
   if (!esGestionable(p)) {
-    return "Las estructurales no entran al pipeline de campaña.";
+    return "Las estructurales no entran al pipeline de Nexo.";
   }
   if (p.estatus === "recibida") {
     return "Para marcarla cumplida, primero pásala a en gestión.";

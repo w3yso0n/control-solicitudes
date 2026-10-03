@@ -32,34 +32,12 @@ export default auth((request) => {
     pathname === "/solicitar" ||
     pathname.startsWith("/solicitar/");
 
-  if (
-    request.method === "POST" &&
-    pathname.startsWith("/api/publico")
-  ) {
-    const origin = request.headers.get("origin");
-    const host = (
-      request.headers.get("x-forwarded-host") ??
-      request.headers.get("host") ??
-      ""
-    )
-      .split(",")[0]
-      .trim();
-    let originHost = "";
-    try {
-      originHost = origin ? new URL(origin).host : "";
-    } catch {
-      originHost = "";
-    }
-    if (!originHost || !host || originHost !== host) {
-      return NextResponse.json(
-        { error: "Origen no permitido" },
-        { status: 403 },
-      );
-    }
-  }
-
   if (isApiRoute) {
-    return NextResponse.next();
+    if (pathname.startsWith("/api/auth")) return NextResponse.next();
+    return NextResponse.json(
+      { error: "Demostración sin servicios externos" },
+      { status: 404 },
+    );
   }
 
   if (!request.auth && !isPublicPage) {

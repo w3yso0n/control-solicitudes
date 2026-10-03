@@ -1,5 +1,7 @@
 "use client";
 
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
+
 import { Button, Card } from "@/components/ui";
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
 import { useBodyScrollLock } from "@/lib/body-scroll-lock";

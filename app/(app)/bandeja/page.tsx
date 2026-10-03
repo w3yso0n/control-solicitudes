@@ -1,6 +1,7 @@
 "use client";
 
 import { esImagenPreview } from "@/components/cuantiva/DocumentoPreview";
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
 import { EliminarLoteButton } from "@/components/cuantiva/EliminarLoteButton";
 import { PreviewLoteBandeja } from "@/components/cuantiva/PreviewLoteBandeja";
 import { FilterCombobox } from "@/components/FilterCombobox";

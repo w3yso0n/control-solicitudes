@@ -1,5 +1,7 @@
 "use client";
 
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
+
 import { DocumentoPreview } from "@/components/cuantiva/DocumentoPreview";
 import { EliminarLoteButton } from "@/components/cuantiva/EliminarLoteButton";
 import { FilterCombobox } from "@/components/FilterCombobox";

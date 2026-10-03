@@ -1,5 +1,7 @@
 "use client";
 
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
+
 import { DocumentoPreview } from "@/components/cuantiva/DocumentoPreview";
 import { ModalDocumento } from "@/components/cuantiva/ModalDocumento";
 import {
@@ -82,7 +84,7 @@ export default function CapturaPage() {
     metodo: "inegi",
     lat: null,
     lng: null,
-    cveMun: "001",
+    cveMun: "015",
     distritoLocal: null,
     distritoFederal: null,
     localidadInegi: null,
@@ -559,7 +561,7 @@ export default function CapturaPage() {
                   onClick={() => setComunitaria(false)}
                   className={`rounded-2xl border px-3 py-3 text-sm font-semibold transition-colors ${
                     !comunitaria
-                      ? "border-guinda bg-guinda text-white shadow-[0_8px_20px_-8px_rgba(122,18,51,0.55)]"
+                      ? "border-guinda bg-guinda text-white shadow-[0_8px_20px_-8px_rgba(109,40,217,0.55)]"
                       : "border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50"
                   }`}
                 >
@@ -575,7 +577,7 @@ export default function CapturaPage() {
                   }}
                   className={`rounded-2xl border px-3 py-3 text-sm font-semibold transition-colors ${
                     comunitaria
-                      ? "border-guinda bg-guinda text-white shadow-[0_8px_20px_-8px_rgba(122,18,51,0.55)]"
+                      ? "border-guinda bg-guinda text-white shadow-[0_8px_20px_-8px_rgba(109,40,217,0.55)]"
                       : "border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50"
                   }`}
                 >

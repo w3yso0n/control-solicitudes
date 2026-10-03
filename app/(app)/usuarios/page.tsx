@@ -1,6 +1,7 @@
 "use client";
 
 import { UsuarioDetalle } from "@/components/usuarios/UsuarioDetalle";
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
 import { UsuarioFormModal } from "@/components/usuarios/UsuarioFormModal";
 import { Button, Card, Input } from "@/components/ui";
 import { ROL_LABEL } from "@/lib/catalogos";

@@ -1,5 +1,7 @@
 "use client";
 
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
+
 import { HOME_POR_ROL, ROL_LABEL } from "@/lib/catalogos";
 import { navPorGrupos, puedeVer } from "@/lib/nav";
 import { useSession } from "@/lib/session";
@@ -43,7 +45,7 @@ function LogoMarca({ compact = false }: { compact?: boolean }) {
     return (
       <Image
         src="/brand/foto-perfil.png"
-        alt="Beatriz Mojica"
+        alt="Nexo Cuantiva"
         width={40}
         height={40}
         className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-white/25"
@@ -51,13 +53,18 @@ function LogoMarca({ compact = false }: { compact?: boolean }) {
     );
   }
   return (
-    <div className="relative aspect-square w-full max-w-[156px]">
+    <div className="flex flex-col items-center gap-2 text-center">
       <Image
-        src="/brand/logo-wordmark.png"
-        alt="Beatriz Mojica"
-        fill
-        className="object-contain"
+        src="/brand/foto-perfil.png"
+        alt="Nexo Cuantiva"
+        width={72}
+        height={72}
+        className="h-16 w-16 rounded-full object-cover ring-2 ring-white/30"
       />
+      <p className="text-sm font-semibold tracking-tight text-white">Nexo Cuantiva</p>
+      <p className="text-[10px] uppercase tracking-[0.22em] text-white/60">
+        Ciudad de México
+      </p>
     </div>
   );
 }
@@ -175,7 +182,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       {/* Sidebar: fijo respecto al viewport, no viaja con el scroll de la página. */}
       <aside
-        className={`sidebar-shell fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden rounded-r-[1.75rem] bg-gradient-to-b from-guinda to-[#4d0c22] text-white shadow-[12px_0_36px_-20px_rgba(28,10,18,0.55)] transition-[width] duration-200 [color-scheme:dark] print:hidden ${
+        className={`sidebar-shell fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden rounded-r-[1.75rem] bg-gradient-to-b from-guinda to-[#3b0764] text-white shadow-[12px_0_36px_-20px_rgba(59,7,100,0.55)] transition-[width] duration-200 [color-scheme:dark] print:hidden ${
           collapsed ? "w-[72px]" : "w-72"
         } ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
       >
@@ -188,16 +195,16 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="mx-4 mt-4 flex shrink-0 items-center gap-3 rounded-2xl bg-white/10 px-3.5 py-3">
             <Image
               src="/brand/foto-perfil.png"
-              alt="Beatriz Mojica"
+              alt="Nexo Cuantiva"
               width={40}
               height={40}
               className="h-10 w-10 rounded-full object-cover ring-2 ring-white/25"
             />
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold text-white">
-                Beatriz Mojica
+                Nexo Cuantiva
               </p>
-              <p className="text-xs text-white/60">Fase campaña</p>
+              <p className="text-xs text-white/60">Ciudad de México</p>
             </div>
           </div>
         ) : null}
@@ -314,14 +321,14 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div className="flex items-center gap-3">
               <Image
                 src="/brand/foto-perfil.png"
-                alt="Beatriz Mojica"
+                alt="Nexo Cuantiva"
                 width={36}
                 height={36}
                 className="h-9 w-9 rounded-full object-cover ring-2 ring-guinda/20"
               />
               <div>
                 <p className="text-sm font-semibold text-zinc-900">
-                  Beatriz Mojica
+                  Nexo Cuantiva
                 </p>
                 <p className="text-xs text-zinc-500">{ROL_LABEL[rol]}</p>
               </div>

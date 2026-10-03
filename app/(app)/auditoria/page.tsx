@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, Input } from "@/components/ui";
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
 import { FilterCombobox } from "@/components/FilterCombobox";
 import type { AuditoriaDto } from "@/lib/services/auditoria";
 import { useCallback, useEffect, useState } from "react";

@@ -9,7 +9,7 @@ export function Button({
 }) {
   const styles = {
     primary:
-      "bg-guinda text-white shadow-[0_8px_20px_-8px_rgba(122,18,51,0.55)] hover:bg-magenta hover:shadow-[0_10px_24px_-8px_rgba(200,33,95,0.55)] disabled:opacity-50 disabled:shadow-none",
+      "bg-guinda text-white shadow-[0_8px_20px_-8px_rgba(109,40,217,0.55)] hover:bg-magenta hover:shadow-[0_10px_24px_-8px_rgba(168,85,247,0.55)] disabled:opacity-50 disabled:shadow-none",
     secondary:
       "border border-zinc-200 bg-white text-zinc-800 shadow-[0_2px_8px_-4px_rgba(28,10,18,0.12)] hover:bg-zinc-50",
     ghost: "text-zinc-600 hover:bg-zinc-100",

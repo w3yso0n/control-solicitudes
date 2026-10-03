@@ -1,6 +1,7 @@
 "use client";
 
 import { MunicipioSelect } from "@/components/MunicipioSelect";
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
 import { Button, Field, Input, Textarea } from "@/components/ui";
 import { Check, ImagePlus } from "lucide-react";
 import Image from "next/image";
@@ -83,19 +84,12 @@ export default function SolicitarPage() {
               className="h-11 w-11 rounded-full bg-white object-cover ring-2 ring-white"
               priority
             />
-            <div className="rounded-2xl bg-[#830333] px-4 py-2">
-              <Image
-                src="/brand/logo-wordmark.png"
-                alt="Beatriz Mojica"
-                width={160}
-                height={48}
-                className="h-8 w-auto object-contain sm:h-9"
-                priority
-              />
-            </div>
+            <p className="text-sm font-semibold tracking-tight text-white">
+              Nexo Cuantiva
+            </p>
           </div>
           <p className="text-[11px] uppercase tracking-[0.22em] text-white/70">
-            Guerrero
+            Ciudad de México
           </p>
         </div>
       </header>
@@ -106,7 +100,7 @@ export default function SolicitarPage() {
             <div className="mb-6 inline-flex rounded-full bg-white p-2 shadow-[0_16px_40px_-24px_rgba(28,10,18,0.45)]">
               <Image
                 src="/brand/foto-perfil.png"
-                alt="Beatriz Mojica"
+                alt="Nexo Cuantiva"
                 width={320}
                 height={320}
                 className="h-36 w-36 rounded-full bg-white object-cover sm:h-44 sm:w-44"
@@ -114,13 +108,13 @@ export default function SolicitarPage() {
               />
             </div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-guinda">
-              Campaña
+              Nexo Cuantiva
             </p>
             <h1 className="font-display mt-3 text-4xl leading-[1.05] tracking-tight text-tinta sm:text-5xl">
               Cuéntanos qué hace falta en tu comunidad
             </h1>
             <p className="mt-4 max-w-md text-sm leading-6 text-zinc-600">
-              Este canal es de la campaña de Beatriz Mojica. Sirve para
+              Este canal es de Nexo Cuantiva en la Ciudad de México. Sirve para
               registrar tu solicitud. No es una oficina de gobierno y no
               promete una resolución institucional.
             </p>

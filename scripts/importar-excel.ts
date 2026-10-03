@@ -7,10 +7,16 @@ import * as path from "node:path";
 import * as XLSX from "xlsx";
 import { COLONIAS_ACAPULCO } from "../lib/catalogos";
 import { codigoFolioDe } from "../lib/codigos-folio";
-import {
-  MUNICIPIOS_GUERRERO,
-  type RegionGuerrero,
-} from "../lib/geografia-guerrero";
+import { MUNICIPIOS_GUERRERO } from "../lib/geografia-guerrero";
+
+type RegionExcel =
+  | "Acapulco"
+  | "Costa Grande"
+  | "Costa Chica"
+  | "Centro"
+  | "Norte"
+  | "Montaña"
+  | "Tierra Caliente";
 import { HOY } from "../lib/itc";
 import type {
   Alcance,
@@ -29,7 +35,7 @@ const VENTANA_DIAS = 90;
 
 type FilaCruda = {
   hoja: string;
-  region?: RegionGuerrero;
+  region?: RegionExcel;
   nombre: string;
   procedencia: string;
   telefono: string;
@@ -37,7 +43,7 @@ type FilaCruda = {
   fechaExcel?: number;
 };
 
-const SECCIONES_REGION: Record<string, RegionGuerrero> = {
+const SECCIONES_REGION: Record<string, RegionExcel> = {
   ACAPULCO: "Acapulco",
   CENTRO: "Centro",
   "COSTA CHICA": "Costa Chica",
@@ -178,7 +184,7 @@ function excelSerialToIso(n: number): string | undefined {
   return d.toISOString().slice(0, 10);
 }
 
-function esSeccionRegion(texto: string): RegionGuerrero | undefined {
+function esSeccionRegion(texto: string): RegionExcel | undefined {
   const f = fold(texto);
   return SECCIONES_REGION[f];
 }
@@ -211,7 +217,7 @@ function leerHojaEstandar(
     raw: true,
   });
   const out: FilaCruda[] = [];
-  let region: RegionGuerrero | undefined;
+  let region: RegionExcel | undefined;
   for (const row of rows) {
     const c0 = cellStr(row[0]);
     const nombre = cellStr(row[cols.nombre]);
@@ -369,7 +375,7 @@ function claveDedupe(f: FilaCruda): string {
 
 function resolverCveMun(
   procedencia: string,
-  region?: RegionGuerrero,
+  region?: RegionExcel,
 ): string {
   const texto = fold(procedencia);
   if (!texto && region === "Acapulco") return "001";
@@ -382,7 +388,7 @@ function resolverCveMun(
 
   // Match against catalogo completo
   const candidatos = MUNICIPIOS_GUERRERO.filter((m) =>
-    region ? m.region === region : true,
+    region ? m.region === (region as string) : true,
   );
   const pool = candidatos.length ? candidatos : MUNICIPIOS_GUERRERO;
 
@@ -405,7 +411,7 @@ function resolverCveMun(
 
   // Default: primer municipio de la región, o Acapulco
   if (region) {
-    const primero = MUNICIPIOS_GUERRERO.find((m) => m.region === region);
+    const primero = MUNICIPIOS_GUERRERO.find((m) => m.region === (region as string));
     if (primero) return primero.cveMun;
   }
   return "001";
@@ -667,7 +673,7 @@ function remapearFechas(
 }
 
 const EVENTOS_POR_REGION: Record<
-  RegionGuerrero,
+  RegionExcel,
   { id: string; nombre: string; cveMun: string; lugar: string }
 > = {
   Acapulco: {
@@ -714,10 +720,21 @@ const EVENTOS_POR_REGION: Record<
   },
 };
 
-function regionDeCve(cveMun: string): RegionGuerrero {
-  return (
-    MUNICIPIOS_GUERRERO.find((m) => m.cveMun === cveMun)?.region ?? "Acapulco"
-  );
+function regionDeCve(cveMun: string): RegionExcel {
+  const region = MUNICIPIOS_GUERRERO.find((m) => m.cveMun === cveMun)?.region;
+  if (
+    region === "Centro" ||
+    region === "Norte" ||
+    region === "Sur" ||
+    region === "Oriente" ||
+    region === "Poniente"
+  ) {
+    if (region === "Sur" || region === "Oriente" || region === "Poniente") {
+      return "Centro";
+    }
+    return region;
+  }
+  return "Acapulco";
 }
 
 function main() {

@@ -1,5 +1,7 @@
 "use client";
 
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
+
 import { AccionCumplimiento } from "@/components/cumplimientos/AccionCumplimiento";
 import { BalanceBar } from "@/components/cumplimientos/BalanceBar";
 import { EvidenciaMedia } from "@/components/cumplimientos/EvidenciaMedia";
@@ -234,7 +236,7 @@ function CumplimientosContent() {
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.15em] text-guinda">
-            Operación de campaña
+            Operación Nexo
           </p>
           <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
             Cumplimientos

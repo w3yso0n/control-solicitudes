@@ -1,6 +1,7 @@
 "use client";
 
 import { FilterCombobox } from "@/components/FilterCombobox";
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
 import { DetallePeticion } from "@/components/peticiones/DetallePeticion";
 import { BotonWhatsApp } from "@/components/peticiones/ModalWhatsApp";
 import { Card, Input } from "@/components/ui";

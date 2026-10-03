@@ -218,7 +218,7 @@ export default function GuerreroMap({
                 onClick={() => setCapa(c.id)}
                 className={`rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide transition-colors ${
                   capaActiva === c.id
-                    ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(122,18,51,0.5)]"
+                    ? "bg-guinda text-white shadow-[0_4px_12px_-4px_rgba(109,40,217,0.5)]"
                     : "text-zinc-500 hover:bg-zinc-100"
                 }`}
               >
@@ -250,7 +250,7 @@ export default function GuerreroMap({
                 d={p.d}
                 fill={fillDe(p.clave)}
                 fillOpacity={hayResalte ? (enRegion ? 1 : 0.18) : 1}
-                stroke={enRegion && hayResalte ? "#7A1233" : "#f3f2f2"}
+                stroke={enRegion && hayResalte ? "#6d28d9" : "#f3f2f2"}
                 strokeWidth={enRegion && hayResalte ? 1.5 : 0.7}
                 className="cursor-pointer transition-[fill-opacity,stroke-width] duration-200"
                 onMouseMove={(e) => {
@@ -275,7 +275,7 @@ export default function GuerreroMap({
                 onMouseOut={(e) => {
                   e.currentTarget.setAttribute(
                     "stroke",
-                    enRegion && hayResalte ? "#7A1233" : "#f3f2f2",
+                    enRegion && hayResalte ? "#6d28d9" : "#f3f2f2",
                   );
                   e.currentTarget.setAttribute(
                     "stroke-width",

@@ -52,7 +52,7 @@ export function ZonasEnBlanco({
           <div>
             <p className="text-sm font-semibold text-zinc-900">Regiones en blanco</p>
             <p className="mt-0.5 max-w-sm text-xs text-zinc-500">
-              Municipios sin una sola petición: no es que no haya problemas,
+              Alcaldías sin una sola petición: no es que no haya problemas,
               es que aún no hay cobertura. Clic en una región para verla en el
               mapa.
             </p>

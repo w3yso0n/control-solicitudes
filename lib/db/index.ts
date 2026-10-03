@@ -1,17 +1,14 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-import * as schema from "./schema";
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import type * as schema from "./schema";
 
-const connectionString = process.env.DATABASE_URL;
-
-if (!connectionString) {
-  throw new Error("Falta la variable de entorno DATABASE_URL.");
-}
-
-const client = postgres(connectionString, {
-  prepare: false,
-  max: 10,
-  ...(process.env.DATABASE_SSL === "require" ? { ssl: "require" as const } : {}),
+/**
+ * Esta rama no abre conexión. El proxy conserva el tipo para que el resto
+ * del código compile, y falla solo si alguna ruta intenta consultar.
+ */
+export const db = new Proxy({} as PostgresJsDatabase<typeof schema>, {
+  get() {
+    throw new Error(
+      "Esta rama de demostración no se conecta a una base de datos.",
+    );
+  },
 });
-
-export const db = drizzle(client, { schema });

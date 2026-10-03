@@ -1,5 +1,7 @@
 "use client";
 
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
+
 import { EvidenciaMedia } from "@/components/cumplimientos/EvidenciaMedia";
 import { Button, Card, Field, Input, Select, Textarea } from "@/components/ui";
 import { COMPLEJIDADES } from "@/lib/catalogos";
@@ -258,7 +260,7 @@ export function AccionCumplimiento({
         <div className="flex shrink-0 items-start justify-between gap-3 border-b border-zinc-100 px-5 py-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-guinda">
-              Pipeline de campaña
+              Pipeline Nexo
             </p>
             <p
               id="accion-cumplimiento-folio"
@@ -293,7 +295,7 @@ export function AccionCumplimiento({
         >
           {!pipeline ? (
             <p className="text-sm text-zinc-600">
-              Las estructurales no entran al pipeline de campaña: quedan como
+              Las estructurales no entran al pipeline de Nexo: quedan como
               compromiso de gobierno.
             </p>
           ) : null}
@@ -372,7 +374,7 @@ export function AccionCumplimiento({
                   aria-pressed={decision === "no_procede"}
                   className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-semibold transition-colors ${
                     decision === "no_procede"
-                      ? "border-guinda bg-guinda text-white shadow-[0_8px_20px_-8px_rgba(122,18,51,0.55)]"
+                      ? "border-guinda bg-guinda text-white shadow-[0_8px_20px_-8px_rgba(109,40,217,0.55)]"
                       : "border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50"
                   }`}
                 >

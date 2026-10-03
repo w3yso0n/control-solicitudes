@@ -1,5 +1,6 @@
 "use client";
 
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
 import { AvisoExito } from "@/components/AvisoExito";
 import { MunicipioSelect } from "@/components/MunicipioSelect";
 import { Button, Card, Field, Input, Textarea } from "@/components/ui";

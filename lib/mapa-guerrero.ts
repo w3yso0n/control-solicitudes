@@ -1,21 +1,8 @@
 import { catalogoDe } from "@/lib/distritos-guerrero";
 import { geoBounds, geoContains, geoMercator, geoPath } from "d3-geo";
 import { scaleLinear } from "d3-scale";
-import { feature } from "topojson-client";
 
-export const GEO_URL =
-  "https://gist.githubusercontent.com/diegovalle/5129746/raw/mx_tj.json";
-
-const GUERRERO_STATE_CODE = 12;
-
-/** Forma mínima del TopoJSON de municipios de México que consumimos (topojson-specification no se publica como paquete instalable). */
-type Topology = {
-  type: "Topology";
-  objects: Record<string, { type: "GeometryCollection"; geometries: unknown[] }>;
-  arcs: number[][][];
-  bbox?: number[];
-  transform?: { scale: [number, number]; translate: [number, number] };
-};
+const ENTIDAD_CDMX = 9;
 
 export type MunicipioFeature = GeoJSON.Feature<
   GeoJSON.Geometry,
@@ -24,31 +11,34 @@ export type MunicipioFeature = GeoJSON.Feature<
 
 let cache: Promise<MunicipioFeature[]> | null = null;
 
-/** Descarga y filtra la geometría de los 81 municipios de Guerrero (INEGI, vía topojson). */
+/** Polígonos locales de las 16 alcaldías, servidos desde /public. */
 export function cargarMunicipiosGuerrero(): Promise<MunicipioFeature[]> {
   if (cache) return cache;
-  cache = fetch(GEO_URL)
+  cache = fetch("/geo/cdmx-alcaldias.json")
     .then((r) => {
       if (!r.ok) throw new Error(`geo ${r.status}`);
-      return r.json() as Promise<Topology>;
-    })
-    .then((topo) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const t = topo as any;
-      const all = feature(t, t.objects.municipalities) as unknown as GeoJSON.FeatureCollection<
-        GeoJSON.Geometry,
-        { state_code: number; mun_code: number; mun_name: string }
+      return r.json() as Promise<
+        GeoJSON.FeatureCollection<
+          GeoJSON.Geometry,
+          { cve_mun?: string; nomgeo?: string; nombre?: string }
+        >
       >;
-      return all.features
-        .filter((f) => +f.properties.state_code === GUERRERO_STATE_CODE)
-        .map((f) => ({
+    })
+    .then((fc) =>
+      fc.features.map((f) => {
+        const cveMun = String(f.properties?.cve_mun ?? "").padStart(3, "0");
+        return {
           ...f,
+          geometry: f.geometry ? rebobinar(f.geometry) : f.geometry,
           properties: {
-            ...f.properties,
-            cveMun: String(f.properties.mun_code).padStart(3, "0"),
+            state_code: ENTIDAD_CDMX,
+            mun_code: Number(cveMun),
+            mun_name: f.properties.nomgeo ?? f.properties.nombre ?? cveMun,
+            cveMun,
           },
-        })) as MunicipioFeature[];
-    });
+        };
+      }),
+    );
   return cache;
 }
 
@@ -63,6 +53,25 @@ export type ZonaFeature = GeoJSON.Feature<
 let cacheLocal: Promise<ZonaFeature[]> | null = null;
 let cacheFederal: Promise<ZonaFeature[]> | null = null;
 
+/** ArcGIS entrega los anillos al revés; d3-geo los leería como el planeta entero. */
+function rebobinar(geom: GeoJSON.Geometry): GeoJSON.Geometry {
+  if (geom.type === "Polygon") {
+    return {
+      ...geom,
+      coordinates: geom.coordinates.map((anillo) => [...anillo].reverse()),
+    };
+  }
+  if (geom.type === "MultiPolygon") {
+    return {
+      ...geom,
+      coordinates: geom.coordinates.map((poligono) =>
+        poligono.map((anillo) => [...anillo].reverse()),
+      ),
+    };
+  }
+  return geom;
+}
+
 function anillosDe(geom: GeoJSON.Geometry): GeoJSON.Position[][][] {
   if (geom.type === "Polygon") return [geom.coordinates];
   if (geom.type === "MultiPolygon") return geom.coordinates;
@@ -70,19 +79,6 @@ function anillosDe(geom: GeoJSON.Geometry): GeoJSON.Position[][][] {
     return geom.geometries.flatMap(anillosDe);
   }
   return [];
-}
-
-function nombreDistritoMapa(
-  tipo: "local" | "federal",
-  clave: string,
-  fallback?: string,
-): string {
-  const catalogo = catalogoDe(tipo).find((dist) => dist.clave === clave);
-  if (catalogo) return catalogo.nombre;
-  if (fallback) return fallback;
-  return tipo === "local"
-    ? `Distrito local ${clave}`
-    : `Distrito federal ${clave}`;
 }
 
 async function cargarDistritosDesdeMunicipios(
@@ -106,46 +102,12 @@ async function cargarDistritosDesdeMunicipios(
   });
 }
 
-function mapearFeaturesDistrito(
-  tipo: "local" | "federal",
-  fc: GeoJSON.FeatureCollection,
-): ZonaFeature[] {
-  return (fc.features as ZonaFeature[]).map((f) => {
-    const clave = String(f.properties?.clave ?? "").padStart(2, "0");
-    return {
-      ...f,
-      properties: {
-        clave,
-        nombre: nombreDistritoMapa(tipo, clave, f.properties?.nombre),
-      },
-    };
-  });
-}
-
 export function cargarDistritosMapa(
   tipo: "local" | "federal",
 ): Promise<ZonaFeature[]> {
   const existente = tipo === "local" ? cacheLocal : cacheFederal;
   if (existente) return existente;
-  const file =
-    tipo === "local"
-      ? "distritos-locales.geojson"
-      : "distritos-federales.geojson";
-  const carga = fetch(`/geo/${file}`)
-    .then((r) => {
-      if (!r.ok) throw new Error(`geo ${r.status}`);
-      return r.json() as Promise<GeoJSON.FeatureCollection>;
-    })
-    .then((fc) => {
-      const mapped = mapearFeaturesDistrito(tipo, fc);
-      if (mapped.length === 0) throw new Error("geo vacio");
-      return mapped;
-    })
-    .catch(async () => {
-      const fallback = await cargarDistritosDesdeMunicipios(tipo);
-      if (fallback.length === 0) throw new Error("geo fallback vacio");
-      return fallback;
-    });
+  const carga = cargarDistritosDesdeMunicipios(tipo);
   if (tipo === "local") cacheLocal = carga;
   else cacheFederal = carga;
   return carga;

@@ -13,7 +13,7 @@ export type PlantillasConfig = Record<PlantillaId, PlantillaAcuse>;
 export const PLANTILLA_IDS: PlantillaId[] = ["A", "B", "C", "D"];
 
 const TEXTO_PETICIONARIO =
-  "Hola {nombre}, recibimos tu petición con folio {folio} sobre {tema}. Gracias por confiar en Beatriz Mojica. Te mantendremos al tanto.";
+  "Hola {nombre}, recibimos tu petición con folio {folio} sobre {tema}. Gracias por escribirle a Nexo Cuantiva. Te mantendremos al tanto.";
 
 const TEXTO_REMITENTE =
   "Hola {remitente}, recibimos la petición de {nombre} con folio {folio} sobre {tema}. Gracias por ser el puente. Cuando haya novedades te escribimos.";

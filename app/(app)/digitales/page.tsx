@@ -1,6 +1,7 @@
 "use client";
 
 import { CampoConEspecificar } from "@/components/CampoConEspecificar";
+import { demoFetch as fetch } from "@/lib/mock/demo-api";
 import {
   UbicacionCaptura,
   type UbicacionCapturaValue,
@@ -28,6 +29,7 @@ type Solicitud = {
   municipio: string;
   descripcion: string;
   tieneFoto: boolean;
+  fotoUrl?: string | null;
   estatus: string;
   motivoDescarte: string | null;
   creadoEn: string;
@@ -57,7 +59,7 @@ export default function DigitalesPage() {
     metodo: "inegi",
     lat: null,
     lng: null,
-    cveMun: "001",
+    cveMun: "015",
     distritoLocal: null,
     distritoFederal: null,
     localidadInegi: null,
@@ -327,7 +329,7 @@ export default function DigitalesPage() {
             {activa.tieneFoto ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={`/api/digitales/${activa.id}/foto`}
+                src={activa.fotoUrl || "/scans/oficio-1.jpg"}
                 alt=""
                 className="max-h-64 w-full rounded-xl object-contain bg-zinc-50"
               />
