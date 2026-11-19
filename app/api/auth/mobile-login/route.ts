@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       .limit(1);
     const user = rows[0];
 
-    if (!user?.passwordHash) {
+    if (!user?.passwordHash || !user.activo) {
       return NextResponse.json(
         { error: "Credenciales inválidas" },
         { status: 401 },

@@ -22,6 +22,9 @@ export const users = pgTable("users", {
   })
     .notNull()
     .default("territorio"),
+  /** Soft delete: inactivo no entra, pero su historial se conserva. */
+  activo: boolean("activo").notNull().default(true),
+  inactivadoEn: timestamp("inactivado_en"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

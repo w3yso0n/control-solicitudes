@@ -36,7 +36,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           .where(eq(users.email, email))
           .limit(1);
         const user = rows[0];
-        if (!user?.passwordHash) return null;
+        if (!user?.passwordHash || !user.activo) return null;
 
         const valid = await compare(password, user.passwordHash);
         if (!valid) return null;

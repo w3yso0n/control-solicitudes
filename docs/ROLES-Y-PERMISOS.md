@@ -119,7 +119,10 @@ Es el perfil de visualización para Beatriz Mojica y su equipo cercano.
 
 Tiene acceso a todo lo anterior, más:
 
-- **Usuarios**: alta, consulta, cambio de rol y baja de usuarios.
+- **Usuarios**: alta, consulta, cambio de rol e **inactivación** de usuarios.
+  - Inactivar no borra nada: el usuario ya no puede entrar (web ni app móvil), pero sus lotes, capturas, cumplimientos y registros de auditoría se conservan.
+  - Los inactivos se ven en la pestaña **Inactivos** y se pueden **reactivar** en cualquier momento.
+  - No se puede inactivar a uno mismo ni al último administrador activo.
 - **Configuración**:
   - Eventos / giras (los que aparecen al subir un lote).
   - Catálogo (subcategorías extra).

@@ -155,3 +155,12 @@ Bandeja de revisión de lo que llega del portal público. Especificación comple
 - **Atajos:** J/K o flechas mueven, A acepta, D abre "Descartar…", X marca el checkbox. Nunca con el foco en un campo de texto ni con un modal abierto.
 - **Modales y lightbox:** overlay propio con el motion global (120ms in / 450ms out), Esc y clic en fondo cierran, `useBodyScrollLock`, el foco vuelve a quien lo abrió.
 - **Parecidas:** mismo municipio, ±30 días, texto similar (Jaccard de palabras clave >= 0.3, o misma colonia con >= 0.15). Las descartadas no cuentan. Se calculan en el servidor al listar "Por revisar".
+
+### Usuarios: activos / inactivos (soft delete)
+
+Los usuarios no se eliminan desde la UI: se **inactivan**. Inactivar corta el acceso (login web, login móvil y cualquier sesión o token vigente, porque `getCurrentUser` revisa `users.activo`) y conserva todo su historial.
+
+- Pestañas encima de la tabla, mismas de Digitales: contenedor pill blanco con borde, pestaña activa `bg-guinda text-white`, contador en chip (`bg-zinc-100`, o `bg-white/20` en la activa). `role="tablist"` / `role="tab"` + `aria-selected`.
+- Fila activa: acción `UserX` (Inactivar), con confirmación. Fila inactiva: texto `text-zinc-400` y acción `UserCheck` (Reactivar), sin confirmación porque no es destructiva. La columna de fecha cambia a "Inactivo desde".
+- Detalle: dato "Estado" y botón Inactivar (ghost guinda, confirmación inline) o Reactivar (secondary).
+- Reglas: no inactivarse a uno mismo ni al último administrador activo. Los operadores inactivos no aparecen para asignar cumplimientos.

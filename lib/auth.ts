@@ -42,7 +42,8 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   if (!userId) return null;
 
   const u = await findUserById(userId);
-  if (!u) return null;
+  // Inactivo: se le corta el acceso aunque tenga sesión o token vigente.
+  if (!u || !u.activo) return null;
 
   return {
     id: u.id,

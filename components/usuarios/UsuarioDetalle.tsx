@@ -28,16 +28,16 @@ export function UsuarioDetalle({
   esYo,
   onCerrar,
   onEditar,
-  onEliminado,
+  onCambiado,
 }: {
   usuario: UsuarioPublico;
   esYo: boolean;
   onCerrar: () => void;
   onEditar: () => void;
-  onEliminado: () => void;
+  onCambiado: (usuario: UsuarioPublico) => void;
 }) {
   const [confirmando, setConfirmando] = useState(false);
-  const [eliminando, setEliminando] = useState(false);
+  const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState("");
 
   useBodyScrollLock(true);
@@ -52,26 +52,34 @@ export function UsuarioDetalle({
     };
   }, [onCerrar]);
 
-  async function eliminar() {
-    if (eliminando) return;
+  async function cambiarActivo(activo: boolean) {
+    if (guardando) return;
     setError("");
-    setEliminando(true);
+    setGuardando(true);
+    const fallo = activo
+      ? "No se pudo reactivar el usuario"
+      : "No se pudo inactivar el usuario";
     try {
       const res = await fetch(`/api/usuarios/${usuario.id}`, {
-        method: "DELETE",
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ activo }),
       });
-      const data = (await res.json()) as { error?: string };
-      if (!res.ok || data.error) {
-        setError(data.error || "No se pudo eliminar el usuario");
+      const data = (await res.json()) as {
+        error?: string;
+        usuario?: UsuarioPublico;
+      };
+      if (!res.ok || data.error || !data.usuario) {
+        setError(data.error || fallo);
         setConfirmando(false);
         return;
       }
-      onEliminado();
+      onCambiado(data.usuario);
     } catch {
-      setError("No se pudo eliminar el usuario");
+      setError(fallo);
       setConfirmando(false);
     } finally {
-      setEliminando(false);
+      setGuardando(false);
     }
   }
 
@@ -113,6 +121,14 @@ export function UsuarioDetalle({
         <div className="grid grid-cols-2 gap-4 p-5">
           <Dato label="Nombre" value={usuario.displayName?.trim() || "—"} />
           <Dato label="Rol" value={ROL_LABEL[usuario.role] ?? usuario.role} />
+          <Dato
+            label="Estado"
+            value={
+              usuario.activo
+                ? "Activo"
+                : `Inactivo desde ${fechaCorta(usuario.inactivadoEn ?? usuario.updatedAt)}`
+            }
+          />
           <div className="col-span-2">
             <Dato label="Correo" value={usuario.email} />
           </div>
@@ -128,43 +144,55 @@ export function UsuarioDetalle({
           {confirmando ? (
             <div className="flex flex-col gap-3">
               <p className="text-sm text-zinc-600">
-                ¿Eliminar a{" "}
+                ¿Inactivar a{" "}
                 <span className="font-medium text-zinc-800">
                   {usuario.displayName?.trim() || usuario.email}
                 </span>
-                ? También se eliminarán sus lotes y documentos. Esta acción no
-                se puede deshacer.
+                ? Ya no podrá entrar a la plataforma ni a la app. Sus lotes,
+                capturas y cumplimientos se conservan, y puedes reactivarlo
+                cuando quieras.
               </p>
               <div className="flex justify-end gap-2">
                 <Button
                   type="button"
                   variant="ghost"
-                  disabled={eliminando}
+                  disabled={guardando}
                   onClick={() => setConfirmando(false)}
                 >
                   Cancelar
                 </Button>
                 <Button
                   type="button"
-                  disabled={eliminando}
-                  onClick={() => void eliminar()}
+                  disabled={guardando}
+                  onClick={() => void cambiarActivo(false)}
                 >
-                  {eliminando ? "Eliminando…" : "Sí, eliminar"}
+                  {guardando ? "Inactivando…" : "Sí, inactivar"}
                 </Button>
               </div>
             </div>
           ) : (
             <div className="flex flex-wrap justify-between gap-2">
-              <Button
-                type="button"
-                variant="ghost"
-                className="text-guinda hover:bg-guinda/8"
-                disabled={esYo}
-                title={esYo ? "No puedes eliminar tu propio usuario" : undefined}
-                onClick={() => setConfirmando(true)}
-              >
-                Eliminar
-              </Button>
+              {usuario.activo ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="text-guinda hover:bg-guinda/8"
+                  disabled={esYo}
+                  title={esYo ? "No puedes inactivar tu propio usuario" : undefined}
+                  onClick={() => setConfirmando(true)}
+                >
+                  Inactivar
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  disabled={guardando}
+                  onClick={() => void cambiarActivo(true)}
+                >
+                  {guardando ? "Reactivando…" : "Reactivar"}
+                </Button>
+              )}
               <Button type="button" onClick={onEditar}>
                 Editar
               </Button>

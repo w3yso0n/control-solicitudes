@@ -5,7 +5,7 @@ import { UsuarioFormModal } from "@/components/usuarios/UsuarioFormModal";
 import { Button, Card, Input } from "@/components/ui";
 import { ROL_LABEL } from "@/lib/catalogos";
 import type { Rol, UsuarioPublico } from "@/lib/types";
-import { Pencil, Plus, Trash2 } from "lucide-react";
+import { Pencil, Plus, UserCheck, UserX } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -24,6 +24,13 @@ function fechaCorta(iso: string) {
   return `${day}/${m}/${y}`;
 }
 
+type Vista = "activos" | "inactivos";
+
+const VISTAS: { id: Vista; label: string }[] = [
+  { id: "activos", label: "Activos" },
+  { id: "inactivos", label: "Inactivos" },
+];
+
 function nombreVisible(u: UsuarioPublico) {
   return u.displayName?.trim() || "—";
 }
@@ -40,7 +47,8 @@ export default function UsuariosPage() {
   const [formulario, setFormulario] = useState<UsuarioPublico | null | "nuevo">(
     null,
   );
-  const [eliminandoId, setEliminandoId] = useState<string | null>(null);
+  const [vista, setVista] = useState<Vista>("activos");
+  const [cambiandoId, setCambiandoId] = useState<string | null>(null);
 
   const cargar = useCallback(async () => {
     try {
@@ -67,10 +75,21 @@ export default function UsuariosPage() {
     void cargar();
   }, [cargar]);
 
+  const conteo = useMemo(
+    () => ({
+      activos: usuarios.filter((u) => u.activo).length,
+      inactivos: usuarios.filter((u) => !u.activo).length,
+    }),
+    [usuarios],
+  );
+
   const filtrados = useMemo(() => {
     const q = busqueda.trim().toLowerCase();
-    if (!q) return usuarios;
-    return usuarios.filter((u) => {
+    const enVista = usuarios.filter((u) =>
+      vista === "activos" ? u.activo : !u.activo,
+    );
+    if (!q) return enVista;
+    return enVista.filter((u) => {
       const rol = (ROL_LABEL[u.role] ?? u.role).toLowerCase();
       return (
         u.email.toLowerCase().includes(q) ||
@@ -78,7 +97,7 @@ export default function UsuariosPage() {
         rol.includes(q)
       );
     });
-  }, [usuarios, busqueda]);
+  }, [usuarios, busqueda, vista]);
 
   function sincronizar(usuario: UsuarioPublico) {
     setUsuarios((prev) => {
@@ -91,25 +110,38 @@ export default function UsuariosPage() {
     setViendo((actual) => (actual?.id === usuario.id ? usuario : actual));
   }
 
-  async function eliminarRapido(usuario: UsuarioPublico) {
-    if (eliminandoId) return;
+  async function cambiarActivo(usuario: UsuarioPublico, activo: boolean) {
+    if (cambiandoId) return;
     setError("");
-    setEliminandoId(usuario.id);
+    setCambiandoId(usuario.id);
     try {
       const res = await fetch(`/api/usuarios/${usuario.id}`, {
-        method: "DELETE",
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ activo }),
       });
-      const data = (await res.json()) as { error?: string };
-      if (!res.ok || data.error) {
-        setError(data.error || "No se pudo eliminar el usuario");
+      const data = (await res.json()) as {
+        error?: string;
+        usuario?: UsuarioPublico;
+      };
+      if (!res.ok || data.error || !data.usuario) {
+        setError(
+          data.error ||
+            (activo
+              ? "No se pudo reactivar el usuario"
+              : "No se pudo inactivar el usuario"),
+        );
         return;
       }
-      setUsuarios((prev) => prev.filter((u) => u.id !== usuario.id));
-      if (viendo?.id === usuario.id) setViendo(null);
+      sincronizar(data.usuario);
     } catch {
-      setError("No se pudo eliminar el usuario");
+      setError(
+        activo
+          ? "No se pudo reactivar el usuario"
+          : "No se pudo inactivar el usuario",
+      );
     } finally {
-      setEliminandoId(null);
+      setCambiandoId(null);
     }
   }
 
@@ -121,7 +153,7 @@ export default function UsuariosPage() {
             Administración
           </p>
           <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
-            {cargando ? "Usuarios" : `${usuarios.length} usuarios`}
+            {cargando ? "Usuarios" : `${conteo.activos} usuarios activos`}
           </h1>
           <p className="mt-1 text-sm text-zinc-500">
             Alta, consulta y permisos de acceso al sistema.
@@ -142,6 +174,39 @@ export default function UsuariosPage() {
         </div>
       </div>
 
+      <div
+        className="inline-flex flex-wrap gap-0.5 rounded-full border border-zinc-200 bg-white p-1"
+        role="tablist"
+        aria-label="Estado de usuarios"
+      >
+        {VISTAS.map((v) => {
+          const activa = vista === v.id;
+          return (
+            <button
+              key={v.id}
+              type="button"
+              role="tab"
+              aria-selected={activa}
+              onClick={() => setVista(v.id)}
+              className={`inline-flex h-[34px] items-center gap-2 rounded-full px-3.5 text-[13px] font-semibold transition-colors duration-150 ease-out ${
+                activa
+                  ? "bg-guinda text-white"
+                  : "text-zinc-500 hover:text-zinc-900"
+              }`}
+            >
+              {v.label}
+              <span
+                className={`inline-flex h-5 min-w-[22px] items-center justify-center rounded-full px-1.5 text-xs ${
+                  activa ? "bg-white/20" : "bg-zinc-100"
+                }`}
+              >
+                {conteo[v.id]}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
       {error ? (
         <p className="text-sm text-guinda" role="alert">
           {error}
@@ -155,7 +220,9 @@ export default function UsuariosPage() {
               <th className="px-4 py-3">Nombre</th>
               <th className="px-4 py-3">Correo</th>
               <th className="px-4 py-3">Rol</th>
-              <th className="px-4 py-3">Alta</th>
+              <th className="px-4 py-3">
+                {vista === "activos" ? "Alta" : "Inactivo desde"}
+              </th>
               <th className="px-4 py-3 text-right">Acciones</th>
             </tr>
           </thead>
@@ -166,7 +233,9 @@ export default function UsuariosPage() {
                 <tr
                   key={u.id}
                   onClick={() => setViendo(u)}
-                  className="cursor-pointer border-b border-zinc-100 hover:bg-zinc-50"
+                  className={`cursor-pointer border-b border-zinc-100 transition-colors hover:bg-zinc-50 ${
+                    u.activo ? "" : "text-zinc-400"
+                  }`}
                 >
                   <td className="px-4 py-3 font-medium text-zinc-900">
                     {nombreVisible(u)}
@@ -185,7 +254,9 @@ export default function UsuariosPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-zinc-500">
-                    {fechaCorta(u.createdAt)}
+                    {u.activo
+                      ? fechaCorta(u.createdAt)
+                      : fechaCorta(u.inactivadoEn ?? u.updatedAt)}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">
@@ -200,29 +271,45 @@ export default function UsuariosPage() {
                       >
                         <Pencil size={16} />
                       </button>
-                      <button
-                        type="button"
-                        className="rounded-full p-2 text-zinc-500 hover:bg-guinda/10 hover:text-guinda disabled:opacity-40"
-                        aria-label={`Eliminar ${u.email}`}
-                        disabled={esYo || eliminandoId === u.id}
-                        title={
-                          esYo
-                            ? "No puedes eliminar tu propio usuario"
-                            : undefined
-                        }
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (
-                            window.confirm(
-                              `¿Eliminar a ${u.displayName?.trim() || u.email}? También se eliminarán sus lotes y documentos.`,
-                            )
-                          ) {
-                            void eliminarRapido(u);
+                      {u.activo ? (
+                        <button
+                          type="button"
+                          className="rounded-full p-2 text-zinc-500 transition-colors hover:bg-guinda/10 hover:text-guinda disabled:opacity-40"
+                          aria-label={`Inactivar ${u.email}`}
+                          disabled={esYo || cambiandoId === u.id}
+                          title={
+                            esYo
+                              ? "No puedes inactivar tu propio usuario"
+                              : "Inactivar"
                           }
-                        }}
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (
+                              window.confirm(
+                                `¿Inactivar a ${u.displayName?.trim() || u.email}? Ya no podrá entrar, pero todo lo que hizo se conserva. Puedes reactivarlo cuando quieras.`,
+                              )
+                            ) {
+                              void cambiarActivo(u, false);
+                            }
+                          }}
+                        >
+                          <UserX size={16} />
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="rounded-full p-2 text-zinc-500 transition-colors hover:bg-emerald-50 hover:text-emerald-700 disabled:opacity-40"
+                          aria-label={`Reactivar ${u.email}`}
+                          title="Reactivar"
+                          disabled={cambiandoId === u.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            void cambiarActivo(u, true);
+                          }}
+                        >
+                          <UserCheck size={16} />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -238,7 +325,9 @@ export default function UsuariosPage() {
           <p className="px-4 py-8 text-center text-sm text-zinc-500">
             {busqueda.trim()
               ? "No hay usuarios que coincidan."
-              : "Aún no hay usuarios."}
+              : vista === "activos"
+                ? "Aún no hay usuarios activos."
+                : "No hay usuarios inactivos."}
           </p>
         ) : null}
       </Card>
@@ -252,8 +341,8 @@ export default function UsuariosPage() {
             setFormulario(viendo);
             setViendo(null);
           }}
-          onEliminado={() => {
-            setUsuarios((prev) => prev.filter((u) => u.id !== viendo.id));
+          onCambiado={(usuario) => {
+            sincronizar(usuario);
             setViendo(null);
           }}
         />

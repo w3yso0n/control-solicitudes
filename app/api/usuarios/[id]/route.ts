@@ -2,6 +2,7 @@ import { requireAdmin } from "@/lib/auth";
 import {
   deleteUsuario,
   getUsuario,
+  setActivoUsuario,
   updateUsuario,
 } from "@/lib/services/usuarios";
 import { NextRequest, NextResponse } from "next/server";
@@ -64,6 +65,17 @@ export async function PATCH(
     }
 
     const body = (await request.json()) as Record<string, unknown>;
+    if (typeof body.activo === "boolean") {
+      const estado = await setActivoUsuario(id, authz.user, body.activo);
+      if ("error" in estado) {
+        return NextResponse.json(
+          { error: estado.error },
+          { status: statusDeError(estado.error) },
+        );
+      }
+      return NextResponse.json({ success: true, usuario: estado.usuario });
+    }
+
     const result = await updateUsuario(id, authz.user, {
       email: body.email,
       password: body.password,

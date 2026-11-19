@@ -218,6 +218,8 @@ export type UsuarioPublico = {
   email: string;
   displayName: string | null;
   role: Rol;
+  activo: boolean;
+  inactivadoEn: string | null;
   createdAt: string;
   updatedAt: string;
 };

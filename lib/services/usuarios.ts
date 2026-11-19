@@ -3,7 +3,7 @@ import { users } from "@/lib/db/schema";
 import { registrarAuditoria, type ActorAudit } from "@/lib/services/auditoria";
 import type { Rol, UsuarioPublico } from "@/lib/types";
 import { hash } from "bcryptjs";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 
 const ROLES: Rol[] = ["territorio", "cuantiva", "operador", "candidata", "admin"];
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -13,6 +13,8 @@ const SELECT_PUBLICO = {
   email: users.email,
   displayName: users.displayName,
   role: users.role,
+  activo: users.activo,
+  inactivadoEn: users.inactivadoEn,
   createdAt: users.createdAt,
   updatedAt: users.updatedAt,
 } as const;
@@ -36,6 +38,8 @@ function toPublico(row: {
   email: string;
   displayName: string | null;
   role: string;
+  activo: boolean;
+  inactivadoEn: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }): UsuarioPublico {
@@ -44,6 +48,8 @@ function toPublico(row: {
     email: row.email,
     displayName: row.displayName,
     role: ROLES.includes(row.role as Rol) ? (row.role as Rol) : "territorio",
+    activo: row.activo,
+    inactivadoEn: row.inactivadoEn ? row.inactivadoEn.toISOString() : null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   };
@@ -100,7 +106,7 @@ async function contarAdmins() {
   const rows = await db
     .select({ id: users.id })
     .from(users)
-    .where(eq(users.role, "admin"));
+    .where(and(eq(users.role, "admin"), eq(users.activo, true)));
   return rows.length;
 }
 
@@ -202,7 +208,7 @@ export async function updateUsuario(
     if (id === actor.id && role !== actual.role) {
       return { error: "No puedes cambiar tu propio rol" };
     }
-    if (actual.role === "admin" && role !== "admin") {
+    if (actual.role === "admin" && actual.activo && role !== "admin") {
       const admins = await contarAdmins();
       if (admins <= 1) {
         return { error: "No se puede quitar el rol al último administrador" };
@@ -236,6 +242,57 @@ export async function updateUsuario(
     detalle: `Actualizó usuario ${usuario.email}`,
     antes: { email: actual.email, role: actual.role, displayName: actual.displayName },
     despues: { email: usuario.email, role: usuario.role, displayName: usuario.displayName },
+  });
+  return { success: true, usuario };
+}
+
+/**
+ * Soft delete: inactivar corta el acceso (web y móvil) sin borrar nada.
+ * Lotes, peticiones, cumplimientos y auditoría del usuario se conservan.
+ */
+export async function setActivoUsuario(
+  id: string,
+  actor: ActorAudit,
+  activo: boolean,
+): Promise<{ error: string } | { success: true; usuario: UsuarioPublico }> {
+  const actual = await getUsuario(id);
+  if (!actual) return { error: "Usuario no encontrado" };
+  if (actual.activo === activo) return { success: true, usuario: actual };
+
+  if (!activo) {
+    if (id === actor.id) {
+      return { error: "No puedes inactivar tu propio usuario" };
+    }
+    if (actual.role === "admin") {
+      const admins = await contarAdmins();
+      if (admins <= 1) {
+        return { error: "No se puede inactivar al último administrador activo" };
+      }
+    }
+  }
+
+  const ahora = new Date();
+  const updated = await db
+    .update(users)
+    .set({
+      activo,
+      inactivadoEn: activo ? null : ahora,
+      updatedAt: ahora,
+    })
+    .where(eq(users.id, id))
+    .returning(SELECT_PUBLICO);
+
+  const row = updated[0];
+  if (!row) return { error: "Usuario no encontrado" };
+  const usuario = toPublico(row);
+  await registrarAuditoria({
+    actor,
+    accion: "usuario",
+    entidad: "usuario",
+    entidadId: usuario.id,
+    detalle: `${activo ? "Reactivó" : "Inactivó"} usuario ${usuario.email}`,
+    antes: { activo: actual.activo },
+    despues: { activo: usuario.activo },
   });
   return { success: true, usuario };
 }

@@ -30,7 +30,8 @@ export async function listarOperadores() {
       displayName: users.displayName,
       role: users.role,
     })
-    .from(users);
+    .from(users)
+    .where(eq(users.activo, true));
   return rows
     .filter((u) => u.role === "operador" || u.role === "admin")
     .map((u) => ({
@@ -265,9 +266,12 @@ export async function asignarOperador(
   if (ids.length === 0) return { error: "Selecciona al menos una petición", status: 400 };
   if (!UUID_RE.test(operadorId)) return { error: "Operador inválido", status: 400 };
 
-  const ops = await db.select({ id: users.id, role: users.role }).from(users).where(eq(users.id, operadorId)).limit(1);
+  const ops = await db.select({ id: users.id, role: users.role, activo: users.activo }).from(users).where(eq(users.id, operadorId)).limit(1);
   if (!ops[0] || (ops[0].role !== "operador" && ops[0].role !== "admin")) {
     return { error: "El usuario no es operador", status: 400 };
+  }
+  if (!ops[0].activo) {
+    return { error: "El operador está inactivo", status: 400 };
   }
 
   await db
