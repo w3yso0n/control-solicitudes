@@ -18,7 +18,8 @@ export type AccionAuditoria =
   | "evento"
   | "plantilla"
   | "catalogo"
-  | "geografia";
+  | "geografia"
+  | "portal";
 
 export type AuditoriaDto = {
   id: string;

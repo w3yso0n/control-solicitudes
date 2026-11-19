@@ -128,3 +128,30 @@ Si se agrega una sección nueva al reporte, se agrega en los tres lugares que ap
 - Nativo oculto. Thumb propio, 4px, blanco semitransparente sobre guinda.
 - Visible al hover del sidebar o al hacer scroll; hide con fade `450ms ease-out`.
 - Implementación: `.sidebar-shell`, `.sidebar-nav-wrap`, `.sidebar-nav-scroll`, `.sidebar-nav-thumb`.
+
+### Portal público `/solicitar`
+
+Pantalla pública (sin sesión) para que la ciudadanía registre solicitudes. Comparte la vibra del dashboard (guinda, tarjeta blanca, etiquetas en mayúsculas) **sin parecer dashboard**: nada de sidebar ni KPIs. La especificación completa es `docs/solicitar-rediseno.md`, que manda sobre tokens, textos y medidas.
+
+- Tipografía: **Geist** (`--font-geist`, cargada en `app/layout.tsx`), sin serif. Es la excepción a Inter: solo aplica al portal público.
+- Tokens propios en `app/solicitar/solicitar.module.css` (`--brand: #6B1D30`, `--bg: #F7F4F1`, etc.). No mezclar con `bg-guinda` / `bg-hueso` de Tailwind en esta pantalla.
+- Header guinda de 72px con logo blanco sin caja de fondo (`logo-wordmark.png` recortado con overflow; reemplazar por SVG cuando exista) + divisor + "Canal ciudadano". No poner avatar junto al logo.
+- Formulario en una sola tarjeta, sin secciones numeradas. Inputs de 44px y radio de 10px; focus con borde `brand` + halo `rgba(107,29,48,.12)`.
+- Municipio: `MunicipioSelect` (canon) con `triggerClassName` para tomar la forma del portal. No usar `<select>` nativo.
+- Teléfono: solo dígitos, máximo 10; vacío o 10 dígitos. El error se muestra al enviar y se quita al volver a escribir. El backend valida lo mismo.
+- Confirmación: modal propio (franja guinda, foto con palomita y línea de tiempo "¿Qué sigue?"), no `AvisoExito`. Sigue el motion global: entra en 120ms ease-out y sale en 450ms ease-out con `pointer-events-none`. Bloquea scroll con `useBodyScrollLock`. Esc, X, clic en fondo y "Entendido" cierran; "Enviar otra solicitud" limpia y cierra. Al cerrar, el foco regresa al botón de enviar.
+
+### Revisión de solicitudes digitales `/digitales`
+
+Bandeja de revisión de lo que llega del portal público. Especificación completa: `docs/digitales-rediseno.md`. Implementación: `app/(app)/digitales/page.tsx` + `components/digitales/` (estilos en `digitales.module.css`, mismos tokens que `/solicitar`, tipografía Geist).
+
+- **Layout:** lista (máx. 400px, scroll propio) + panel `sticky` bajo el header de 64px. El panel tiene header y footer fijos y el cuerpo con scroll: el revisor nunca pierde los botones. No usar `overscroll-behavior: contain` en estas zonas: al llegar al final del scroll interno, la rueda debe seguir moviendo la página.
+- **Tarjeta de lista:** checkbox independiente + `<button>` que abre la solicitud. Activa: borde `brand` + halo `rgba(107,29,48,.1)`. Antigüedad de 24 h o más en ámbar. En la lista el teléfono es solo el indicador "WhatsApp"; en el panel se muestra completo (`744 123 4567`), por decisión del equipo.
+- **Panel:** "Lo que envió" es solo lectura (cambios por "Editar datos", modal que registra antes/después en Auditoría con acción `portal`). "Clasificación del equipo" es editable.
+- **Ubicación sugerida:** se calcula en el cliente contra el catálogo INEGI del municipio (`sugerirLocalidad` en `UbicacionSugerida.tsx`: normaliza acentos y quita prefijos "Col.", "Barrio", etc.; sin coincidencia cae a la cabecera `0001`). Pendiente = borde punteado; confirmada = verde. "Cambiar" y los links abren el `UbicacionCaptura` de siempre.
+- **Acción principal deshabilitada** mientras falte algo (`#E7DCD9`, `cursor: not-allowed`) y el pie dice exactamente qué falta (`aria-describedby`). No se valida al hacer clic: se previene.
+- **Después de aceptar/descartar:** la solicitud sale de la lista, el panel avanza a la siguiente y aparece un toast oscuro abajo al centro (5 s). Descartar y spam ofrecen "Deshacer"; aceptar no (el folio ya se generó).
+- **Selección múltiple:** barra negra que solo existe con `seleccionadas > 0`.
+- **Atajos:** J/K o flechas mueven, A acepta, D abre "Descartar…", X marca el checkbox. Nunca con el foco en un campo de texto ni con un modal abierto.
+- **Modales y lightbox:** overlay propio con el motion global (120ms in / 450ms out), Esc y clic en fondo cierran, `useBodyScrollLock`, el foco vuelve a quien lo abrió.
+- **Parecidas:** mismo municipio, ±30 días, texto similar (Jaccard de palabras clave >= 0.3, o misma colonia con >= 0.15). Las descartadas no cuentan. Se calculan en el servidor al listar "Por revisar".

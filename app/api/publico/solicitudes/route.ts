@@ -47,6 +47,9 @@ export async function POST(request: NextRequest) {
       nombre: String(form.get("nombre") ?? ""),
       telefono: String(form.get("telefono") ?? ""),
       cveMun: String(form.get("cveMun") ?? ""),
+      colonia: String(form.get("colonia") ?? ""),
+      nombreRegistra: String(form.get("nombreRegistra") ?? ""),
+      familiasBeneficiadas: String(form.get("familiasBeneficiadas") ?? ""),
       descripcion: String(form.get("descripcion") ?? ""),
       foto: guardada
         ? {

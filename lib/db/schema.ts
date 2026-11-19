@@ -198,6 +198,9 @@ export const solicitudesPublicas = pgTable(
     nombre: text("nombre").notNull(),
     telefono: text("telefono"),
     cveMun: text("cve_mun").notNull(),
+    colonia: text("colonia"),
+    nombreRegistra: text("nombre_registra"),
+    familiasBeneficiadas: integer("familias_beneficiadas"),
     descripcion: text("descripcion").notNull(),
     fotoStorageKey: text("foto_storage_key"),
     fotoNombre: text("foto_nombre"),
@@ -208,8 +211,16 @@ export const solicitudesPublicas = pgTable(
       .notNull()
       .default("pendiente"),
     motivoDescarte: text("motivo_descarte", {
-      enum: ["spam", "duplicada", "fuera_de_alcance", "incompleta"],
+      enum: [
+        "spam",
+        "duplicada",
+        "fuera_de_alcance",
+        "fuera_de_zona",
+        "incompleta",
+        "otro",
+      ],
     }),
+    motivoDescarteDetalle: text("motivo_descarte_detalle"),
     peticionId: uuid("peticion_id").references(() => peticiones.id, {
       onDelete: "set null",
     }),

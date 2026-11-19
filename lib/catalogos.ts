@@ -410,12 +410,21 @@ export const ORIGENES_CAPTURA = [
   { id: "portal_ciudadano", nombre: "Portal ciudadano" },
 ] as const;
 
+/**
+ * `enModal`: opciones del modal "Descartar…" en /digitales.
+ * `spam` se usa desde el botón Spam y la selección múltiple.
+ * `fuera_de_alcance` queda solo para registros anteriores.
+ */
 export const MOTIVOS_DESCARTE_PUBLICO = [
-  { id: "spam", nombre: "Spam" },
-  { id: "duplicada", nombre: "Duplicada" },
-  { id: "fuera_de_alcance", nombre: "Fuera de alcance" },
-  { id: "incompleta", nombre: "Incompleta" },
+  { id: "spam", nombre: "Spam", enModal: false },
+  { id: "fuera_de_zona", nombre: "Fuera de zona", enModal: true },
+  { id: "incompleta", nombre: "Sin información suficiente", enModal: true },
+  { id: "duplicada", nombre: "Duplicada", enModal: true },
+  { id: "otro", nombre: "Otro", enModal: true },
+  { id: "fuera_de_alcance", nombre: "Fuera de alcance", enModal: false },
 ] as const;
+
+export type MotivoDescartePublico = (typeof MOTIVOS_DESCARTE_PUBLICO)[number]["id"];
 
 export const ESTATUS_PETICION = [
   { id: "recibida", nombre: "Recibida" },

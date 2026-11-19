@@ -1,5 +1,5 @@
 import { requireCuantiva } from "@/lib/auth";
-import { contarSolicitudesPendientes } from "@/lib/services/solicitudes-publicas";
+import { contarSolicitudes } from "@/lib/services/solicitudes-publicas";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -7,6 +7,6 @@ export async function GET() {
   if ("error" in authz) {
     return NextResponse.json({ error: authz.error }, { status: authz.status });
   }
-  const pendientes = await contarSolicitudesPendientes();
-  return NextResponse.json({ pendientes });
+  const conteo = await contarSolicitudes();
+  return NextResponse.json(conteo);
 }

@@ -17,6 +17,7 @@ const ACCIONES = [
   { id: "plantilla", label: "Plantilla" },
   { id: "catalogo", label: "Catálogo" },
   { id: "geografia", label: "Geografía" },
+  { id: "portal", label: "Portal ciudadano" },
 ];
 
 function fechaHora(iso: string) {

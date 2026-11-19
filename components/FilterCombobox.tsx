@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown, Search } from "lucide-react";
+import { normalizarBusqueda } from "@/lib/texto";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 export type FilterOption = {
@@ -36,12 +37,12 @@ export function FilterCombobox({
   const seleccionado = options.find((o) => o.id === value);
 
   const filtrados = useMemo(() => {
-    const needle = q.trim().toLowerCase();
+    const needle = normalizarBusqueda(q.trim());
     if (!needle) return options;
     return options.filter(
       (o) =>
-        o.label.toLowerCase().includes(needle) ||
-        (o.meta?.toLowerCase().includes(needle) ?? false),
+        normalizarBusqueda(o.label).includes(needle) ||
+        (o.meta ? normalizarBusqueda(o.meta).includes(needle) : false),
     );
   }, [options, q]);
 

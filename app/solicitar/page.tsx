@@ -1,28 +1,161 @@
 "use client";
 
 import { MunicipioSelect } from "@/components/MunicipioSelect";
-import { Button, Field, Input, Textarea } from "@/components/ui";
-import { Check, ImagePlus } from "lucide-react";
+import { useBodyScrollLock } from "@/lib/body-scroll-lock";
+import {
+  ArrowRight,
+  Camera,
+  Check,
+  CircleAlert,
+  FileText,
+  ImagePlus,
+  Lightbulb,
+  MessageCircle,
+  Search,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import s from "./solicitar.module.css";
+
+const PASOS = [
+  {
+    titulo: "Escribes",
+    texto: "Cuéntanos tu solicitud, personal o de tu comité, colonia o grupo.",
+  },
+  {
+    titulo: "Revisamos",
+    texto: "Nuestro equipo lee cada caso antes de registrarlo.",
+  },
+  {
+    titulo: "Te informamos",
+    texto: "Si dejas tu teléfono, te enviaremos tu folio por WhatsApp.",
+  },
+];
+
+const SALIDA_MS = 450;
+
+function contarPalabras(texto: string) {
+  return texto.trim().split(/\s+/).filter(Boolean).length;
+}
 
 export default function SolicitarPage() {
   const [esGrupo, setEsGrupo] = useState(false);
   const [nombre, setNombre] = useState("");
-  const [telefono, setTelefono] = useState("");
+  const [nombreGrupo, setNombreGrupo] = useState("");
+  const [nombreRegistra, setNombreRegistra] = useState("");
+  const [familias, setFamilias] = useState("");
   const [cveMun, setCveMun] = useState("");
+  const [colonia, setColonia] = useState("");
+  const [telefono, setTelefono] = useState("");
+  const [telefonoError, setTelefonoError] = useState(false);
   const [descripcion, setDescripcion] = useState("");
   const [foto, setFoto] = useState<File | null>(null);
   const [aviso, setAviso] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState("");
-  const [recibido, setRecibido] = useState(false);
+
+  const [modalMontado, setModalMontado] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [conTelefono, setConTelefono] = useState(false);
+
   const trampaRef = useRef<HTMLInputElement>(null);
+  const fotoRef = useRef<HTMLInputElement>(null);
+  const enviarRef = useRef<HTMLButtonElement>(null);
+  const entendidoRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const cierreRef = useRef<number | null>(null);
+
+  useBodyScrollLock(modalMontado);
+
+  const palabras = contarPalabras(descripcion);
+  const textoCorto = palabras > 0 && palabras < 20;
+
+  function limpiarFormulario() {
+    setEsGrupo(false);
+    setNombre("");
+    setNombreGrupo("");
+    setNombreRegistra("");
+    setFamilias("");
+    setCveMun("");
+    setColonia("");
+    setTelefono("");
+    setTelefonoError(false);
+    setDescripcion("");
+    setFoto(null);
+    if (fotoRef.current) fotoRef.current.value = "";
+    setAviso(false);
+    setError("");
+  }
+
+  function abrirModal(telefonoValido: boolean) {
+    if (cierreRef.current) window.clearTimeout(cierreRef.current);
+    setConTelefono(telefonoValido);
+    setModalMontado(true);
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => setModalVisible(true)),
+    );
+  }
+
+  const cerrarModal = useCallback((recargar = false) => {
+    setModalVisible(false);
+    if (cierreRef.current) window.clearTimeout(cierreRef.current);
+    cierreRef.current = window.setTimeout(() => {
+      if (recargar) {
+        window.location.reload();
+        return;
+      }
+      setModalMontado(false);
+      enviarRef.current?.focus();
+    }, SALIDA_MS);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (cierreRef.current) window.clearTimeout(cierreRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!modalVisible) return;
+    entendidoRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        cerrarModal();
+        return;
+      }
+      if (e.key !== "Tab" || !dialogRef.current) return;
+      const focusables = dialogRef.current.querySelectorAll<HTMLElement>(
+        "button:not([disabled]), a[href]",
+      );
+      if (focusables.length === 0) return;
+      const primero = focusables[0];
+      const ultimo = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === primero) {
+        e.preventDefault();
+        ultimo.focus();
+      } else if (!e.shiftKey && document.activeElement === ultimo) {
+        e.preventDefault();
+        primero.focus();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [modalVisible, cerrarModal]);
 
   async function enviar(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    if (telefono.length > 0 && telefono.length !== 10) {
+      setTelefonoError(true);
+      return;
+    }
+    if (!cveMun) {
+      setError("Elige el municipio.");
+      return;
+    }
     if (!aviso) {
       setError("Acepta el aviso de privacidad para continuar.");
       return;
@@ -31,9 +164,15 @@ export default function SolicitarPage() {
     try {
       const form = new FormData();
       form.set("esGrupo", esGrupo ? "1" : "0");
-      form.set("nombre", nombre);
+      form.set("nombre", esGrupo ? nombreGrupo : nombre);
+      if (esGrupo) {
+        form.set("nombreGrupo", nombreGrupo);
+        form.set("nombreRegistra", nombreRegistra);
+        form.set("familiasBeneficiadas", familias);
+      }
       form.set("telefono", telefono);
       form.set("cveMun", cveMun);
+      form.set("colonia", colonia);
       form.set("descripcion", descripcion);
       form.set("aviso", aviso ? "1" : "0");
       form.set("empresa", trampaRef.current?.value ?? "");
@@ -47,7 +186,7 @@ export default function SolicitarPage() {
         setError(data.error || "No se pudo enviar la solicitud");
         return;
       }
-      setRecibido(true);
+      abrirModal(telefono.length === 10);
     } catch {
       setError("No se pudo enviar la solicitud");
     } finally {
@@ -55,247 +194,466 @@ export default function SolicitarPage() {
     }
   }
 
-  const pasos = [
-    {
-      titulo: "Escribes",
-      texto: "De una persona, o de un comité, colonia o grupo.",
-    },
-    {
-      titulo: "Revisamos",
-      texto: "El equipo lee tu caso antes de registrarlo.",
-    },
-    {
-      titulo: "Te avisamos",
-      texto: "Si dejaste teléfono, te escribimos por WhatsApp.",
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-hueso">
-      <header className="bg-guinda">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
-          <div className="flex items-center gap-3">
-            <Image
-              src="/brand/foto-perfil.png"
-              alt=""
-              width={72}
-              height={72}
-              className="h-11 w-11 rounded-full bg-white object-cover ring-2 ring-white"
-              priority
-            />
-            <div className="rounded-2xl bg-[#830333] px-4 py-2">
+    <div className={s.page}>
+      <header className={s.header}>
+        <div className={s.headerInner}>
+          <div className={s.headerLeft}>
+            <span className={s.logo}>
               <Image
                 src="/brand/logo-wordmark.png"
                 alt="Beatriz Mojica"
-                width={160}
-                height={48}
-                className="h-8 w-auto object-contain sm:h-9"
+                width={1920}
+                height={1080}
                 priority
               />
-            </div>
+            </span>
+            <span className={s.headerDivider} aria-hidden="true" />
+            <span className={s.headerLabel}>Canal ciudadano</span>
           </div>
-          <p className="text-[11px] uppercase tracking-[0.22em] text-white/70">
-            Guerrero
-          </p>
+          <div className={s.headerRight}>
+            <Link href="/aviso-privacidad" className={s.headerLink} target="_blank">
+              Aviso de privacidad
+            </Link>
+            <span className={s.pill}>GUERRERO</span>
+          </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-5 py-8 sm:px-8 sm:py-12">
-        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12">
-          <div className="lg:sticky lg:top-8">
-            <div className="mb-6 inline-flex rounded-full bg-white p-2 shadow-[0_16px_40px_-24px_rgba(28,10,18,0.45)]">
-              <Image
-                src="/brand/foto-perfil.png"
-                alt="Beatriz Mojica"
-                width={320}
-                height={320}
-                className="h-36 w-36 rounded-full bg-white object-cover sm:h-44 sm:w-44"
-                priority
-              />
+      <main className={s.main}>
+        <section className={s.intro}>
+          <Image
+            src="/brand/foto-perfil.png"
+            alt="Beatriz Mojica"
+            width={144}
+            height={144}
+            quality={90}
+            className={s.avatar}
+            priority
+          />
+          <p className={s.eyebrow}>Beatriz Mojica</p>
+          <h1 className={s.h1}>Cuéntanos qué necesitas</h1>
+          <p className={s.introText}>
+            Este es un espacio de Beatriz Mojica para escuchar a las personas y
+            comunidades de Guerrero. Aquí puedes registrar tu solicitud para que
+            nuestro equipo la conozca y le dé seguimiento. No es una oficina de
+            gobierno ni un trámite oficial.
+          </p>
+          <ol className={s.steps}>
+            {PASOS.map((paso, i) => (
+              <li key={paso.titulo} className={s.step}>
+                <span className={s.stepNum}>{i + 1}</span>
+                <span>
+                  <span className={s.stepTitle}>{paso.titulo}</span>
+                  <span className={s.stepText}>{paso.texto}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <form onSubmit={(e) => void enviar(e)} className={s.card}>
+          {/* a) Tipo de solicitud */}
+          <div className={s.block}>
+            <span className={s.label} id="tipo-label">
+              ¿De quién es la solicitud?
+            </span>
+            <div className={s.segmented} role="group" aria-labelledby="tipo-label">
+              <button
+                type="button"
+                aria-pressed={!esGrupo}
+                onClick={() => setEsGrupo(false)}
+                className={`${s.segment} ${!esGrupo ? s.segmentActive : ""}`}
+              >
+                De una persona
+              </button>
+              <button
+                type="button"
+                aria-pressed={esGrupo}
+                onClick={() => setEsGrupo(true)}
+                className={`${s.segment} ${esGrupo ? s.segmentActive : ""}`}
+              >
+                Comunitaria
+              </button>
             </div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-guinda">
-              Campaña
-            </p>
-            <h1 className="font-display mt-3 text-4xl leading-[1.05] tracking-tight text-tinta sm:text-5xl">
-              Cuéntanos qué hace falta en tu comunidad
-            </h1>
-            <p className="mt-4 max-w-md text-sm leading-6 text-zinc-600">
-              Este canal es de la campaña de Beatriz Mojica. Sirve para
-              registrar tu solicitud. No es una oficina de gobierno y no
-              promete una resolución institucional.
-            </p>
-            <ol className="mt-8 space-y-3">
-              {pasos.map((paso, i) => (
-                <li key={paso.titulo} className="flex gap-3">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-guinda text-xs font-semibold text-white">
-                    {i + 1}
-                  </span>
-                  <span>
-                    <span className="block text-sm font-semibold text-tinta">
-                      {paso.titulo}
-                    </span>
-                    <span className="mt-0.5 block text-sm leading-5 text-zinc-500">
-                      {paso.texto}
-                    </span>
-                  </span>
-                </li>
-              ))}
-            </ol>
           </div>
 
-          {recibido ? (
-            <div className="rounded-[1.75rem] border border-emerald-200 bg-white px-6 py-10 text-center shadow-[0_16px_40px_-28px_rgba(28,10,18,0.45)] sm:px-10">
-              <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-800">
-                <Check size={22} />
-              </span>
-              <p className="font-display mt-4 text-3xl text-tinta">
-                Recibimos tu solicitud
-              </p>
-              <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-zinc-600">
-                El equipo la va a revisar. Esto todavía no es un folio. Si
-                dejaste teléfono, por ahí te avisamos.
-              </p>
-            </div>
-          ) : (
-            <form
-              onSubmit={(e) => void enviar(e)}
-              className="space-y-5 rounded-[1.75rem] border border-zinc-200/80 bg-white p-5 shadow-[0_16px_40px_-28px_rgba(28,10,18,0.45)] sm:p-7"
-            >
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  ¿De quién es la solicitud?
-                </p>
-                <div className="mt-2 grid grid-cols-2 gap-1 rounded-full bg-zinc-100 p-1">
-                  <button
-                    type="button"
-                    aria-pressed={!esGrupo}
-                    onClick={() => setEsGrupo(false)}
-                    className={`rounded-full px-3 py-2.5 text-sm font-semibold transition-colors ${
-                      !esGrupo
-                        ? "bg-white text-guinda shadow-sm"
-                        : "text-zinc-500 hover:text-zinc-800"
-                    }`}
-                  >
-                    De una persona
-                  </button>
-                  <button
-                    type="button"
-                    aria-pressed={esGrupo}
-                    onClick={() => setEsGrupo(true)}
-                    className={`rounded-full px-3 py-2.5 text-sm font-semibold transition-colors ${
-                      esGrupo
-                        ? "bg-white text-guinda shadow-sm"
-                        : "text-zinc-500 hover:text-zinc-800"
-                    }`}
-                  >
-                    Comunitaria
-                  </button>
-                </div>
-                <p className="mt-2 text-xs leading-5 text-zinc-500">
-                  {esGrupo
-                    ? "Comité, colonia, club o grupo. Basta el nombre."
-                    : "Tu nombre. El teléfono es para poder avisarte."}
-                </p>
-              </div>
-              <Field
-                label={
-                  esGrupo ? "Nombre del comité, colonia o grupo" : "Tu nombre"
-                }
-              >
-                <Input
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                  placeholder={
-                    esGrupo
-                      ? "Ej. Comité de la colonia Emiliano Zapata"
-                      : "Nombre y apellido"
-                  }
+          {/* b) Quién */}
+          {esGrupo ? (
+            <div className={s.gridGrupo}>
+              <div className={s.block}>
+                <label htmlFor="nombreGrupo" className={s.label}>
+                  Nombre del comité, colonia o grupo
+                </label>
+                <input
+                  id="nombreGrupo"
+                  className={s.input}
+                  value={nombreGrupo}
+                  onChange={(e) => setNombreGrupo(e.target.value)}
+                  placeholder="Ej. Comité de vecinos de la Col. Centro"
                   required
                   maxLength={160}
                 />
-              </Field>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field label="Teléfono de contacto (opcional)">
-                  <Input
-                    value={telefono}
-                    onChange={(e) => setTelefono(e.target.value)}
-                    placeholder="WhatsApp"
-                    inputMode="tel"
-                  />
-                </Field>
-                <Field label="Municipio">
-                  <MunicipioSelect value={cveMun} onChange={setCveMun} />
-                </Field>
               </div>
-              <Field label="¿Qué solicitas?">
-                <Textarea
-                  rows={5}
-                  value={descripcion}
-                  onChange={(e) => setDescripcion(e.target.value)}
-                  placeholder="Cuéntalo con tus palabras…"
-                  required
-                  maxLength={4000}
-                />
-              </Field>
-              <div>
-                <p className="mb-1 text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Foto (opcional)
-                </p>
-                <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-zinc-300 bg-hueso px-4 py-3 text-sm text-zinc-600 transition-colors hover:border-guinda/40 hover:text-zinc-800">
-                  <ImagePlus size={18} className="shrink-0 text-guinda" />
-                  <span className="min-w-0 truncate">
-                    {foto ? foto.name : "Adjuntar una foto del lugar o del escrito"}
-                  </span>
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
-                    className="sr-only"
-                    onChange={(e) => setFoto(e.target.files?.[0] ?? null)}
-                  />
+              <div className={s.block}>
+                <label htmlFor="nombreRegistra" className={s.label}>
+                  Quien lo registra
                 </label>
-              </div>
-              <input
-                ref={trampaRef}
-                type="text"
-                name="empresa"
-                tabIndex={-1}
-                autoComplete="off"
-                aria-hidden
-                className="hidden"
-                defaultValue=""
-              />
-              <label className="flex items-start gap-3 rounded-2xl bg-hueso px-3.5 py-3 text-sm leading-5 text-zinc-700">
                 <input
-                  type="checkbox"
-                  checked={aviso}
-                  onChange={(e) => setAviso(e.target.checked)}
-                  className="mt-0.5 accent-guinda"
+                  id="nombreRegistra"
+                  className={s.input}
+                  value={nombreRegistra}
+                  onChange={(e) => setNombreRegistra(e.target.value)}
+                  placeholder="Nombre y apellido"
+                  required
+                  maxLength={160}
                 />
-                <span>
-                  Leí el{" "}
-                  <Link
-                    href="/aviso-privacidad"
-                    className="font-medium text-guinda hover:underline"
-                    target="_blank"
-                  >
-                    aviso de privacidad
-                  </Link>{" "}
-                  y acepto que usen estos datos para registrar la solicitud y,
-                  si dejé teléfono, contactarme.
-                </span>
+              </div>
+              <div className={s.block}>
+                <label htmlFor="familias" className={s.label}>
+                  Familias beneficiadas
+                </label>
+                <input
+                  id="familias"
+                  type="number"
+                  min={1}
+                  inputMode="numeric"
+                  className={s.input}
+                  value={familias}
+                  onChange={(e) => setFamilias(e.target.value)}
+                  placeholder="Número aproximado"
+                />
+              </div>
+            </div>
+          ) : (
+            <div className={s.block}>
+              <label htmlFor="nombre" className={s.label}>
+                Tu nombre
               </label>
-              {error ? (
-                <p className="text-sm text-guinda" role="alert">
-                  {error}
-                </p>
-              ) : null}
-              <Button type="submit" className="w-full py-2.5" disabled={enviando}>
-                {enviando ? "Enviando…" : "Enviar solicitud"}
-              </Button>
-            </form>
+              <input
+                id="nombre"
+                className={s.input}
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                placeholder="Nombre y apellido"
+                required
+                maxLength={160}
+              />
+            </div>
           )}
-        </div>
+
+          {/* c) Ubicación y contacto */}
+          <div className={s.block}>
+            <div className={s.grid3}>
+              <div className={s.block}>
+                <label htmlFor="municipio" className={s.label}>
+                  Municipio
+                </label>
+                <MunicipioSelect
+                  id="municipio"
+                  value={cveMun}
+                  onChange={setCveMun}
+                  placeholder="Elegir"
+                  triggerClassName={s.select}
+                />
+              </div>
+              <div className={s.block}>
+                <label htmlFor="colonia" className={s.label}>
+                  Colonia o localidad
+                </label>
+                <input
+                  id="colonia"
+                  className={s.input}
+                  value={colonia}
+                  onChange={(e) => setColonia(e.target.value)}
+                  placeholder="Ej. Col. Emiliano Zapata"
+                  maxLength={160}
+                />
+              </div>
+              <div className={s.block}>
+                <label htmlFor="telefono" className={s.label}>
+                  Teléfono <span className={s.labelFaint}>· opcional</span>
+                </label>
+                <input
+                  id="telefono"
+                  type="tel"
+                  inputMode="numeric"
+                  maxLength={10}
+                  className={`${s.input} ${telefonoError ? s.inputError : ""}`}
+                  value={telefono}
+                  onChange={(e) => {
+                    setTelefono(e.target.value.replace(/\D/g, "").slice(0, 10));
+                    setTelefonoError(false);
+                  }}
+                  placeholder="WhatsApp (10 dígitos)"
+                  aria-invalid={telefonoError}
+                  aria-describedby="telefono-ayuda"
+                />
+              </div>
+            </div>
+            {telefonoError ? (
+              <p id="telefono-ayuda" className={`${s.hint} ${s.hintError}`} role="alert">
+                <CircleAlert size={14} aria-hidden="true" />
+                El teléfono debe tener 10 dígitos.
+              </p>
+            ) : (
+              <p id="telefono-ayuda" className={s.hint}>
+                <MessageCircle size={14} aria-hidden="true" />
+                Solo lo usaremos para informarte sobre tu solicitud.
+              </p>
+            )}
+          </div>
+
+          {/* d) ¿Qué solicitas? */}
+          <div className={s.block}>
+            <label htmlFor="descripcion" className={s.label}>
+              ¿Qué solicitas?
+            </label>
+            <textarea
+              id="descripcion"
+              rows={4}
+              className={s.textarea}
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+              placeholder={
+                '¿Qué pasa, dónde es y desde cuándo? Por ejemplo: "En la calle Morelos no hay alumbrado desde hace tres meses y ya hubo asaltos".'
+              }
+              required
+              maxLength={4000}
+            />
+            {textoCorto ? (
+              <p className={`${s.hint} ${s.hintWarning}`}>
+                <Lightbulb size={14} aria-hidden="true" />
+                Entre más detalles nos compartas, mejor podremos atender tu
+                solicitud.
+              </p>
+            ) : null}
+          </div>
+
+          {/* e) Foto */}
+          <div className={s.photo}>
+            <div className={s.photoRow}>
+              <label htmlFor="foto" className={s.photoButton}>
+                <ImagePlus size={16} aria-hidden="true" />
+                Adjuntar una foto
+                <input
+                  ref={fotoRef}
+                  id="foto"
+                  type="file"
+                  accept="image/*"
+                  className={s.srOnly}
+                  onChange={(e) => setFoto(e.target.files?.[0] ?? null)}
+                />
+              </label>
+              <p className={s.photoText}>
+                {foto ? (
+                  <>
+                    <span className={s.photoName}>{foto.name}</span>
+                    <button
+                      type="button"
+                      className={s.photoRemove}
+                      onClick={() => {
+                        setFoto(null);
+                        if (fotoRef.current) fotoRef.current.value = "";
+                      }}
+                    >
+                      Quitar
+                    </button>
+                  </>
+                ) : (
+                  "Opcional. Una foto nos ayuda a conocer mejor tu solicitud."
+                )}
+              </p>
+            </div>
+            <ul className={s.tips}>
+              <li className={s.tip}>
+                <Camera size={15} aria-hidden="true" />
+                <span>
+                  <strong>Con buena luz:</strong> de preferencia de día.
+                </span>
+              </li>
+              <li className={s.tip}>
+                <Search size={15} aria-hidden="true" />
+                <span>
+                  <strong>Que se vea el problema:</strong> de cerca y sin
+                  objetos que estorben.
+                </span>
+              </li>
+              <li className={s.tip}>
+                <FileText size={15} aria-hidden="true" />
+                <span>
+                  <strong>Si es un escrito:</strong> completo, derecho y que se
+                  lean las firmas.
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <input
+            ref={trampaRef}
+            type="text"
+            name="empresa"
+            tabIndex={-1}
+            autoComplete="off"
+            aria-hidden
+            className={s.trap}
+            defaultValue=""
+          />
+
+          {error ? (
+            <p className={s.formError} role="alert">
+              {error}
+            </p>
+          ) : null}
+
+          {/* f) Envío */}
+          <div className={s.submitRow}>
+            <label className={s.consent}>
+              <input
+                type="checkbox"
+                checked={aviso}
+                onChange={(e) => setAviso(e.target.checked)}
+              />
+              <span>
+                Leí el{" "}
+                <Link href="/aviso-privacidad" className={s.link} target="_blank">
+                  aviso de privacidad
+                </Link>{" "}
+                y acepto que usen estos datos para registrar la solicitud y, si
+                dejé teléfono, contactarme.
+              </span>
+            </label>
+            <button
+              ref={enviarRef}
+              type="submit"
+              className={s.primary}
+              disabled={enviando}
+            >
+              {enviando ? "Enviando…" : "Enviar solicitud"}
+              {enviando ? null : <ArrowRight size={16} aria-hidden="true" />}
+            </button>
+          </div>
+        </form>
       </main>
+
+      <footer className={s.footer}>
+        <div className={s.footerInner}>
+          <span>Beatriz Mojica · Guerrero</span>
+          <Link href="/aviso-privacidad" className={s.footerLink} target="_blank">
+            Aviso de privacidad
+          </Link>
+        </div>
+      </footer>
+
+      {modalMontado ? (
+        <div
+          className={`${s.overlay} ${modalVisible ? s.overlayOpen : s.overlayClosing}`}
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) cerrarModal();
+          }}
+        >
+          <div
+            ref={dialogRef}
+            className={s.dialog}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="conf-title"
+          >
+            <div className={s.band}>
+              <span className={s.bandLabel}>BEATRIZ MOJICA</span>
+              <button
+                type="button"
+                className={s.close}
+                aria-label="Cerrar"
+                onClick={() => cerrarModal()}
+              >
+                <X size={18} aria-hidden="true" />
+              </button>
+              <span className={s.modalAvatar}>
+                <Image
+                  src="/brand/foto-perfil.png"
+                  alt=""
+                  width={160}
+                  height={160}
+                  quality={90}
+                />
+                <span className={s.badge} aria-hidden="true">
+                  <Check size={16} strokeWidth={3} />
+                </span>
+              </span>
+            </div>
+
+            <div className={s.modalBody}>
+              <div>
+                <h2 id="conf-title" className={s.h2}>
+                  Tu solicitud fue recibida
+                </h2>
+                <p className={s.modalText}>
+                  {conTelefono
+                    ? "Gracias por hacernos llegar tu solicitud. Nuestro equipo la revisará y, una vez registrada, te enviaremos por WhatsApp tu número de folio para darle seguimiento."
+                    : "Gracias por hacernos llegar tu solicitud. Nuestro equipo la revisará. Como no registraste un número de contacto, no podremos informarte sobre su avance."}
+                </p>
+              </div>
+
+              <div className={s.next}>
+                <p className={s.nextTitle}>¿Qué sigue?</p>
+                <ol className={s.timeline}>
+                  <li className={s.tlItem}>
+                    <span className={`${s.tlDot} ${s.tlDone}`} aria-hidden="true">
+                      <Check size={13} strokeWidth={3} />
+                    </span>
+                    <span>
+                      <span className={s.tlTitle}>Recibida</span>
+                      <span className={s.tlText}>Ya llegó a nuestro equipo.</span>
+                    </span>
+                  </li>
+                  <li className={s.tlItem} aria-current="step">
+                    <span className={`${s.tlDot} ${s.tlCurrent}`} aria-hidden="true" />
+                    <span>
+                      <span className={s.tlTitle}>En revisión</span>
+                      <span className={s.tlText}>
+                        Leemos tu caso antes de registrarlo.
+                      </span>
+                    </span>
+                  </li>
+                  <li className={`${s.tlItem} ${conTelefono ? "" : s.tlFaint}`}>
+                    <span className={`${s.tlDot} ${s.tlPending}`} aria-hidden="true" />
+                    <span>
+                      <span className={s.tlTitle}>Folio por WhatsApp</span>
+                      <span className={s.tlText}>
+                        {conTelefono
+                          ? "Te lo enviamos al registrarla."
+                          : "No disponible: no dejaste teléfono."}
+                      </span>
+                    </span>
+                  </li>
+                </ol>
+              </div>
+
+              <div className={s.modalActions}>
+                <button
+                  ref={entendidoRef}
+                  type="button"
+                  className={s.primary}
+                  onClick={() => cerrarModal(true)}
+                >
+                  Entendido
+                </button>
+                <button
+                  type="button"
+                  className={s.secondary}
+                  onClick={() => {
+                    limpiarFormulario();
+                    cerrarModal();
+                  }}
+                >
+                  Enviar otra solicitud
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

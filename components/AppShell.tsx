@@ -112,16 +112,22 @@ export function AppShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!ready || (rol !== "cuantiva" && rol !== "admin")) return;
     let vivo = true;
-    fetch("/api/digitales/conteo")
-      .then((r) => r.json())
-      .then((d: { pendientes?: number }) => {
-        if (vivo && typeof d.pendientes === "number") {
-          setDigitalesPendientes(d.pendientes);
-        }
-      })
-      .catch(() => undefined);
+    const actualizar = () => {
+      fetch("/api/digitales/conteo")
+        .then((r) => r.json())
+        .then((d: { pendientes?: number }) => {
+          if (vivo && typeof d.pendientes === "number") {
+            setDigitalesPendientes(d.pendientes);
+          }
+        })
+        .catch(() => undefined);
+    };
+    actualizar();
+    // /digitales avisa cuando acepta, descarta o deshace.
+    window.addEventListener("digitales:conteo", actualizar);
     return () => {
       vivo = false;
+      window.removeEventListener("digitales:conteo", actualizar);
     };
   }, [ready, rol, pathname]);
 

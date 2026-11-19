@@ -1,15 +1,26 @@
 "use client";
 
 import { MUNICIPIOS_GUERRERO } from "@/lib/geografia-guerrero";
+import { normalizarBusqueda } from "@/lib/texto";
 import { ChevronDown, Search } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
+
+/** Minúsculas y sin acentos: "Técpan" y "tecpan" coinciden. */
+const normalizar = normalizarBusqueda;
 
 export function MunicipioSelect({
   value,
   onChange,
+  id,
+  placeholder = "Elegir municipio",
+  triggerClassName,
 }: {
   value: string;
   onChange: (cveMun: string) => void;
+  id?: string;
+  placeholder?: string;
+  /** Reemplaza las clases de forma del trigger (portal público). */
+  triggerClassName?: string;
 }) {
   const listId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -28,13 +39,13 @@ export function MunicipioSelect({
   const seleccionado = municipios.find((m) => m.cveMun === value);
 
   const filtrados = useMemo(() => {
-    const needle = q.trim().toLowerCase();
+    const needle = normalizar(q.trim());
     if (!needle) return municipios;
     return municipios.filter(
       (m) =>
-        m.nombre.toLowerCase().includes(needle) ||
-        m.corto.toLowerCase().includes(needle) ||
-        m.region.toLowerCase().includes(needle),
+        normalizar(m.nombre).includes(needle) ||
+        normalizar(m.corto).includes(needle) ||
+        normalizar(m.region).includes(needle),
     );
   }, [municipios, q]);
 
@@ -64,16 +75,21 @@ export function MunicipioSelect({
   return (
     <div ref={rootRef} className="relative">
       <button
+        id={id}
         type="button"
         aria-haspopup="listbox"
         aria-expanded={abierto}
         aria-controls={listId}
         onClick={() => setAbierto((v) => !v)}
-        className={`flex w-full items-center justify-between gap-2 rounded-2xl border bg-white px-3.5 py-2.5 text-left text-sm outline-none ring-magenta/30 transition-shadow focus:ring-2 ${
-          abierto
-            ? "border-guinda/40 ring-2 ring-magenta/30"
-            : "border-zinc-200 hover:border-zinc-300"
-        }`}
+        className={
+          triggerClassName
+            ? `flex w-full items-center justify-between gap-2 text-left ${triggerClassName} ${abierto ? "is-open" : ""}`
+            : `flex w-full items-center justify-between gap-2 rounded-2xl border bg-white px-3.5 py-2.5 text-left text-sm outline-none ring-magenta/30 transition-shadow focus:ring-2 ${
+                abierto
+                  ? "border-guinda/40 ring-2 ring-magenta/30"
+                  : "border-zinc-200 hover:border-zinc-300"
+              }`
+        }
       >
         <span className="min-w-0 truncate">
           {seleccionado ? (
@@ -84,7 +100,7 @@ export function MunicipioSelect({
               <span className="ml-1.5 text-zinc-400">{seleccionado.region}</span>
             </>
           ) : (
-            <span className="text-zinc-400">Elegir municipio</span>
+            <span className="text-zinc-400">{placeholder}</span>
           )}
         </span>
         <ChevronDown

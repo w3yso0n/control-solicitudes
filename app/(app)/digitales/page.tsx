@@ -1,90 +1,120 @@
 "use client";
 
-import { CampoConEspecificar } from "@/components/CampoConEspecificar";
+import s from "@/components/digitales/digitales.module.css";
+import type { DatosEditables } from "@/components/digitales/Modales";
+import { PanelRevision } from "@/components/digitales/PanelRevision";
 import {
-  UbicacionCaptura,
-  type UbicacionCapturaValue,
-} from "@/components/cuantiva/UbicacionCaptura";
+  antiguedad,
+  avisarConteo,
+  ubicacionTexto,
+  type Conteo,
+  type EstatusLista,
+  type Solicitud,
+} from "@/components/digitales/tipos";
 import { FilterCombobox } from "@/components/FilterCombobox";
-import { Button, Card, Field, Input, Textarea } from "@/components/ui";
+import { CATEGORIAS, categoriasConExtras } from "@/lib/catalogos";
+import { normalizarBusqueda } from "@/lib/texto";
 import {
-  CATEGORIAS,
-  categoriasConExtras,
-  COMPLEJIDADES,
-  MOTIVOS_DESCARTE_PUBLICO,
-  TIPOS_PETICION,
-  URGENCIAS,
-  valorOpcionEspecificar,
-} from "@/lib/catalogos";
-import type { Complejidad, TipoPeticion, Urgencia } from "@/lib/types";
-import { useCallback, useEffect, useMemo, useState } from "react";
+  Copy,
+  Image as ImageIcon,
+  Inbox,
+  MessageCircle,
+  MessageCircleOff,
+  Search,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-type Solicitud = {
-  id: string;
-  esGrupo: boolean;
-  nombre: string;
-  telefono: string | null;
-  cveMun: string;
-  municipio: string;
-  descripcion: string;
-  tieneFoto: boolean;
-  estatus: string;
-  motivoDescarte: string | null;
-  creadoEn: string;
+const TABS: { id: EstatusLista; label: string; conteo: keyof Conteo }[] = [
+  { id: "pendiente", label: "Por revisar", conteo: "pendientes" },
+  { id: "aceptada", label: "Aceptadas", conteo: "aceptadas" },
+  { id: "descartada", label: "Descartadas", conteo: "descartadas" },
+];
+
+const TODOS = "__todos";
+const TOAST_MS = 5000;
+
+type Toast = {
+  id: number;
+  texto: string;
+  deshacer?: () => Promise<void>;
 };
 
+function enCampoDeTexto(target: EventTarget | null) {
+  const el = target as HTMLElement | null;
+  if (!el) return false;
+  return (
+    el.tagName === "INPUT" ||
+    el.tagName === "TEXTAREA" ||
+    el.tagName === "SELECT" ||
+    el.isContentEditable
+  );
+}
+
 export default function DigitalesPage() {
-  const [estatus, setEstatus] = useState("pendiente");
+  const [estatus, setEstatus] = useState<EstatusLista>("pendiente");
   const [filas, setFilas] = useState<Solicitud[]>([]);
+  const [conteo, setConteo] = useState<Conteo>({
+    pendientes: 0,
+    aceptadas: 0,
+    descartadas: 0,
+  });
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
   const [seleccion, setSeleccion] = useState<string[]>([]);
   const [activaId, setActivaId] = useState<string | null>(null);
-  const [motivo, setMotivo] = useState("spam");
   const [enviando, setEnviando] = useState(false);
-  const [folio, setFolio] = useState("");
   const [categorias, setCategorias] = useState(CATEGORIAS);
-  const [nombre, setNombre] = useState("");
-  const [domicilio, setDomicilio] = useState("");
-  const [descripcion, setDescripcion] = useState("");
-  const [categoriaId, setCategoriaId] = useState(CATEGORIAS[0].id);
-  const [subcategoria, setSubcategoria] = useState(CATEGORIAS[0].subcategorias[0]);
-  const [subcategoriaOtro, setSubcategoriaOtro] = useState("");
-  const [tipo, setTipo] = useState<TipoPeticion>("peticion");
-  const [urgencia, setUrgencia] = useState<Urgencia>("media");
-  const [complejidad, setComplejidad] = useState<Complejidad | "">("");
-  const [ubicacion, setUbicacion] = useState<UbicacionCapturaValue>({
-    metodo: "inegi",
-    lat: null,
-    lng: null,
-    cveMun: "001",
-    distritoLocal: null,
-    distritoFederal: null,
-    localidadInegi: null,
-    label: "",
-  });
+  const [busqueda, setBusqueda] = useState("");
+  const [municipio, setMunicipio] = useState("");
+  const [toast, setToast] = useState<Toast | null>(null);
+  const [toastVisible, setToastVisible] = useState(false);
+  const toastTimer = useRef<number | null>(null);
+  const itemRefs = useRef(new Map<string, HTMLDivElement>());
 
-  const cargar = useCallback(async () => {
-    setError("");
+  /* ---------- Datos ---------- */
+
+  const cargarConteo = useCallback(async () => {
     try {
-      const res = await fetch(`/api/digitales?estatus=${estatus}`);
-      const data = (await res.json()) as Solicitud[] | { error?: string };
-      if (!res.ok || !Array.isArray(data)) {
-        setError(!Array.isArray(data) && data.error ? data.error : "No se pudo cargar");
-        return;
-      }
-      setFilas(data);
-      setSeleccion([]);
+      const res = await fetch("/api/digitales/conteo");
+      const data = (await res.json()) as Conteo;
+      if (res.ok && typeof data.pendientes === "number") setConteo(data);
     } catch {
-      setError("No se pudo cargar");
-    } finally {
-      setCargando(false);
+      /* el conteo no bloquea la vista */
     }
-  }, [estatus]);
+  }, []);
+
+  const cargar = useCallback(
+    async (opciones?: { seleccionar?: string | null }) => {
+      setError("");
+      try {
+        const res = await fetch(`/api/digitales?estatus=${estatus}`);
+        const data = (await res.json()) as Solicitud[] | { error?: string };
+        if (!res.ok || !Array.isArray(data)) {
+          setError(
+            !Array.isArray(data) && data.error ? data.error : "No se pudo cargar",
+          );
+          return;
+        }
+        setFilas(data);
+        setSeleccion((prev) => prev.filter((id) => data.some((d) => d.id === id)));
+        setActivaId((actual) => {
+          const deseada = opciones?.seleccionar ?? actual;
+          if (deseada && data.some((d) => d.id === deseada)) return deseada;
+          return data[0]?.id ?? null;
+        });
+      } catch {
+        setError("No se pudo cargar");
+      } finally {
+        setCargando(false);
+      }
+    },
+    [estatus],
+  );
 
   useEffect(() => {
     void cargar();
-  }, [cargar]);
+    void cargarConteo();
+  }, [cargar, cargarConteo]);
 
   useEffect(() => {
     fetch("/api/config")
@@ -99,112 +129,149 @@ export default function DigitalesPage() {
       .catch(() => undefined);
   }, []);
 
-  const activa = filas.find((f) => f.id === activaId) ?? null;
-  const categoria = useMemo(
-    () => categorias.find((c) => c.id === categoriaId) ?? categorias[0],
-    [categoriaId, categorias],
-  );
+  /* ---------- Filtros ---------- */
 
-  function abrir(solicitud: Solicitud) {
-    setActivaId(solicitud.id);
-    setFolio("");
-    setError("");
-    setNombre(solicitud.nombre);
-    setDomicilio(solicitud.esGrupo ? "" : solicitud.municipio);
-    setDescripcion(solicitud.descripcion);
-    setCategoriaId(categorias[0]?.id ?? CATEGORIAS[0].id);
-    const primera = categorias[0]?.subcategorias[0] ?? CATEGORIAS[0].subcategorias[0];
-    setSubcategoria(primera);
-    setSubcategoriaOtro("");
-    setTipo("peticion");
-    setUrgencia("media");
-    setComplejidad("");
-    setUbicacion({
-      metodo: "inegi",
-      lat: null,
-      lng: null,
-      cveMun: solicitud.cveMun,
-      distritoLocal: null,
-      distritoFederal: null,
-      localidadInegi: null,
-      label: "",
+  const municipios = useMemo(() => {
+    const unicos = new Map<string, string>();
+    for (const f of filas) unicos.set(f.cveMun, f.municipio);
+    return [...unicos.entries()]
+      .sort((a, b) => a[1].localeCompare(b[1], "es"))
+      .map(([id, label]) => ({ id, label }));
+  }, [filas]);
+
+  const visibles = useMemo(() => {
+    const q = normalizarBusqueda(busqueda.trim());
+    return filas.filter((f) => {
+      if (municipio && f.cveMun !== municipio) return false;
+      if (!q) return true;
+      return [f.nombre, f.nombreRegistra, f.colonia, f.municipio, f.descripcion]
+        .filter(Boolean)
+        .some((t) => normalizarBusqueda(t as string).includes(q));
     });
+  }, [filas, busqueda, municipio]);
+
+  const activa = visibles.find((f) => f.id === activaId) ?? null;
+  const indice = activa ? visibles.indexOf(activa) : -1;
+
+  // Si el filtro deja fuera la activa, se abre la primera visible.
+  useEffect(() => {
+    if (activaId && visibles.some((f) => f.id === activaId)) return;
+    setActivaId(visibles[0]?.id ?? null);
+  }, [visibles, activaId]);
+
+  useEffect(() => {
+    if (!activaId) return;
+    itemRefs.current.get(activaId)?.scrollIntoView({ block: "nearest" });
+  }, [activaId]);
+
+  /* ---------- Toast ---------- */
+
+  const mostrarToast = useCallback((t: Omit<Toast, "id">) => {
+    if (toastTimer.current) window.clearTimeout(toastTimer.current);
+    setToast({ ...t, id: Date.now() });
+    requestAnimationFrame(() => setToastVisible(true));
+    toastTimer.current = window.setTimeout(() => setToastVisible(false), TOAST_MS);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimer.current) window.clearTimeout(toastTimer.current);
+    };
+  }, []);
+
+  /* ---------- Acciones ---------- */
+
+  function mover(delta: number) {
+    if (visibles.length === 0) return;
+    const base = indice < 0 ? 0 : indice + delta;
+    const siguiente = visibles[Math.min(Math.max(base, 0), visibles.length - 1)];
+    if (siguiente) setActivaId(siguiente.id);
   }
 
-  async function descartar(ids: string[], motivoDescarte: string) {
-    if (ids.length === 0 || enviando) return;
+  /** Quita las solicitudes de la lista y abre la siguiente. */
+  function quitarYAvanzar(ids: string[]) {
+    const restantes = visibles.filter((f) => !ids.includes(f.id));
+    const desde = Math.max(0, indice);
+    const siguiente = restantes[Math.min(desde, restantes.length - 1)] ?? null;
+    setFilas((prev) => prev.filter((f) => !ids.includes(f.id)));
+    setSeleccion((prev) => prev.filter((id) => !ids.includes(id)));
+    setActivaId(siguiente?.id ?? null);
+    void cargarConteo();
+    avisarConteo();
+  }
+
+  async function restaurar(ids: string[]) {
+    try {
+      const res = await fetch("/api/digitales/restaurar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      if (!res.ok) {
+        const data = (await res.json()) as { error?: string };
+        mostrarToast({ texto: data.error || "No se pudo deshacer" });
+        return;
+      }
+      setToastVisible(false);
+      await cargar({ seleccionar: ids[0] });
+      void cargarConteo();
+      avisarConteo();
+    } catch {
+      mostrarToast({ texto: "No se pudo deshacer" });
+    }
+  }
+
+  async function descartar(ids: string[], motivo: string, detalle = "") {
+    if (ids.length === 0 || enviando) return false;
     setEnviando(true);
     setError("");
     try {
       const res = await fetch("/api/digitales", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids, motivo: motivoDescarte }),
+        body: JSON.stringify({ ids, motivo, detalle }),
       });
-      const data = (await res.json()) as { error?: string };
+      const data = (await res.json()) as { error?: string; descartadas?: string[] };
       if (!res.ok) {
         setError(data.error || "No se pudo descartar");
-        return;
+        return false;
       }
-      if (activaId && ids.includes(activaId)) setActivaId(null);
-      await cargar();
+      const hechas = data.descartadas ?? ids;
+      quitarYAvanzar(hechas);
+      const texto =
+        motivo === "spam"
+          ? hechas.length === 1
+            ? "Marcada como spam"
+            : `${hechas.length} marcadas como spam`
+          : "Descartada";
+      mostrarToast({ texto, deshacer: () => restaurar(hechas) });
+      return true;
     } catch {
       setError("No se pudo descartar");
+      return false;
     } finally {
       setEnviando(false);
     }
   }
 
-  async function aceptar() {
+  async function aceptar(body: Record<string, unknown>) {
     if (!activa || enviando) return;
-    if (!complejidad) {
-      setError("Asigna la complejidad antes de aceptar.");
-      return;
-    }
-    if (ubicacion.lat == null || ubicacion.lng == null) {
-      setError("Elige una ubicación para poder aceptar.");
-      return;
-    }
-    const sub = valorOpcionEspecificar(subcategoria, subcategoriaOtro);
-    if (typeof sub === "object") {
-      setError(sub.error);
-      return;
-    }
+    const id = activa.id;
     setEnviando(true);
     setError("");
     try {
-      const res = await fetch(`/api/digitales/${activa.id}/aceptar`, {
+      const res = await fetch(`/api/digitales/${id}/aceptar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ciudadanoNombre: nombre,
-          ciudadanoDomicilio: activa.esGrupo ? "" : domicilio,
-          ciudadanoTelefono: activa.telefono ?? "",
-          remitenteRelacion: activa.esGrupo ? "grupo" : "mismo",
-          descripcion,
-          transcripcion: activa.descripcion,
-          categoriaId,
-          subcategorias: [sub].filter(Boolean),
-          tipo,
-          urgencia,
-          alcance: activa.esGrupo ? "colectivo" : "individual",
-          complejidad,
-          cveMun: ubicacion.cveMun,
-          lat: ubicacion.lat,
-          lng: ubicacion.lng,
-          metodoUbicacion: ubicacion.metodo,
-          localidadInegi: ubicacion.localidadInegi,
-          ubicacionLabel: ubicacion.label,
-        }),
+        body: JSON.stringify(body),
       });
       const data = (await res.json()) as { error?: string; folio?: string };
       if (!res.ok || !data.folio) {
         setError(data.error || "No se pudo aceptar");
         return;
       }
-      setFolio(data.folio);
-      setActivaId(null);
-      await cargar();
+      quitarYAvanzar([id]);
+      mostrarToast({ texto: `Folio ${data.folio} generado` });
     } catch {
       setError("No se pudo aceptar");
     } finally {
@@ -212,234 +279,347 @@ export default function DigitalesPage() {
     }
   }
 
+  async function editar(datos: DatosEditables): Promise<string | null> {
+    if (!activa) return "Sin solicitud";
+    try {
+      const res = await fetch(`/api/digitales/${activa.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(datos),
+      });
+      const data = (await res.json()) as Solicitud | { error?: string };
+      if (!res.ok || !("id" in data)) {
+        return ("error" in data && data.error) || "No se pudieron guardar los cambios";
+      }
+      setFilas((prev) => prev.map((f) => (f.id === data.id ? data : f)));
+      mostrarToast({ texto: "Datos actualizados" });
+      return null;
+    } catch {
+      return "No se pudieron guardar los cambios";
+    }
+  }
+
+  function abrirParecida(id: string) {
+    if (!visibles.some((f) => f.id === id)) {
+      setBusqueda("");
+      setMunicipio("");
+    }
+    setActivaId(id);
+  }
+
+  function cambiarTab(id: EstatusLista) {
+    if (id === estatus) return;
+    setCargando(true);
+    setFilas([]);
+    setSeleccion([]);
+    setActivaId(null);
+    setBusqueda("");
+    setMunicipio("");
+    setEstatus(id);
+  }
+
+  /* ---------- Atajos J/K/X (A y D viven en el panel) ---------- */
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (enCampoDeTexto(e.target)) return;
+      if (document.querySelector('[aria-modal="true"]')) return;
+      const k = e.key;
+      if (k === "j" || k === "J" || k === "ArrowDown") {
+        e.preventDefault();
+        mover(1);
+      } else if (k === "k" || k === "K" || k === "ArrowUp") {
+        e.preventDefault();
+        mover(-1);
+      } else if ((k === "x" || k === "X") && activaId && estatus === "pendiente") {
+        e.preventDefault();
+        setSeleccion((prev) =>
+          prev.includes(activaId)
+            ? prev.filter((x) => x !== activaId)
+            : [...prev, activaId],
+        );
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
+  /* ---------- Render ---------- */
+
+  const sinNada = !cargando && filas.length === 0;
+
   return (
-    <div className="space-y-6">
-      <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-guinda">
-          Operación
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight text-zinc-900">
-          Solicitudes digitales
-        </h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          Llegan por el portal público. Aceptarlas crea la petición con folio.
-          Descartarlas no.
-        </p>
+    <div className={s.root}>
+      <div className={s.pageHead}>
+        <div>
+          <p className={s.eyebrow}>Portal público</p>
+          <h1 className={s.h1}>Solicitudes digitales</h1>
+          <p className={s.subtitle}>
+            Aceptarlas crea la petición con folio. Descartarlas no.
+          </p>
+        </div>
+        <div className={s.tabs} role="tablist" aria-label="Estatus">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              aria-selected={estatus === t.id}
+              className={`${s.tab} ${estatus === t.id ? s.tabActive : ""}`}
+              onClick={() => cambiarTab(t.id)}
+            >
+              {t.label}
+              <span className={s.tabCount}>{conteo[t.conteo]}</span>
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="flex flex-wrap gap-2">
-        {[
-          ["pendiente", "Por revisar"],
-          ["aceptada", "Aceptadas"],
-          ["descartada", "Descartadas"],
-        ].map(([id, label]) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => {
-              setCargando(true);
-              setEstatus(id);
-              setActivaId(null);
-            }}
-            className={`rounded-full px-3 py-1 text-sm ${
-              estatus === id
-                ? "bg-guinda text-white"
-                : "bg-white text-zinc-600 ring-1 ring-zinc-200"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+
       {error ? (
-        <p className="text-sm text-guinda" role="alert">
+        <p className={s.error} role="alert">
           {error}
         </p>
       ) : null}
-      {folio ? (
-        <p className="text-sm text-emerald-800">Se generó el folio {folio}.</p>
-      ) : null}
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-        <div className="space-y-3">
-          {estatus === "pendiente" && filas.length > 0 ? (
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                type="button"
-                variant="ghost"
-                className="text-guinda"
-                disabled={enviando || seleccion.length === 0}
-                onClick={() => void descartar(seleccion, "spam")}
-              >
-                Descartar selección como spam
-              </Button>
-              <span className="text-xs text-zinc-400">
-                {seleccion.length} seleccionadas
-              </span>
-            </div>
-          ) : null}
-          {cargando ? <p className="text-sm text-zinc-500">Cargando…</p> : null}
-          {!cargando && filas.length === 0 ? (
-            <p className="text-sm text-zinc-500">No hay solicitudes en esta lista.</p>
-          ) : null}
-          {filas.map((fila) => (
-            <Card key={fila.id} className="p-4">
-              <div className="flex items-start gap-3">
-                {estatus === "pendiente" ? (
-                  <input
-                    type="checkbox"
-                    className="mt-1"
-                    checked={seleccion.includes(fila.id)}
-                    onChange={(e) =>
-                      setSeleccion((prev) =>
-                        e.target.checked
-                          ? [...prev, fila.id]
-                          : prev.filter((id) => id !== fila.id),
-                      )
-                    }
-                    aria-label={`Seleccionar ${fila.nombre}`}
-                  />
-                ) : null}
+
+      {sinNada ? (
+        <div className={s.empty}>
+          <span className={s.emptyIcon} aria-hidden="true">
+            <Inbox size={20} />
+          </span>
+          {estatus === "pendiente" ? (
+            <>
+              <p className={s.emptyTitle}>Todo al día. No hay solicitudes por revisar.</p>
+              <p className={s.emptyText}>
                 <button
                   type="button"
-                  onClick={() => abrir(fila)}
-                  className="min-w-0 flex-1 text-left"
+                  className={s.textBtn}
+                  onClick={() => cambiarTab("aceptada")}
                 >
-                  <p className="font-medium">{fila.nombre}</p>
-                  <p className="text-sm text-zinc-500">
-                    {fila.esGrupo ? "Comunitaria" : "Persona"} · {fila.municipio}
-                    {fila.telefono ? ` · ${fila.telefono}` : ""}
-                  </p>
-                  <p className="mt-1 line-clamp-2 text-sm text-zinc-600">
-                    {fila.descripcion}
-                  </p>
-                  {fila.motivoDescarte ? (
-                    <p className="mt-1 text-xs text-zinc-400">
-                      Descarte: {fila.motivoDescarte}
-                    </p>
-                  ) : null}
+                  Ver Aceptadas
                 </button>
-              </div>
-            </Card>
-          ))}
+              </p>
+            </>
+          ) : (
+            <p className={s.emptyTitle}>
+              {estatus === "aceptada"
+                ? "Todavía no hay solicitudes aceptadas."
+                : "No hay solicitudes descartadas."}
+            </p>
+          )}
         </div>
-        {activa && activa.estatus === "pendiente" ? (
-          <Card className="space-y-3 p-4">
-            <p className="font-medium">Revisar</p>
-            {activa.tieneFoto ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={`/api/digitales/${activa.id}/foto`}
-                alt=""
-                className="max-h-64 w-full rounded-xl object-contain bg-zinc-50"
-              />
+      ) : (
+        <div className={s.row}>
+          <div className={s.listCol}>
+            <div className={s.toolbar}>
+              <label className={s.search}>
+                <Search size={16} aria-hidden="true" />
+                <input
+                  type="search"
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  placeholder="Buscar nombre, colonia o texto"
+                  aria-label="Buscar solicitudes"
+                />
+              </label>
+              <div className={`${s.munFilter} ${s.field}`}>
+                <FilterCombobox
+                  value={municipio}
+                  onChange={(id) => setMunicipio(id === TODOS ? "" : id)}
+                  options={[
+                    { id: TODOS, label: "Todos los municipios" },
+                    ...municipios,
+                  ]}
+                  placeholder="Municipio"
+                  searchPlaceholder="Buscar municipio…"
+                />
+              </div>
+            </div>
+
+            {estatus === "pendiente" && seleccion.length > 0 ? (
+              <div className={s.bulkBar} role="region" aria-label="Selección múltiple">
+                <strong>
+                  {seleccion.length}{" "}
+                  {seleccion.length === 1 ? "seleccionada" : "seleccionadas"}
+                </strong>
+                <div className={s.bulkActions}>
+                  <button
+                    type="button"
+                    className={s.bulkCancel}
+                    onClick={() => setSeleccion([])}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    className={s.bulkSpam}
+                    disabled={enviando}
+                    onClick={() => void descartar(seleccion, "spam")}
+                  >
+                    Marcar como spam
+                  </button>
+                </div>
+              </div>
             ) : null}
-            <Field label={activa.esGrupo ? "Comité, colonia o grupo" : "Nombre"}>
-              <Input value={nombre} onChange={(e) => setNombre(e.target.value)} />
-            </Field>
-            {activa.esGrupo ? null : (
-              <Field label="Domicilio">
-                <Input
-                  value={domicilio}
-                  onChange={(e) => setDomicilio(e.target.value)}
-                />
-              </Field>
-            )}
-            <Field label="Descripción">
-              <Textarea
-                rows={4}
-                value={descripcion}
-                onChange={(e) => setDescripcion(e.target.value)}
-              />
-            </Field>
-            <UbicacionCaptura value={ubicacion} onChange={setUbicacion} />
-            <Field label="Complejidad">
-              <FilterCombobox
-                value={complejidad}
-                onChange={(id) => setComplejidad(id as Complejidad)}
-                options={COMPLEJIDADES.map((c) => ({ id: c.id, label: c.nombre }))}
-                placeholder="Selecciona…"
-                searchPlaceholder="Buscar…"
-              />
-            </Field>
-            <Field label="Categoría">
-              <FilterCombobox
-                value={categoriaId}
-                onChange={(id) => {
-                  setCategoriaId(id);
-                  const cat = categorias.find((c) => c.id === id);
-                  setSubcategoria(cat?.subcategorias[0] ?? "");
-                  setSubcategoriaOtro("");
-                }}
-                options={categorias.map((c) => ({ id: c.id, label: c.nombre }))}
-                placeholder="Categoría"
-                searchPlaceholder="Buscar…"
-              />
-            </Field>
-            <CampoConEspecificar
-              label="Subcategoría"
-              value={subcategoria}
-              extra={subcategoriaOtro}
-              onChange={(id, extra) => {
-                setSubcategoria(id);
-                setSubcategoriaOtro(extra);
-              }}
-              options={(categoria?.subcategorias ?? []).map((s) => ({
-                id: s,
-                label: s,
-              }))}
-              placeholder="Subcategoría"
-              searchPlaceholder="Buscar…"
+
+            {cargando ? <p className={s.muted}>Cargando…</p> : null}
+
+            {!cargando && visibles.length === 0 ? (
+              <p className={s.muted}>
+                {busqueda.trim()
+                  ? `No encontramos solicitudes con «${busqueda.trim()}». Prueba con otro nombre o colonia.`
+                  : "No hay solicitudes en este municipio."}
+              </p>
+            ) : null}
+
+            <div className={s.list}>
+              {visibles.map((fila) => {
+                const edad = antiguedad(fila.creadoEn);
+                const activaFila = fila.id === activaId;
+                return (
+                  <div
+                    key={fila.id}
+                    ref={(el) => {
+                      if (el) itemRefs.current.set(fila.id, el);
+                      else itemRefs.current.delete(fila.id);
+                    }}
+                    className={`${s.item} ${activaFila ? s.itemActive : ""}`}
+                  >
+                    {estatus === "pendiente" ? (
+                      <input
+                        type="checkbox"
+                        className={s.itemCheck}
+                        checked={seleccion.includes(fila.id)}
+                        onChange={(e) =>
+                          setSeleccion((prev) =>
+                            e.target.checked
+                              ? [...prev, fila.id]
+                              : prev.filter((id) => id !== fila.id),
+                          )
+                        }
+                        aria-label={`Seleccionar solicitud de ${fila.nombre}`}
+                      />
+                    ) : null}
+                    <button
+                      type="button"
+                      className={s.itemBody}
+                      aria-current={activaFila ? "true" : undefined}
+                      onClick={() => setActivaId(fila.id)}
+                    >
+                      <span className={s.itemTop}>
+                        <span className={s.itemName}>{fila.nombre}</span>
+                        <span className={`${s.age} ${edad.vieja ? s.ageOld : ""}`}>
+                          {edad.texto}
+                        </span>
+                      </span>
+                      <span className={s.itemMeta}>
+                        <span
+                          className={`${s.chip} ${fila.esGrupo ? s.chipGrupo : s.chipPersona}`}
+                        >
+                          {fila.esGrupo
+                            ? fila.familiasBeneficiadas
+                              ? `Comunitaria · ≈ ${fila.familiasBeneficiadas} familias`
+                              : "Comunitaria"
+                            : "Persona"}
+                        </span>
+                        <span>{ubicacionTexto(fila)}</span>
+                      </span>
+                      <span className={s.itemDesc}>{fila.descripcion}</span>
+                      <span className={s.flags}>
+                        {fila.telefono ? (
+                          <span className={`${s.flag} ${s.flagOk}`}>
+                            <MessageCircle size={13} aria-hidden="true" />
+                            WhatsApp
+                          </span>
+                        ) : (
+                          <span className={`${s.flag} ${s.flagFaint}`}>
+                            <MessageCircleOff size={13} aria-hidden="true" />
+                            Sin teléfono
+                          </span>
+                        )}
+                        {fila.tieneFoto ? (
+                          <span className={s.flag}>
+                            <ImageIcon size={13} aria-hidden="true" />
+                            Foto
+                          </span>
+                        ) : null}
+                        {fila.parecidas.length > 0 ? (
+                          <span className={`${s.flag} ${s.flagWarn}`}>
+                            <Copy size={13} aria-hidden="true" />
+                            Parecidas
+                          </span>
+                        ) : null}
+                        {fila.folio ? (
+                          <span className={`${s.flag} ${s.flagOk}`}>
+                            Folio {fila.folio}
+                          </span>
+                        ) : null}
+                      </span>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            {estatus === "pendiente" && visibles.length > 0 ? (
+              <p className={s.shortcuts}>
+                <kbd className={s.kbd}>J</kbd>
+                <kbd className={s.kbd}>K</kbd> moverte ·{" "}
+                <kbd className={s.kbd}>A</kbd> aceptar ·{" "}
+                <kbd className={s.kbd}>D</kbd> descartar ·{" "}
+                <kbd className={s.kbd}>X</kbd> seleccionar
+              </p>
+            ) : null}
+          </div>
+
+          {activa ? (
+            <PanelRevision
+              key={activa.id}
+              solicitud={activa}
+              indice={indice}
+              total={visibles.length}
+              categorias={categorias}
+              enviando={enviando}
+              onPrev={() => mover(-1)}
+              onNext={() => mover(1)}
+              onAceptar={aceptar}
+              onDescartar={(motivo, detalle) => descartar([activa.id], motivo, detalle)}
+              onEditar={editar}
+              onAbrirParecida={abrirParecida}
             />
-            <div className="grid gap-3 sm:grid-cols-2">
-              <Field label="Tipo">
-                <FilterCombobox
-                  value={tipo}
-                  onChange={(id) => setTipo(id as TipoPeticion)}
-                  options={TIPOS_PETICION.map((t) => ({ id: t.id, label: t.nombre }))}
-                  placeholder="Tipo"
-                  searchPlaceholder="Buscar…"
-                />
-              </Field>
-              <Field label="Urgencia">
-                <FilterCombobox
-                  value={urgencia}
-                  onChange={(id) => setUrgencia(id as Urgencia)}
-                  options={URGENCIAS.map((u) => ({ id: u.id, label: u.nombre }))}
-                  placeholder="Urgencia"
-                  searchPlaceholder="Buscar…"
-                />
-              </Field>
+          ) : (
+            <div className={s.panel}>
+              <p className={s.panelEmpty}>
+                {cargando ? "Cargando…" : "Elige una solicitud para revisarla."}
+              </p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Button type="button" disabled={enviando} onClick={() => void aceptar()}>
-                {enviando ? "Guardando…" : "Aceptar y generar folio"}
-              </Button>
-              <FilterCombobox
-                value={motivo}
-                onChange={setMotivo}
-                options={MOTIVOS_DESCARTE_PUBLICO.map((m) => ({
-                  id: m.id,
-                  label: m.nombre,
-                }))}
-                placeholder="Motivo"
-                searchPlaceholder="Buscar…"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                className="text-guinda"
-                disabled={enviando}
-                onClick={() => void descartar([activa.id], motivo)}
-              >
-                Descartar
-              </Button>
-            </div>
-          </Card>
-        ) : (
-          <p className="text-sm text-zinc-500">
-            Elige una solicitud pendiente para revisarla.
-          </p>
-        )}
-      </div>
+          )}
+        </div>
+      )}
+
+      {toast ? (
+        <div
+          key={toast.id}
+          className={`${s.toast} ${toastVisible ? s.toastOpen : ""}`}
+          role="status"
+          aria-live="polite"
+        >
+          <span>{toast.texto}</span>
+          {toast.deshacer ? (
+            <button
+              type="button"
+              className={s.toastAction}
+              onClick={() => {
+                const fn = toast.deshacer;
+                setToastVisible(false);
+                void fn?.();
+              }}
+            >
+              Deshacer
+            </button>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -25,7 +25,11 @@ export async function POST(request: NextRequest) {
   if ("error" in authz) {
     return NextResponse.json({ error: authz.error }, { status: authz.status });
   }
-  const body = (await request.json()) as { ids?: unknown; motivo?: unknown };
+  const body = (await request.json()) as {
+    ids?: unknown;
+    motivo?: unknown;
+    detalle?: unknown;
+  };
   const ids = Array.isArray(body.ids)
     ? body.ids.filter((id): id is string => typeof id === "string")
     : [];
@@ -33,7 +37,8 @@ export async function POST(request: NextRequest) {
     typeof body.motivo === "string" && body.motivo
       ? body.motivo
       : MOTIVOS_DESCARTE_PUBLICO[0].id;
-  const result = await descartarSolicitudes(authz.user.id, ids, motivo);
+  const detalle = typeof body.detalle === "string" ? body.detalle : "";
+  const result = await descartarSolicitudes(authz.user.id, ids, motivo, detalle);
   if ("error" in result) {
     return NextResponse.json({ error: result.error }, { status: result.status });
   }
