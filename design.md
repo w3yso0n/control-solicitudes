@@ -164,3 +164,11 @@ Los usuarios no se eliminan desde la UI: se **inactivan**. Inactivar corta el ac
 - Fila activa: acción `UserX` (Inactivar), con confirmación. Fila inactiva: texto `text-zinc-400` y acción `UserCheck` (Reactivar), sin confirmación porque no es destructiva. La columna de fecha cambia a "Inactivo desde".
 - Detalle: dato "Estado" y botón Inactivar (ghost guinda, confirmación inline) o Reactivar (secondary).
 - Reglas: no inactivarse a uno mismo ni al último administrador activo. Los operadores inactivos no aparecen para asignar cumplimientos.
+
+### Acceso secundario en login (tarjeta-enlace)
+
+Para un camino alterno que debe verse pero sin competir con la acción principal (ej. "Levantar una solicitud sin cuenta" en `/login`).
+
+- Separador "o" (línea `zinc-200` + texto 12px en mayúsculas) entre el formulario y la tarjeta.
+- Tarjeta `<Link>` blanca, `rounded-2xl`, borde `zinc-200`: ícono en círculo `bg-guinda/10 text-guinda`, título `text-sm font-semibold`, ayuda `text-xs text-zinc-500` y flecha guinda a la derecha.
+- Hover: borde `guinda/40`, fondo `guinda/[0.03]` y la flecha avanza 2px (`150ms ease-out`). No usar otro botón sólido guinda: el principal es "Entrar".

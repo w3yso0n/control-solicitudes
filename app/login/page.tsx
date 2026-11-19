@@ -2,7 +2,7 @@
 
 import { Button, Field, Input } from "@/components/ui";
 import { signIn } from "next-auth/react";
-import { Eye, EyeOff } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, MessageSquarePlus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -122,12 +122,36 @@ export default function LoginPage() {
             <Button type="submit" className="w-full py-2.5" disabled={enviando}>
               {enviando ? "Entrando…" : "Entrar"}
             </Button>
-            <p className="text-center text-sm text-zinc-500">
-              <Link href="/solicitar" className="text-guinda hover:underline">
-                Levantar una solicitud sin cuenta
-              </Link>
-            </p>
           </form>
+          <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-zinc-400">
+            <span className="h-px flex-1 bg-zinc-200" aria-hidden="true" />
+            o
+            <span className="h-px flex-1 bg-zinc-200" aria-hidden="true" />
+          </div>
+          <Link
+            href="/solicitar"
+            className="group flex items-center gap-4 rounded-2xl border border-zinc-200 bg-white px-4 py-3.5 shadow-[0_2px_8px_-4px_rgba(28,10,18,0.12)] transition-colors duration-150 ease-out hover:border-guinda/40 hover:bg-guinda/[0.03] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-guinda"
+          >
+            <span
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-guinda/10 text-guinda"
+              aria-hidden="true"
+            >
+              <MessageSquarePlus size={18} />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-semibold text-zinc-900">
+                Levantar una solicitud sin cuenta
+              </span>
+              <span className="mt-0.5 block text-xs text-zinc-500">
+                Para ciudadanos: cuéntanos qué necesita tu comunidad.
+              </span>
+            </span>
+            <ArrowRight
+              size={18}
+              className="shrink-0 text-guinda transition-transform duration-150 ease-out group-hover:translate-x-0.5"
+              aria-hidden="true"
+            />
+          </Link>
         </div>
       </div>
     </div>
