@@ -206,6 +206,9 @@ export type LoteDto = {
   eventoOrigen: string;
   cveMun: string;
   notas: string | null;
+  latitud: number | null;
+  longitud: number | null;
+  precisionGpsM: number | null;
   estatus: EstatusLote;
   creadoEn: string;
   subidaPorNombre: string | null;

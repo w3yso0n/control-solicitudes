@@ -32,7 +32,7 @@ import type {
   Urgencia,
 } from "@/lib/types";
 import { publicUploadUrl } from "@/lib/uploads";
-import { and, desc, eq, inArray, like, ne, or } from "drizzle-orm";
+import { and, desc, eq, inArray, like, ne, or, sql } from "drizzle-orm";
 import { alias } from "drizzle-orm/pg-core";
 
 const CVE_MUN_VALIDOS = new Set(MUNICIPIOS_GUERRERO.map((m) => m.cveMun));
@@ -555,6 +555,12 @@ export async function capturarDocumento(
       }
 
       const prefix = generarFolio(ahora, campos.cveMun, 1).slice(0, -4);
+      // Serializa la asignación de folio por prefijo (municipio + día). Sin esto,
+      // dos capturas simultáneas calculan la misma secuencia y una truena con
+      // 23505: FOR UPDATE no bloquea filas que todavía no existen.
+      await tx.execute(
+        sql`select pg_advisory_xact_lock(hashtext(${"folio:" + prefix}))`,
+      );
       const foliosRows = await tx
         .select({ folio: peticiones.folio })
         .from(peticiones)

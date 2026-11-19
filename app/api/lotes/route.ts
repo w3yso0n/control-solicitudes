@@ -2,6 +2,12 @@ import { getCurrentUser } from "@/lib/auth";
 import { createLote, getLotes } from "@/lib/services/lotes";
 import { NextRequest, NextResponse } from "next/server";
 
+function numeroOpcional(value: FormDataEntryValue | null): number | null {
+  if (typeof value !== "string" || !value.trim()) return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+}
+
 export async function GET() {
   try {
     const user = await getCurrentUser();
@@ -35,12 +41,17 @@ export async function POST(request: NextRequest) {
     }
 
     const notasRaw = formData.get("notas");
+    const clientIdRaw = formData.get("clientId");
     const result = await createLote(user.id, {
       fechaEntrega: String(formData.get("fechaEntrega") ?? ""),
       eventoOrigen: String(formData.get("eventoOrigen") ?? ""),
       cveMun: String(formData.get("cveMun") ?? ""),
       notas: typeof notasRaw === "string" ? notasRaw : null,
       files,
+      clientId: typeof clientIdRaw === "string" ? clientIdRaw : null,
+      latitud: numeroOpcional(formData.get("latitud")),
+      longitud: numeroOpcional(formData.get("longitud")),
+      precisionGpsM: numeroOpcional(formData.get("precisionGps")),
     });
 
     if ("error" in result) {

@@ -23,7 +23,7 @@ import { registrarAuditoria } from "@/lib/services/auditoria";
 import type { Complejidad } from "@/lib/types";
 import { normalizarBusqueda, palabrasClave, similitud } from "@/lib/texto";
 import { absolutePathForStorageKey } from "@/lib/uploads";
-import { and, count, desc, eq, gte, inArray, like, ne } from "drizzle-orm";
+import { and, count, desc, eq, gte, inArray, like, ne, sql } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { mkdir, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -585,6 +585,11 @@ export async function aceptarSolicitudPublica(
       });
 
       const prefix = generarFolio(ahora, campos.cveMun, 1).slice(0, -4);
+      // Mismo candado que en la captura de escaneados: ambos flujos comparten
+      // el espacio de folios del municipio + día.
+      await tx.execute(
+        sql`select pg_advisory_xact_lock(hashtext(${"folio:" + prefix}))`,
+      );
       const foliosRows = await tx
         .select({ folio: peticiones.folio })
         .from(peticiones)

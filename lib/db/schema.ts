@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import {
   boolean,
+  doublePrecision,
   index,
   integer,
   jsonb,
@@ -40,6 +41,10 @@ export const lotes = pgTable(
     eventoOrigen: text("evento_origen").notNull(),
     cveMun: text("cve_mun").notNull(),
     notas: text("notas"),
+    // Ubicación GPS del dispositivo al cerrar el lote en la app móvil (opcional).
+    latitud: doublePrecision("latitud"),
+    longitud: doublePrecision("longitud"),
+    precisionGpsM: doublePrecision("precision_gps_m"),
     estatus: text("estatus", { enum: ["abierto", "cerrado"] })
       .notNull()
       .default("cerrado"),

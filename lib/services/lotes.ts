@@ -20,6 +20,8 @@ import { and, asc, count, desc, eq, inArray, ne } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const CVE_MUN_VALIDOS = new Set(MUNICIPIOS_GUERRERO.map((m) => m.cveMun));
 
 export type CreateLoteInput = {
@@ -28,7 +30,24 @@ export type CreateLoteInput = {
   cveMun: string;
   notas?: string | null;
   files: File[];
+  /**
+   * UUID generado en el dispositivo (app móvil offline). Se usa como id del
+   * lote para que un reintento de sincronización no lo duplique cuando el
+   * servidor sí lo guardó pero la respuesta se perdió por mala señal.
+   */
+  clientId?: string | null;
+  latitud?: number | null;
+  longitud?: number | null;
+  precisionGpsM?: number | null;
 };
+
+function coordenadaValida(
+  valor: number | null | undefined,
+  limite: number,
+): number | null {
+  if (valor == null || !Number.isFinite(valor)) return null;
+  return Math.abs(valor) <= limite ? valor : null;
+}
 
 function toPeticionDto(
   row: typeof peticiones.$inferSelect,
@@ -66,6 +85,9 @@ function toLoteDto(
     eventoOrigen: lote.eventoOrigen,
     cveMun: lote.cveMun,
     notas: lote.notas,
+    latitud: lote.latitud,
+    longitud: lote.longitud,
+    precisionGpsM: lote.precisionGpsM,
     estatus: lote.estatus,
     creadoEn: lote.createdAt.toISOString(),
     subidaPorNombre: subidaPor?.displayName ?? null,
@@ -195,6 +217,25 @@ export async function getLoteDocumentoByStorageKey(storageKey: string) {
   return rows[0] ?? null;
 }
 
+function codigoPg(err: unknown): string {
+  return err && typeof err === "object" && "code" in err
+    ? String((err as { code: unknown }).code)
+    : "";
+}
+
+async function loteYaRegistrado(
+  loteId: string,
+  userId: string,
+): Promise<{ error: string } | { success: true; lote: LoteDto } | null> {
+  const existente = await getLoteById(loteId);
+  if (!existente) return null;
+  if (existente.userId !== userId) {
+    return { error: "El identificador del lote ya está en uso" };
+  }
+  const lote = await getLoteDtoById(loteId);
+  return lote ? { success: true as const, lote } : null;
+}
+
 export async function createLote(userId: string, input: CreateLoteInput) {
   const fechaEntrega = input.fechaEntrega?.trim() ?? "";
   const eventoOrigen = input.eventoOrigen?.trim() ?? "";
@@ -215,7 +256,23 @@ export async function createLote(userId: string, input: CreateLoteInput) {
     return { error: `Máximo ${MAX_FILES_PER_LOTE} archivos por lote` };
   }
 
-  const loteId = randomUUID();
+  const clientId = input.clientId?.trim() ?? "";
+  const loteId = UUID_RE.test(clientId) ? clientId.toLowerCase() : randomUUID();
+
+  // Reintento de un lote que ya llegó: devolver el existente en vez de duplicar.
+  if (clientId) {
+    const previo = await loteYaRegistrado(loteId, userId);
+    if (previo) return previo;
+  }
+
+  const latitud = coordenadaValida(input.latitud, 90);
+  const longitud = coordenadaValida(input.longitud, 180);
+  const conCoordenadas = latitud != null && longitud != null;
+  const precisionGpsM =
+    conCoordenadas && input.precisionGpsM != null && Number.isFinite(input.precisionGpsM)
+      ? Math.max(0, input.precisionGpsM)
+      : null;
+
   const saved: SavedUpload[] = [];
 
   try {
@@ -236,6 +293,9 @@ export async function createLote(userId: string, input: CreateLoteInput) {
         eventoOrigen,
         cveMun,
         notas,
+        latitud: conCoordenadas ? latitud : null,
+        longitud: conCoordenadas ? longitud : null,
+        precisionGpsM,
         estatus: "cerrado",
         updatedAt: new Date(),
       });
@@ -254,6 +314,11 @@ export async function createLote(userId: string, input: CreateLoteInput) {
     });
   } catch (err) {
     await removeSavedUploads(saved);
+    // Dos envíos simultáneos del mismo lote: el otro ganó el insert.
+    if (clientId && codigoPg(err) === "23505") {
+      const previo = await loteYaRegistrado(loteId, userId);
+      if (previo) return previo;
+    }
     throw err;
   }
 
@@ -270,6 +335,9 @@ export async function createLote(userId: string, input: CreateLoteInput) {
       eventoOrigen,
       cveMun,
       notas,
+      latitud: conCoordenadas ? latitud : null,
+      longitud: conCoordenadas ? longitud : null,
+      precisionGpsM,
       estatus: "cerrado" as const,
       creadoEn: new Date().toISOString(),
       subidaPorNombre: null,
